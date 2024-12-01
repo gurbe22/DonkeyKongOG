@@ -23,10 +23,21 @@ public:
 	{
 		draw(' ');
 	}
-	void keyPressed(char key);
+	void erase(char c)
+	{
+		draw(c);
+	}	
+	//void keyPressed(char key);
 	void move(gameConfig::eKeys key);
 	void setBoard(Board& board) {
 		pBoard = &board;
+	}
+
+	int getX() {
+		return x;
+	}
+	int getY() {
+		return y;
 	}
 };
 #endif

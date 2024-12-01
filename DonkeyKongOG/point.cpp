@@ -11,7 +11,7 @@ void point::keyPressed(char key) {
 */
 void point::move(gameConfig::eKeys key)
 {
-	char ch;
+	char nextChar, currChar;
 	switch (key)
 	{
 	case gameConfig::eKeys::LEFT:
@@ -36,27 +36,45 @@ void point::move(gameConfig::eKeys key)
 		break;
     }
 
-	ch = pBoard->getChar(x + diff_x, y + diff_y);
+	nextChar = pBoard->getChar(x + diff_x, y + diff_y);
+	currChar = pBoard->getChar(x, y);
 	
-	if (ch == 'Q' || ch == '=' || ch == '<' || ch == '>') {
+	if (nextChar == 'Q' || nextChar == '=' || nextChar == '<' || nextChar == '>') {
+		diff_x = 0;
+		diff_y = 0;
+	}
+
+	/*if (nextChar == ' ' && key == gameConfig::eKeys::UP)
+	{
+		diff_x = 0; 
+		diff_y = 0;
+	}*/
+
+	if (currChar == 'H')
+	{
+		if (nextChar == 'H' && key == gameConfig::eKeys::UP)
+		{
+			diff_x = 0;
+			diff_y = -1;
+		}
+		else if (nextChar == 'H' && key == gameConfig::eKeys::DOWN)
+		{
+			diff_x = 0;
+			diff_y = 1;
+		}
+		/*else if (currChar == ' ' && key == gameConfig::eKeys::UP && pBoard->getChar(x, y + 1) == 'H')
+		{
+			diff_x = 0;
+			diff_y = 0;
+		}*/
+	}
+
+	if (currChar == ' ' && key == gameConfig::eKeys::UP && pBoard->getChar(x, y + 1) == 'H')
+	{
 		diff_x = 0;
 		diff_y = 0;
 	}
 
 	x += diff_x;
-
-	
-
-	// if (x > gameConfig::GAME_WIDTH - 1)
-	// 	x = gameConfig::GAME_WIDTH - 1;
-	// else if (x == 1)
-	// 	x = 1;
-
 	y += diff_y;
-	// if (y > gameConfig::GAME_HEIGHT - 1)
-	// 	y = gameConfig::GAME_HEIGHT - 1;
-	// else if (y == 1)
-	// 	y = 1;
-
-	
 }

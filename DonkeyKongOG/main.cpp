@@ -11,14 +11,8 @@
 
 using namespace std;
 
-
-
-
-//void movingMarioInBoard();
-
 void main()
 {
-    //movingMarioInBoard();
 	ShowConsoleCursor(false);
 
     Board b;
@@ -27,61 +21,32 @@ void main()
 
     point p(1,22);
 	p.setBoard(b);
-
-	/*while (true) {
-		p.draw('@');
-		if (_kbhit()) {
-			char key = _getch();
-			if (key == (char)gameConfig::eKeys::ESC) break;  
-			p.keyPressed(key);
-		}
-		Sleep(100);
-		p.erase();
-		p.move(key);
-	}*/
+    int keyPressed = 0;
 
     while (true)
     {
-        int keyPressed = 0; 
+        
         if (_kbhit()) 
         {
             keyPressed = _getch(); 
+			keyPressed = std::tolower(keyPressed);
+
             if (keyPressed == (int)gameConfig::eKeys::ESC) 
                 break;
         }
-        p.draw('@');
-        Sleep(500); 
-        p.erase();
+
+        if (b.getChar(p.getX(), p.getY()) == 'H') {
+            p.draw('@');
+            Sleep(500);
+            p.erase('H');
+        }
+        else
+        {
+            p.draw('@');
+            Sleep(500);
+            p.erase();
+        }
 
         p.move((gameConfig::eKeys)keyPressed); 
     }
 }
-
-
-
-/*void movingMarioInBoard()
-{
-    int x = 1, y = 25;
-    char key;
-
-    while (/*!_kbhit() || _getch() != 27)
-    {
-        gotoxy(x, y);
-        cout << "@";
-        Sleep(500);
-        gotoxy(x, y);
-        cout << " ";
-
-        key = _getch(); 
-        if (key == 'w')
-            y--;
-        else if (key == 'a')
-            x--;
-        else if (key == 's')
-            y++;
-        else if (key == 'd')
-            x++;
-
-       
-    }
-}*/
