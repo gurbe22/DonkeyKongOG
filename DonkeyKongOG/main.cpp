@@ -19,7 +19,7 @@ void main()
     Board b;
     b.reset();
     b.print();
-
+    
     mario p; 
 	p.setBoard(b);
     int keyPressed = 0;
@@ -36,7 +36,8 @@ void main()
                 break;
         }
 
-        if (b.getChar(p.getX(), p.getY()) == 'H') {
+        if (b.getChar(p.getX(), p.getY()) == 'H') 
+        {
             p.draw('@');
             Sleep(500);
             p.erase('H');
