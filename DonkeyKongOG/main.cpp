@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "point.h"
 #include "gameConfig.h"
+#include "mario.h" 
 
 using namespace std;
 
@@ -19,7 +20,7 @@ void main()
     b.reset();
     b.print();
 
-    point p(1,22);
+    mario p; 
 	p.setBoard(b);
     int keyPressed = 0;
 
