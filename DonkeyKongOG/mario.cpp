@@ -1,5 +1,6 @@
 #include "mario.h"
 
+
 void mario::move(gameConfig::eKeys key)
 {
 	char nextChar, currChar;
