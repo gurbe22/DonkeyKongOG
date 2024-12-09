@@ -76,3 +76,22 @@ void mario::move(gameConfig::eKeys key)
 	myMario.setX(x + myMario.getDiffX()); 
 	myMario.setY(y + myMario.getDiffY()); 
 }
+
+void mario::draw(char c)
+{
+	myMario.draw(c);
+}
+
+void mario::erase()
+{
+	char c;
+	int x, y;
+	Board* b;
+
+	b = myMario.getBoard();
+
+	x = myMario.getX();
+	y = myMario.getY();
+	c = b->getChar(x,y);
+	myMario.draw(c);
+}

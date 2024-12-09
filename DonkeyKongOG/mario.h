@@ -12,6 +12,8 @@ class mario
 	point myMario;
 public:
 	void move(gameConfig::eKeys key);  
+	void draw(char c);
+	void erase(); 
 };
 
 #endif
