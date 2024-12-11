@@ -1,12 +1,20 @@
-#ifndef _THESNAKESGAME_H_
-#define _THESNAKESGAME_H_
+#ifndef THEDONKYKONGGAME_H
+#define THEDONKYKONGGAME_H
 
-//#include "io_utils.h"
-//#include "Snake.h"
+#include <conio.h>
+#include <windows.h>
+#include <iostream>
+#include <process.h>
 
-class TheDonkyKongGame {
-	enum { ESC = 27 };
-	Snake s[2];
+#include "Board.h"
+#include "utils.h"
+#include "point.h"
+#include "gameConfig.h"
+#include "mario.h" 
+
+class TheDonkyKongGame 
+{
+	
 public:
 	void init();
 	void run();

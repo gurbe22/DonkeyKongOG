@@ -30,7 +30,7 @@ class Board
 		  "Q    H             H                                H                   H     Q", // 20
 		  "Q  <<<<<<<<<<<<<  <<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>   Q", // 21
 		  "Q  H              H                                   H                   H   Q", // 22
-		  "Q <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Q", // 23
+		  "Q<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Q", // 23
 		  "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
 	};
 	char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1]; // +1 for null terminator

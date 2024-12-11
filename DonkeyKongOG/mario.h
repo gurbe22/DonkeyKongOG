@@ -6,12 +6,21 @@
 #include <process.h>
 
 #include "point.h"
+
 using namespace std;
+
 class mario
 {
 	point myMario;
+	int heightJumping = 0;
+	bool isOnFloor()
+	{
+		char ch = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
+		return (ch == '=' || ch == '<' || ch == '>');
+			 
+	}
 public:
-	void move(gameConfig::eKeys key);  
+	void move(gameConfig::eKeys &key);  
 	void draw(char c);
 	void erase(); 
 	// Board* getBoard()
