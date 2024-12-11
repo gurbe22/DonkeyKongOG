@@ -12,16 +12,16 @@
 
 using namespace std;
 
-void main()
+int main()
 {
 	ShowConsoleCursor(false);
 
     Board b;
     b.reset();
     b.print();
-
+    
     mario p; 
-	p.setBoard(b);
+    p.setBoard(b);
     int keyPressed = 0;
 
     while (true)
@@ -36,18 +36,11 @@ void main()
                 break;
         }
 
-        if (b.getChar(p.getX(), p.getY()) == 'H') {
-            p.draw('@');
-            Sleep(500);
-            p.erase('H');
-        }
-        else
-        {
-            p.draw('@');
-            Sleep(500);
-            p.erase();
-        }
+        p.draw('@');
+        Sleep(500);
+        p.erase();
 
         p.move((gameConfig::eKeys)keyPressed); 
     }
+    return 0;
 }

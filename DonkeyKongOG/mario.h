@@ -14,6 +14,15 @@ public:
 	void move(gameConfig::eKeys key);  
 	void draw(char c);
 	void erase(); 
+	// Board* getBoard()
+	// {
+	// 	return myMario.getBoard();
+	// }
+
+	void setBoard(Board& board)
+	{
+		myMario.setBoard(board);
+	}
 };
 
 #endif
