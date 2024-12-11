@@ -32,18 +32,13 @@ void mario::move(gameConfig::eKeys key)
 	x = myMario.getX();
 	y = myMario.getY();
 	nextChar = myMario.getBoard()->getChar(x + myMario.getDiffX(), y + myMario.getDiffY());  
-	currChar = myMario.getBoard()->getChar(x, y);  
+	currChar = myMario.getBoard()->getChar(x, y); 
 
-	if (nextChar == 'Q' || nextChar == '=' || nextChar == '<' || nextChar == '>') {
-		myMario.setDiffX(0); 
-		myMario.setDiffY(0); 
-	}
-
-	/*if (nextChar == ' ' && key == gameConfig::eKeys::UP)
+	if (nextChar == 'Q' || nextChar == '=' || nextChar == '<' || nextChar == '>') 
 	{
-		diff_x = 0;
-		diff_y = 0;
-	}*/
+		    myMario.setDiffX(0); 
+		    myMario.setDiffY(0); 
+	}
 
 	if (currChar == 'H')
 	{
@@ -52,16 +47,19 @@ void mario::move(gameConfig::eKeys key)
 			myMario.setDiffX(0);
 			myMario.setDiffY(-1);
 		}
-		else if (nextChar == 'H' && key == gameConfig::eKeys::DOWN)
+		else if (nextChar == 'Q' || nextChar == '=' || nextChar == '<' || nextChar == '>')
 		{
-			myMario.setDiffX(0);
-			myMario.setDiffY(1);
+			if (key == gameConfig::eKeys::UP)
+			{
+				myMario.setDiffX(0);
+				myMario.setDiffY(-1);
+			}
+			else if(key == gameConfig::eKeys::DOWN)
+			{
+				myMario.setDiffX(0);
+				myMario.setDiffY(1);
+			}
 		}
-		/*else if (currChar == ' ' && key == gameConfig::eKeys::UP && pBoard->getChar(x, y + 1) == 'H')
-		{
-			diff_x = 0;
-			diff_y = 0;
-		}*/
 	}
 
 	if (currChar == ' ' && key == gameConfig::eKeys::UP && myMario.getBoard()->getChar(x, y + 1) == 'H')
@@ -69,9 +67,6 @@ void mario::move(gameConfig::eKeys key)
 		myMario.setDiffX(0);
 		myMario.setDiffY(0);
 	}
-
-	//x += diff_x;
-	//y += diff_y;
 	
 	myMario.setX(x + myMario.getDiffX()); 
 	myMario.setY(y + myMario.getDiffY()); 
