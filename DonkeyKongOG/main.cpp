@@ -19,7 +19,7 @@ int main()
     Board b;
     b.reset();
     b.print();
-
+    
     mario p; 
     p.setBoard(b);
     int keyPressed = 0;
