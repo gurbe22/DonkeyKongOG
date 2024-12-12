@@ -5,7 +5,6 @@
 #include <windows.h>
 #include <iostream>
 #include <process.h>
-
 #include "Board.h"
 #include "utils.h"
 #include "point.h"
@@ -14,10 +13,10 @@
 
 class TheDonkyKongGame 
 {
-	
 public:
 	void init();
 	void run();
+	void runGame();
 };
 
 #endif

@@ -5,10 +5,11 @@ void TheDonkyKongGame::run()
 	ShowConsoleCursor(false);
 
 	Board b;
+	mario mario;
+
 	b.reset();
 	b.print();
 
-	mario mario;
 	mario.setBoard(b);
 	gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; // משתנה אמיתי להעברה לפונקציה move
 
@@ -26,9 +27,8 @@ void TheDonkyKongGame::run()
 		}
 
 		mario.draw('@');
-		Sleep(500);
+		Sleep(100);
 		mario.erase();
-
-		mario.move(keyPressed); // העברת משתנה ולא ערך
+		mario.moveMario(keyPressed); // העברת משתנה ולא ערך
 	}
 }

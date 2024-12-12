@@ -131,6 +131,7 @@
     <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="TheDonkyKongGame.cpp" />
     <ClCompile Include="utils.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="board.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="mario.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TheDonkyKongGame.h" />
