@@ -16,17 +16,19 @@ class mario
 	 bool jumping = false;
 	 bool isUp = true;
 	
-	void jump(gameConfig::eKeys& key);
+	void jump(gameConfig::eKeys& key ,char nextChar);
 
 	void climbing(char nextChar, gameConfig::eKeys& key);
 	 
-	 bool isOnFloor()
-	 {
-	 	char ch = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
-	 	return (ch == '=' || ch == '<' || ch == '>');
+	bool isOnFloor()
+	{
+		char ch = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
+		return (ch == '=' || ch == '<' || ch == '>');
 
-	 }
+	}
+
 public:
+	
 	void moveMario(gameConfig::eKeys &key);
 	
 	void draw(char c)
@@ -58,16 +60,10 @@ public:
 		}
 	}
 
-	// Board* getBoard()
-	// {
-	// 	return myMario.getBoard();
-	// }
-
 	void setBoard(Board& board)
 	{
 		myMario.setBoard(board);
 	}
-
 
 	void WalkingOrStaying(gameConfig::eKeys key)
 	{

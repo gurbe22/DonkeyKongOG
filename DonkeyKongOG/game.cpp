@@ -1,9 +1,9 @@
-#include "menu.h"
+#include "game.h"
 
-void menu::mainMenu()
+void game::mainMenu()
 {
     bool running = true;
-    ShowConsoleCursor(false);
+	ShowConsoleCursor(false); // Hide the cursor
 
     while (running) {
         system("cls"); // Clear the screen
@@ -31,12 +31,12 @@ void menu::mainMenu()
             Sleep(1000);
         }
     }
-
+    system("cls"); // Clear the screen
     cout << "Exiting the game. Goodbye!\n";
 }
 
 // Function to run the game
-void menu::runGame() 
+void game::runGame() 
 {
     Board b;
     mario mario;
@@ -55,11 +55,10 @@ void menu::runGame()
             
         }
         mario.moveMario(keyPressed);
-        Sleep(100); // Control game speed
     }
 }
 
-void menu::displayInstructions()
+void game::displayInstructions()
 {
 	system("cls"); // Clear the screen
     cout << "Instructions:\n";
@@ -73,7 +72,7 @@ void menu::displayInstructions()
     _getch(); // Wait for key press
 }
 
-void menu::displayBoard(Board b)
+void game::displayBoard(Board& b)
 {
     system("cls"); // Clear the screen
     b.reset();

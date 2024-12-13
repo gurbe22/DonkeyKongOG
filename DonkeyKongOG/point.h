@@ -30,6 +30,7 @@ public:
 	{
 		return nextChar == '=' || nextChar == '<' || nextChar == '>';
 	}
+
 	void move(int newDiff_X, int newDiff_Y)
 	{
 		int newPos_x = x + newDiff_X;
@@ -49,7 +50,6 @@ public:
 		y += diff_y;
 	}
 
-	
 	void draw(char c) const 
 	{
 		gotoxy(x, y);

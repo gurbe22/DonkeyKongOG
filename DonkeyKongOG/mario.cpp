@@ -2,6 +2,9 @@
 
 void mario::moveMario(gameConfig::eKeys& key)
 {
+	myMario.draw('@');
+	Sleep(100);
+	myMario.erase();
 	point::States state; 
 	char currChar, nextChar;
 	currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY());
@@ -14,7 +17,7 @@ void mario::moveMario(gameConfig::eKeys& key)
 		myMario.move(0, 1);
 		break;
 	case point::States::JUMPING:
-		jump(key);
+		jump(key, nextChar);
 		break;
 	case point::States::CLIMBING:
 		climbing(nextChar, key);
@@ -81,9 +84,9 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 		return point::States::WALKING_OR_STAYING;
 	}
 
- void mario::jump(gameConfig::eKeys& key)
+ void mario::jump(gameConfig::eKeys& key, char nextChar)
  {
- 	if (heightJumping >= 2)
+ 	if (heightJumping >= 2 || myMario.isFloor(nextChar))
  	{
  		isUp = false;
 		if (myMario.getDiffX() == 0)
@@ -126,6 +129,8 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 
  void mario::climbing(char nextChar, gameConfig::eKeys& key)
  {
+	 heightJumping = 0;
+	 jumping = false;
 	 if (key == gameConfig::eKeys::UP)
 	 {
 		 if (nextChar == '<' || nextChar == '>' || nextChar == '=')

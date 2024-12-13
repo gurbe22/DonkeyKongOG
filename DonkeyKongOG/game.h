@@ -4,11 +4,12 @@
 #include <conio.h> // For _kbhit and _getch
 #include <windows.h> // For Sleep and gotoxy
 #include "Board.h"
-#include "TheDonkyKongGame.h"
 #include "gameConfig.h"
+#include "mario.h"
+
 using namespace std;
 
-class menu
+class game
 {
 public:
 	// Main menu function
@@ -21,6 +22,6 @@ public:
 	void displayInstructions();
 
 	// Function to display the game board
-	void displayBoard(Board b);
+	void displayBoard(Board& b);
 };
 

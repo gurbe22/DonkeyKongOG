@@ -1,8 +1,8 @@
-#include "TheDonkyKongGame.h"
+#include "game.h"
 
 int main()
 {
-    TheDonkyKongGame game;
-    game.run();
+	game game;
+	game.mainMenu();
     return 0;
 }
