@@ -1,9 +1,6 @@
 #ifndef MARIO_H
 #define MARIO_H
-#include <conio.h>
-#include <windows.h>
-#include <iostream>
-#include <process.h>
+
 #include "point.h"
 
 using namespace std;
@@ -11,10 +8,9 @@ using namespace std;
 class mario
 {
 	point myMario;
-
-	 int heightJumping = 0;
-	 bool jumping = false;
-	 bool isUp = true;
+	int heightJumping = 0;
+	bool jumping = false;
+    bool isUp = true;
 	
 	void jump(gameConfig::eKeys& key ,char nextChar);
 
@@ -22,15 +18,11 @@ class mario
 	 
 	bool isOnFloor()
 	{
-		char ch = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
-		return (ch == '=' || ch == '<' || ch == '>');
+		char ch1Below = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
+		return (ch1Below == FLOOR || ch1Below == LFLOOR || ch1Below == RFLOOR);
 
 	}
 
-public:
-	
-	void moveMario(gameConfig::eKeys &key);
-	
 	void draw(char c)
 	{
 		myMario.draw(c);
@@ -60,10 +52,11 @@ public:
 		}
 	}
 
-	void setBoard(Board& board)
-	{
-		myMario.setBoard(board);
-	}
+	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
+
+	bool isFalling(char currChar, char nextChar, gameConfig::eKeys key);
+
+	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
 
 	void WalkingOrStaying(gameConfig::eKeys key)
 	{
@@ -74,14 +67,17 @@ public:
 		else if (key == gameConfig::eKeys::STAY)
 			myMario.move(0, 0);
 	}
-	 
+
 	point::States findState(char currChar, char nextChar, gameConfig::eKeys key);
 
-	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
-
-	bool isFalling(char currChar, char nextChar, gameConfig::eKeys key);
-
-	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
+public:
+	
+	void moveMario(gameConfig::eKeys &key);
+	
+	void setBoard(Board& board)
+	{
+		myMario.setBoard(board);
+	}
 };
 
 #endif

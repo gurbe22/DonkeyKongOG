@@ -1,18 +1,53 @@
-#include "game.h"
+ן»¿#include "game.h"
+
+
 
 void game::mainMenu()
 {
-    bool running = true;
+    bool running = RUNNING; 
 	ShowConsoleCursor(false); // Hide the cursor
 
     while (running) {
         system("cls"); // Clear the screen
-        cout << "Donkey Kong Game\n";
-        cout << "----------------\n";
+
+        //cout << "Donkey Kong Game\n";
+
+        /***************************************From chatGPT*******************************************/
+        std::cout << " DDDDD   OOOOO   N   N  K   K   EEEEE   Y   Y    K   K    OOOOO  N   N  GGGG  \n";
+        std::cout << " D    D O     O  NN  N  K  K    E        YYY     K  K    O     O NN  N  G     \n";
+        std::cout << " D    D O     O  N N N  KKK     EEEE      Y      KKK    O     O  N N N  G  GG \n";
+        std::cout << " D    D O     O  N  NN  K  K    E         Y      K  K    O     O N  NN  G   G \n";
+        std::cout << " DDDDD   OOOOO   N   N  K   K   EEEEE     Y      K   K   OOOOO   N   N  GGGG  \n\n";
+        
+
+        
+        std::string art[] = {
+        "    ,.-\" \"-.," ,
+        "   /    ===   \\",
+        "  /  =======   \\",
+        "  __|  (0)   (0)  |__",
+        " / _|    .---.    |_ \\",
+        "|/.----/ O O \\----.\\ |",
+        " \\/     |     |     \\/",
+        " |   _________     |",
+        " |  /         \\    |",
+        " |  |  >---<  |    |",
+        };
+        
+        for (const auto& line : art) {
+            int padding = (80 - line.length()) / 2;
+            for (int i = 0; i < padding; ++i)
+                std::cout << " ";
+            std::cout << line << std::endl;
+        }
+        /***************************************From chatGPT*******************************************/
+
+        cout << "--------------------------------------------------------------------------------\n";
         cout << "1. Start a New Game\n";
         cout << "8. Instructions and Keys\n";
         cout << "9. Exit\n";
-        cout << "Enter your choice: ";
+        cout << "Enter your choice: \n";
+        cout << "--------------------------------------------------------------------------------\n";
 
         char choice = _getch();
 
@@ -24,7 +59,7 @@ void game::mainMenu()
             displayInstructions();
             break;
         case '9':
-            running = false;
+            running = STOP_RUNNING;  
             break;
         default:
             cout << "Invalid choice. Try again!\n";
@@ -40,18 +75,42 @@ void game::runGame()
 {
     Board b;
     mario mario;
+
     displayBoard(b);
     mario.setBoard(b);
-    gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; // משתנה אמיתי להעברה לפונקציה move
-    while (true) {
 
-        if (_kbhit()) {
+    gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
+
+    while (RUNNING) {
+
+        if (_kbhit())
+        {
             int key = _getch();
+
             key = std::tolower(key);
-            if (key == (int)gameConfig::eKeys::ESC) { // ESC key
-                break;
+
+            if (key == (int)gameConfig::eKeys::ESC)  // ESC key
+            {
+                b.displayPauseScreen();  
+                key = 0;
+                while (true)
+                {
+                    key = _getch();
+
+                    if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
+                        break;
+                }
             }
-            keyPressed = (gameConfig::eKeys)key; // עדכון המשתנה
+
+            if (key == (int)gameConfig::eKeys::EXIT)
+                break;
+            else if (key == (int)gameConfig::eKeys::ESC)
+            {
+                b.reset();
+                displayBoard(b);
+            }
+
+            keyPressed = (gameConfig::eKeys)key; 
             
         }
         mario.moveMario(keyPressed);

@@ -1,16 +1,23 @@
-#pragma once
+#ifndef GAME_H
+
+#define GAME_H
 
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
 #include <windows.h> // For Sleep and gotoxy
-#include "Board.h"
-#include "gameConfig.h"
+
+#define RUNNING true
+#define STOP_RUNNING false
+
+//#include "Board.h"
+//#include "gameConfig.h"
 #include "mario.h"
 
 using namespace std;
 
 class game
 {
+	
 public:
 	// Main menu function
 	void mainMenu();
@@ -25,3 +32,4 @@ public:
 	void displayBoard(Board& b);
 };
 
+#endif

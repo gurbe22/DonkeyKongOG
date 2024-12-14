@@ -1,13 +1,17 @@
 #include "mario.h"
 
+#include <windows.h>
+
 void mario::moveMario(gameConfig::eKeys& key)
 {
-	myMario.draw('@');
-	Sleep(100);
+	myMario.draw(MARIO); 
+	Sleep(100); 
 	myMario.erase();
+
 	point::States state; 
 	char currChar, nextChar;
-	currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY());
+
+	currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); 
 	nextChar = findNextChar(currChar, key);
 	state = findState(currChar, nextChar, key);
 
@@ -30,16 +34,19 @@ void mario::moveMario(gameConfig::eKeys& key)
 
 bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if (currChar == 'H')
+	if (currChar == LADDER)
 	{
-		if (nextChar == 'H' || ((nextChar == '<' || nextChar == '>' || nextChar == '=') && key == gameConfig::eKeys::UP))
+		if (nextChar == LADDER || ((nextChar == LFLOOR || nextChar == RFLOOR || nextChar == FLOOR)
+			&& key == gameConfig::eKeys::UP))
 		{
 			return true;
 		}
 	}
 	else
 	{
-		if (isOnFloor() && myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2) == 'H' && key == gameConfig::eKeys::DOWN)
+		char ch2Above = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2);
+
+		if (isOnFloor() && ch2Above == LADDER && key == gameConfig::eKeys::DOWN)
 		{
 			return true;
 		}
@@ -49,7 +56,7 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 
 bool mario::isFalling(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if (currChar == ' ')
+	if (currChar == OPENSPACE)
 	{
 		if (isOnFloor() == false)
 		{
@@ -61,7 +68,7 @@ bool mario::isFalling(char currChar, char nextChar, gameConfig::eKeys key)
 
 bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if ((currChar == ' ' && isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true)
+	if ((currChar == OPENSPACE && isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true)
 	{
 		jumping = true;
 		return true;
@@ -133,7 +140,7 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 	 jumping = false;
 	 if (key == gameConfig::eKeys::UP)
 	 {
-		 if (nextChar == '<' || nextChar == '>' || nextChar == '=')
+		 if (nextChar == FLOOR || nextChar == LFLOOR || nextChar == RFLOOR)
 		 {
 			 myMario.move(0, -2);
 			 key = gameConfig::eKeys::STAY;
@@ -145,7 +152,7 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 	 }
 	 else
 	 {
-		 if (nextChar == '<' || nextChar == '>' || nextChar == '=')
+		 if (nextChar == FLOOR || nextChar == LFLOOR || nextChar == RFLOOR)
 		 {
 			 myMario.move(0, 2);
 			 key = gameConfig::eKeys::STAY;
