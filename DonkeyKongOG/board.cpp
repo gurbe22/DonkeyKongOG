@@ -2,14 +2,17 @@
 #include <iostream>
 
 #include "Board.h"
+#include "utils.h"; 
 
+// Reset the board to its original state
 void Board::reset()     
 {
 	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++) {
-		memcpy(currentBoard[i], originalBoard[i], gameConfig::GAME_WIDTH + 1);  
+		memcpy(currentBoard[i], originalBoard[i], gameConfig::GAME_WIDTH + 1);
 	}
 }
 
+// Print the board to the console
 void Board::print() const {
 	for (int i = 0; i < gameConfig::GAME_HEIGHT - 1; i++) {
 		std::cout << currentBoard[i] << '\n';
@@ -17,6 +20,7 @@ void Board::print() const {
 	std::cout << currentBoard[gameConfig::GAME_HEIGHT - 1];
 }
 
+// Display the pause screen
 void Board::displayPauseScreen()
 {
 	const char* pauseBoard[gameConfig::GAME_HEIGHT] = {
@@ -24,8 +28,8 @@ void Board::displayPauseScreen()
 		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
 		 "Q                                 $                                 |LIVES:3| Q", // 1
 		 "Q                      ==========================                             Q", // 2
-		 "Q                                                                             Q", // 3
-		 "Q                                   &                                         Q", // 4
+		 "Q                       H                   H                                 Q", // 3
+		 "Q                       H           &       H                                 Q", // 4
 		 "Q               >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                  Q", // 5
 		 "Q                H                H     H                 H                   Q", // 6
 		 "Q                H                H     H                 H                   Q", // 7
@@ -49,11 +53,14 @@ void Board::displayPauseScreen()
 
 	};
 
-	system("cls"); 
+	
+	system("cls");
+
+
 	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
 	{
 		memcpy(currentBoard[i], pauseBoard[i], gameConfig::GAME_WIDTH + 1); 
-	}
+	} 
 	print();
 }
 

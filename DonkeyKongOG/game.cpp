@@ -1,7 +1,6 @@
 ﻿#include "game.h"
 
-
-
+// Function to display the main menu
 void game::mainMenu()
 {
     bool running = RUNNING; 
@@ -52,13 +51,13 @@ void game::mainMenu()
         char choice = _getch();
 
         switch (choice) {
-        case '1':
+        case START_GAME:
             runGame();
             break;
-        case '8':
+        case INSTRUCTIONS:
             displayInstructions();
             break;
-        case '9':
+        case EXIT_GAME:
             running = STOP_RUNNING;  
             break;
         default:
@@ -96,7 +95,7 @@ void game::runGame()
                 while (true)
                 {
                     key = _getch();
-
+                    //key = std::tolower(key);
                     if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
                         break;
                 }
@@ -117,6 +116,7 @@ void game::runGame()
     }
 }
 
+// Function to display the instructions
 void game::displayInstructions()
 {
 	system("cls"); // Clear the screen
@@ -131,6 +131,7 @@ void game::displayInstructions()
     _getch(); // Wait for key press
 }
 
+// Function to display the board
 void game::displayBoard(Board& b)
 {
     system("cls"); // Clear the screen

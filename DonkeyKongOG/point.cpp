@@ -1,4 +1,5 @@
 #include "point.h"
+#include "board.h" 
 
 
 bool point::isOutOfLimit(int newPos_x, int newPos_y)  

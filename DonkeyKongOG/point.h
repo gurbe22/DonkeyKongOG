@@ -17,7 +17,14 @@ class point
 public:
 	enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING };
 
-	point() :x(1), y(22) { diff_x = 0; diff_y = 0; }
+	static constexpr char FLOOR = '=';
+	static constexpr char LFLOOR = '<';
+	static constexpr char RFLOOR = '>';
+	static constexpr char LADDER = 'H';
+	static constexpr char OPEN_SPACE = ' ';
+
+
+	point(const int xStart, const int yStart) :x(xStart), y(yStart) { diff_x = 0; diff_y = 0;}  //Ctor    
 
 	bool isOutOfLimit(int newPos_x, int newPos_y);
 
@@ -26,7 +33,7 @@ public:
 	void draw(char ch) const 
 	{
 		gotoxy(x, y);
-		std::cout << c; 
+		std::cout << ch; 
 	}	
 	
 	void erase() const

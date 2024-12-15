@@ -17,6 +17,9 @@ using namespace std;
 
 class game
 {
+	static constexpr char START_GAME = '1';
+	static constexpr char INSTRUCTIONS = '8';  
+	static constexpr char EXIT_GAME = '9';  
 	
 public:
 	// Main menu function

@@ -2,24 +2,35 @@
 #define MARIO_H
 
 #include "point.h"
+#include <windows.h>
 
 using namespace std;
 
 class mario
 {
+
+	static constexpr int MARIO_STARTING_X = 1; 
+	static constexpr int MARIO_STARTING_Y = 22; 
+	static constexpr int LIVES = 3;
+	static constexpr char MARIO = '@'; 
+	
 	point myMario;
+	
 	int heightJumping = 0;
 	bool jumping = false;
     bool isUp = true;
+
 	
+	// Function to make Mario jump
 	void jump(gameConfig::eKeys& key ,char nextChar);
 
+	// Function to make Mario climb
 	void climbing(char nextChar, gameConfig::eKeys& key);
 	 
 	bool isOnFloor()
 	{
 		char ch1Below = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
-		return (ch1Below == FLOOR || ch1Below == LFLOOR || ch1Below == RFLOOR);
+		return (ch1Below == point::FLOOR || ch1Below == point::LFLOOR || ch1Below == point::RFLOOR);
 
 	}
 
@@ -71,7 +82,8 @@ class mario
 	point::States findState(char currChar, char nextChar, gameConfig::eKeys key);
 
 public:
-	
+	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
+
 	void moveMario(gameConfig::eKeys &key);
 	
 	void setBoard(Board& board)
