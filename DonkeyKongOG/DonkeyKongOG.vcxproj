@@ -100,10 +100,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,20 +130,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="board.cpp" />
-    <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="point.cpp" />
-    <ClCompile Include="TheDonkyKongGame.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="mario.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TheDonkyKongGame.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
