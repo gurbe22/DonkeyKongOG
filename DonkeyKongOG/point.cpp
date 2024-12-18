@@ -4,13 +4,11 @@
 
 bool point::isOutOfLimit(int newPos_x, int newPos_y)  
 {
-	return (newPos_x >= gameConfig::GAME_WIDTH - 1 ||
-		newPos_y >= gameConfig::GAME_HEIGHT - 1 ||
+	return (newPos_x >= gameConfig::GAME_WIDTH -1 ||
+		newPos_y >= gameConfig::GAME_HEIGHT ||
 		newPos_x <= 0 ||
 		newPos_y <= 0);
 }
-
-
 
 void point::move(int newDiff_X, int newDiff_Y) 
 {
@@ -26,6 +24,15 @@ void point::move(int newDiff_X, int newDiff_Y)
 
 	diff_x = newDiff_X;
 	diff_y = newDiff_Y;
+
+	if (diff_y == 1)
+	{
+		heightFalling++;
+	}
+	else
+	{
+		heightFalling = 0;
+	}
 
 	x += diff_x;
 	y += diff_y;

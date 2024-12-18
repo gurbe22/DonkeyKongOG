@@ -25,7 +25,14 @@ void mario::moveMario(gameConfig::eKeys& key)
 		climbing(nextChar, key);
 		break;
 	case point::States::WALKING_OR_STAYING:
-		WalkingOrStaying(key);
+		if (isAlive())
+		{
+			WalkingOrStaying(key);
+		}
+		else
+		{
+			setLives();
+		}
 		break;
 	}
 }
@@ -35,7 +42,7 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	if (currChar == point::LADDER)
 	{
 		if (nextChar == point::LADDER || ((nextChar == point::LFLOOR || nextChar == point::RFLOOR || nextChar == point::FLOOR)
-			&& key == gameConfig::eKeys::UP))
+			&& key == gameConfig::eKeys::UP || key == gameConfig::eKeys::STAY))
 		{
 			return true;
 		}
@@ -148,16 +155,26 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 			 myMario.move(0, -1);
 		 }
 	 }
-	 else
+	 else if(key == gameConfig::eKeys::DOWN)
 	 {
 		 if (nextChar == point::FLOOR || nextChar == point::LFLOOR || nextChar == point::RFLOOR)
 		 {
 			 myMario.move(0, 2);
-			 key = gameConfig::eKeys::STAY;
 		 }
 		 else
 		 {
 			 myMario.move(0, 1);
 		 }
 	 }
+	 else if (key == gameConfig::eKeys::STAY)
+	 {
+		 myMario.move(0, 0);
+	 }
+	
  }
+
+ bool mario::isAlive()
+ {
+	 return (myMario.getHeightFalling() < CHARS_TO_DEATH); 
+ }
+

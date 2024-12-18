@@ -1,13 +1,9 @@
 #ifndef GAME_H
-
 #define GAME_H
 
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
 #include <windows.h> // For Sleep and gotoxy
-
-#define RUNNING true
-#define STOP_RUNNING false
 
 //#include "Board.h"
 //#include "gameConfig.h"
@@ -20,6 +16,8 @@ class game
 	static constexpr char START_GAME = '1';
 	static constexpr char INSTRUCTIONS = '8';  
 	static constexpr char EXIT_GAME = '9';  
+	static constexpr bool RUNNING = true;
+	static constexpr bool STOP_RUNNING = false; 
 	
 public:
 	// Main menu function

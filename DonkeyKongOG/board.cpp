@@ -40,7 +40,7 @@ void Board::displayPauseScreen()
 		 "Q                                                                             Q", // 12
 		 "Q         <<<<<<<<<<<<   <<<<<<<<<<<<>>>>>>>>>>>  >>>>>>>>>>>>>>>>>>>         Q", // 13
 		 "Q                                                                             Q", // 14
-		 "Q               Press ESC to continue or Y to lose and exit :(                Q", // 15
+		 "Q               Press ESC to continue or Enter to lose and exit :(            Q", // 15
 		 "Q                                                                             Q", // 16
 		 "Q    <<<<<<<<<<<  ===================================   >>>>>>>>>>>>>>>>>     Q", // 17
 		 "Q    H             H                                H                   H     Q", // 18

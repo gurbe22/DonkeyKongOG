@@ -74,45 +74,50 @@ void game::runGame()
 {
     Board b;
     mario mario;
+    while (mario.getLives() > 0)
+    {
+        displayBoard(b);
+        mario.setBoard(b);
+        int lives = mario.getLives();
+        gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
 
-    displayBoard(b);
-    mario.setBoard(b);
-
-    gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
-
-    while (RUNNING) {
-
-        if (_kbhit())
+        while (RUNNING) 
         {
-            int key = _getch();
 
-            key = std::tolower(key);
-
-            if (key == (int)gameConfig::eKeys::ESC)  // ESC key
+            if (_kbhit())
             {
-                b.displayPauseScreen();  
-                key = 0;
-                while (true)
+                int key = _getch();
+
+                key = std::tolower(key);
+
+                if (key == (int)gameConfig::eKeys::ESC)  // ESC key
                 {
-                    key = _getch();
-                    //key = std::tolower(key);
-                    if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
-                        break;
+                    b.displayPauseScreen();  
+                    key = 0;
+                    while (true)
+                    {
+                        key = _getch();
+                        //key = std::tolower(key);
+                        if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
+                            break;
+                    }
                 }
-            }
 
-            if (key == (int)gameConfig::eKeys::EXIT)
-                break;
-            else if (key == (int)gameConfig::eKeys::ESC)
-            {
-                b.reset();
-                displayBoard(b);
-            }
+                if (key == (int)gameConfig::eKeys::EXIT)
+                    break;
+                else if (key == (int)gameConfig::eKeys::ESC)
+                {
+                    b.reset();
+                    displayBoard(b);
+                }
 
-            keyPressed = (gameConfig::eKeys)key; 
+                keyPressed = (gameConfig::eKeys)key; 
             
+            }
+            mario.moveMario(keyPressed);
+
+            if (lives != mario.getLives()){break;}
         }
-        mario.moveMario(keyPressed);
     }
 }
 

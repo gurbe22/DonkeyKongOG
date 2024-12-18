@@ -12,6 +12,7 @@ class point
 	int y;
 	int diff_x;
 	int diff_y;
+	int heightFalling = 0;
 	Board* pBoard = nullptr;  
 
 public:
@@ -68,5 +69,7 @@ public:
 
 	bool isFloor(char nextChar)
 	{ return nextChar == FLOOR || nextChar == LFLOOR || nextChar == RFLOOR;	}
+
+	int getHeightFalling() const { return heightFalling; }
 };
 #endif
