@@ -105,7 +105,10 @@ void game::runGame()
                 }
 
                 if (key == (int)gameConfig::eKeys::EXIT)
+                { 
+                    mario.makeDeath();
                     break;
+                }
                 else if (key == (int)gameConfig::eKeys::ESC)
                 {
                     b.reset();

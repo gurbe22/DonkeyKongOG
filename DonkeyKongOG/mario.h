@@ -96,7 +96,6 @@ class mario
 	{
 		lives--;
 	}
-	
 
 public:
 	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
@@ -114,6 +113,11 @@ public:
 	{
 		myMario.setX(MARIO_STARTING_X);
 		myMario.setY(MARIO_STARTING_Y);
+	}
+
+	void makeDeath()
+	{
+		lives = 0;
 	}
 };
 

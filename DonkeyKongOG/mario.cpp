@@ -20,14 +20,17 @@ void mario::moveMario(gameConfig::eKeys& key)
 		break;
 	case point::States::JUMPING:
 		jump(key, nextChar);
+		myMario.setHightFalling(0);
 		break;
 	case point::States::CLIMBING:
 		climbing(nextChar, key);
+		myMario.setHightFalling(0);
 		break;
 	case point::States::WALKING_OR_STAYING:
 		if (isAlive())
 		{
 			WalkingOrStaying(key);
+			myMario.setHightFalling(0);
 		}
 		else
 		{
