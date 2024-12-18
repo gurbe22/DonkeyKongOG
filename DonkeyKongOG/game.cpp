@@ -76,7 +76,8 @@ void game::runGame()
     mario mario;
     while (mario.getLives() > 0)
     {
-        displayBoard(b);
+        mario.setMarioToStart();
+        displayBoard(b , mario);
         mario.setBoard(b);
         int lives = mario.getLives();
         gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
@@ -108,7 +109,7 @@ void game::runGame()
                 else if (key == (int)gameConfig::eKeys::ESC)
                 {
                     b.reset();
-                    displayBoard(b);
+                    displayBoard(b, mario);
                 }
 
                 keyPressed = (gameConfig::eKeys)key; 
@@ -116,7 +117,14 @@ void game::runGame()
             }
             mario.moveMario(keyPressed);
 
-            if (lives != mario.getLives()){break;}
+            if (lives != mario.getLives()){
+                //char numOfLives;
+                //numOfLives = mario.getLives() + '0';
+                //b.setChar(75, 1, numOfLives);
+                //b.print();
+                //Sleep(1000);
+                break;
+            }
         }
     }
 }
@@ -137,9 +145,12 @@ void game::displayInstructions()
 }
 
 // Function to display the board
-void game::displayBoard(Board& b)
+void game::displayBoard(Board& b, mario& mario)
 {
+    char numOfLives;
     system("cls"); // Clear the screen
     b.reset();
+    numOfLives = mario.getLives() + '0';
+    b.setChar(75, 1, numOfLives);
     b.print();
 }

@@ -31,6 +31,7 @@ void mario::moveMario(gameConfig::eKeys& key)
 		}
 		else
 		{
+			myMario.setHightFalling(0);
 			setLives();
 		}
 		break;

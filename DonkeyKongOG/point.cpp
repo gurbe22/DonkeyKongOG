@@ -29,10 +29,6 @@ void point::move(int newDiff_X, int newDiff_Y)
 	{
 		heightFalling++;
 	}
-	else
-	{
-		heightFalling = 0;
-	}
 
 	x += diff_x;
 	y += diff_y;

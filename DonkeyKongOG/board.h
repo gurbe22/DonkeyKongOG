@@ -45,6 +45,9 @@ public:
 	char getChar(int x, int y) const {
 		return currentBoard[y][x];
 	}
+	void setChar(int x, int y, char c) {
+		currentBoard[y][x] = c; 
+	}
 	void displayPauseScreen();
 };
 #endif

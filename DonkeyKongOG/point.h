@@ -71,5 +71,7 @@ public:
 	{ return nextChar == FLOOR || nextChar == LFLOOR || nextChar == RFLOOR;	}
 
 	int getHeightFalling() const { return heightFalling; }
+
+	void setHightFalling(int newHeightFalling) { heightFalling = newHeightFalling; }
 };
 #endif

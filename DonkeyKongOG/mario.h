@@ -109,6 +109,12 @@ public:
 	}
 
 	int getLives() const { return lives; }
+
+	void setMarioToStart()
+	{
+		myMario.setX(MARIO_STARTING_X);
+		myMario.setY(MARIO_STARTING_Y);
+	}
 };
 
 #endif
