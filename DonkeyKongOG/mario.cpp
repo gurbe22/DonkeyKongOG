@@ -30,41 +30,46 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 
 void mario::moveMario(gameConfig::eKeys& key)
 {
-	myMario.draw(MARIO); 
-	Sleep(100); 
-	myMario.erase();
 
 	point::States state; 
 	char currChar, nextChar;
 
 	currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); 
 	nextChar = findNextChar(currChar, key);
-	state = findMarioState(currChar, nextChar, key);   
+	state = findMarioState(currChar, nextChar, key);
 
-	switch (state)
+	if (nextChar == gameConfig::DONKEYKONG || currChar == Barrel::BARREL)
 	{
-	case point::States::FALLING:
-		myMario.move(0, 1);
-		break;
-	case point::States::JUMPING:
-		jump(key, nextChar);
-		break;
-	case point::States::CLIMBING:
-		climbing(nextChar, key);
-		myMario.setHightFalling(0);
-		break;
-	case point::States::WALKING_OR_STAYING:
-		if (isAlive())
-		{
-			WalkingOrStaying(key);
-		}
-		else
-		{
-			myMario.setHightFalling(0);
-			setLives();
-		}
-		break;
+		makeDeath();
 	}
+	else
+	{
+		switch (state)
+		{
+		case point::States::FALLING:
+			myMario.move(0, 1);
+			break;
+		case point::States::JUMPING:
+			jump(key, nextChar);
+			break;
+		case point::States::CLIMBING:
+			climbing(nextChar, key);
+			myMario.setHightFalling(0);
+			break;
+		case point::States::WALKING_OR_STAYING:
+			if (isAlive())
+			{
+				WalkingOrStaying(key);
+			}
+			else
+			{
+				myMario.setHightFalling(0);
+				setLives();
+			}
+			break;
+		}
+	}
+
 }
 
 bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)

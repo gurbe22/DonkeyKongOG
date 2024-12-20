@@ -3,6 +3,8 @@
 
 #include "point.h"
 #include <windows.h>
+#include "gameConfig.h"
+#include "barrel.h"
 
 using namespace std;
 
@@ -56,6 +58,16 @@ public:
     static constexpr char MARIO = '@'; 
 
 	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {}; 
+
+	void drawMario() const
+	{
+		myMario.draw(MARIO);
+	}
+
+	void eraseMario() const
+	{
+		myMario.erase();
+	}
 
 	void moveMario(gameConfig::eKeys &key);
 	

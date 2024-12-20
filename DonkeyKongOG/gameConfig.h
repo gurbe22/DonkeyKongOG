@@ -1,9 +1,6 @@
 #ifndef GAME_CONFIG_H
 #define GAME_CONFIG_H
 
-#define BARREL 'O'
-#define BARREL_START_X 40
-#define BARREL_START_Y 5
 
 class gameConfig
 {

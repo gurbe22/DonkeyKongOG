@@ -12,6 +12,7 @@ class Barrel
 	static constexpr int  HEIGHT_TO_EXPLODE = 8;
 	static constexpr int  BARREL_STARTING_X = 37;
 	static constexpr int  BARREL_STARTING_Y = 4;
+	
 
 	char findBarrelNextChar(char currChar, char charBelow);
 
@@ -22,9 +23,27 @@ class Barrel
 	void barrelWalking(char charBelow);
 
 public:
-	Barrel(const int xStart = BARREL_STARTING_X, const int yStart = BARREL_STARTING_Y) : barrel(xStart, yStart) {}
+
+    static constexpr char  BARREL = 'O'; 
+
+	Barrel() : barrel(BARREL_STARTING_X, BARREL_STARTING_Y) {};
 
 	void moveBarrel();
+
+	void setBoard(Board& board)
+	{
+		barrel.setBoard(board);
+	}
+
+	void drawBarrel() const
+	{
+		barrel.draw(BARREL);
+	}
+
+	void eraseBarrel() const
+	{
+		barrel.erase();
+	}
 
 };
 #endif

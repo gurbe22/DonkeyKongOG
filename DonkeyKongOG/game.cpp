@@ -81,10 +81,12 @@ void game::runGame()
         mario.setBoard(b);
         int lives = mario.getLives();
         gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
+        Barrel barrel;
+        barrel.setBoard(b);
 
         while (RUNNING) 
         {
-            //Barrel barrel(4,37);
+            
             if (_kbhit())
             {
                 int key = _getch();
@@ -118,8 +120,19 @@ void game::runGame()
                 keyPressed = (gameConfig::eKeys)key; 
             
             }
+
             mario.moveMario(keyPressed);
-			//barrel.moveBarrel();
+            mario.drawMario();
+
+            barrel.moveBarrel();
+            barrel.drawBarrel();
+
+            Sleep(100);
+
+            mario.eraseMario();
+            barrel.eraseBarrel();
+
+            
 
             if (lives != mario.getLives()){
                 break;

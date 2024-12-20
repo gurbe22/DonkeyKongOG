@@ -37,10 +37,7 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 
 void Barrel::moveBarrel()
 {
-	barrel.draw(BARREL);
-	Sleep(100);
-	barrel.erase();
-
+	
 	point::States state;
 	char currChar, nextChar, charBelow;
 
@@ -58,7 +55,11 @@ void Barrel::moveBarrel()
 		if (isExploding())
 		{
 			barrel.erase();
-			//barrel.getBoard()->setChar(barrel.getX(), barrel.getY(), point::OPEN_SPACE);
+			//barrel.draw(EXPLOSION);
+			barrel.setX(BARREL_STARTING_X);
+			barrel.setY(BARREL_STARTING_Y);
+			barrel.setHightFalling(0);
+
 		}
 		else
 		{
