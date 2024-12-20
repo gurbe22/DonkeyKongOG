@@ -29,7 +29,29 @@ void point::move(int newDiff_X, int newDiff_Y)
 	{
 		heightFalling++;
 	}
+	else
+	{
+		heightFalling = 0;
+	}
 
 	x += diff_x;
 	y += diff_y;
+}
+
+bool point::isFalling(char currChar) 
+{
+	if (currChar == OPEN_SPACE) 
+	{
+		if (isOnFloor() == false)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool point::isOnFloor()
+{
+	char ch1Below = pBoard->getChar(x, y + 1);   
+	return (ch1Below == FLOOR || ch1Below == LFLOOR || ch1Below == RFLOOR);
 }

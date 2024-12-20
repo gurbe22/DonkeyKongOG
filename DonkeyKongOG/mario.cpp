@@ -1,5 +1,33 @@
 #include "mario.h"
 
+
+char mario::findNextChar(char currChar, gameConfig::eKeys key)
+{
+	int x = myMario.getX();
+	int y = myMario.getY();
+	switch (key)
+	{
+	case gameConfig::eKeys::UP:
+		if (currChar == point::LADDER)
+		{
+			myMario.setDiffX(0);
+		}
+		return myMario.getBoard()->getChar(x + myMario.getDiffX(), y - 1);
+	case gameConfig::eKeys::DOWN:
+		if (currChar == point::LADDER)
+		{
+			myMario.setDiffX(0);
+		}
+		return myMario.getBoard()->getChar(x + myMario.getDiffX(), y + 1);
+	case gameConfig::eKeys::LEFT:
+		return myMario.getBoard()->getChar(x - 1, y);
+	case gameConfig::eKeys::RIGHT:
+		return myMario.getBoard()->getChar(x + 1, y);
+	default:
+		return currChar;
+	}
+}
+
 void mario::moveMario(gameConfig::eKeys& key)
 {
 	myMario.draw(MARIO); 
@@ -11,7 +39,7 @@ void mario::moveMario(gameConfig::eKeys& key)
 
 	currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); 
 	nextChar = findNextChar(currChar, key);
-	state = findState(currChar, nextChar, key);
+	state = findMarioState(currChar, nextChar, key);   
 
 	switch (state)
 	{
@@ -20,7 +48,6 @@ void mario::moveMario(gameConfig::eKeys& key)
 		break;
 	case point::States::JUMPING:
 		jump(key, nextChar);
-		myMario.setHightFalling(0);
 		break;
 	case point::States::CLIMBING:
 		climbing(nextChar, key);
@@ -30,7 +57,6 @@ void mario::moveMario(gameConfig::eKeys& key)
 		if (isAlive())
 		{
 			WalkingOrStaying(key);
-			myMario.setHightFalling(0);
 		}
 		else
 		{
@@ -55,7 +81,7 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	{
 		char ch2Above = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2);
 
-		if (isOnFloor() && ch2Above == point::LADDER && key == gameConfig::eKeys::DOWN)
+		if (myMario.isOnFloor() && ch2Above == point::LADDER && key == gameConfig::eKeys::DOWN)
 		{
 			return true;
 		}
@@ -63,21 +89,11 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	return false;
 }
 
-bool mario::isFalling(char currChar, char nextChar, gameConfig::eKeys key)
-{
-	if (currChar == point::OPEN_SPACE)
-	{
-		if (isOnFloor() == false)
-		{
-			return true;
-		}
-	}
-	return false;
-}
+
 
 bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if ((currChar == point::OPEN_SPACE && isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true)
+	if ((currChar == point::OPEN_SPACE && myMario.isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true)
 	{
 		jumping = true;
 		return true;
@@ -86,7 +102,7 @@ bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 		return false;
 }
 
-point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys key)
+point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eKeys key)
 {
 	if (isClimbing(currChar, nextChar, key))
 		return point::States::CLIMBING;
@@ -94,7 +110,7 @@ point::States mario::findState(char currChar, char nextChar, gameConfig::eKeys k
 	else if (isJumping(currChar, nextChar, key))
 		return point::States::JUMPING;
 			
-	else if (isFalling(currChar, nextChar, key))
+	else if (myMario.isFalling(currChar))
 		return point::States::FALLING;
 	else
 		return point::States::WALKING_OR_STAYING;

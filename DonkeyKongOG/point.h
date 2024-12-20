@@ -16,14 +16,13 @@ class point
 	Board* pBoard = nullptr;  
 
 public:
-	enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING };
+	enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING };
 
 	static constexpr char FLOOR = '=';
 	static constexpr char LFLOOR = '<';
 	static constexpr char RFLOOR = '>';
 	static constexpr char LADDER = 'H';
 	static constexpr char OPEN_SPACE = ' ';
-
 
 	point(const int xStart, const int yStart) :x(xStart), y(yStart) { diff_x = 0; diff_y = 0;}  //Ctor    
 
@@ -73,5 +72,9 @@ public:
 	int getHeightFalling() const { return heightFalling; }
 
 	void setHightFalling(int newHeightFalling) { heightFalling = newHeightFalling; }
+
+	bool isFalling(char currChar);
+
+	bool isOnFloor();
 };
 #endif

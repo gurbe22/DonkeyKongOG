@@ -8,12 +8,10 @@ using namespace std;
 
 class mario
 {
-
 	static constexpr int MARIO_STARTING_X = 1; 
 	static constexpr int MARIO_STARTING_Y = 22; 
 	static constexpr int LIVES = 3;
 	static constexpr int CHARS_TO_DEATH = 5;
-	static constexpr char MARIO = '@'; 
 	
 	point myMario;
 	
@@ -27,54 +25,10 @@ class mario
 
 	// Function to make Mario climb
 	void climbing(char nextChar, gameConfig::eKeys& key);
-	 
-	bool isOnFloor()
-	{
-		char ch1Below = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
-		return (ch1Below == point::FLOOR || ch1Below == point::LFLOOR || ch1Below == point::RFLOOR);
 
-	}
-
-	void draw(char c)
-	{
-		myMario.draw(c);
-	}
-
-	void erase()
-	{
-		myMario.erase();
-	}
-
-	char findNextChar(char currChar, gameConfig::eKeys key)
-	{
-		int x = myMario.getX();
-		int y = myMario.getY();
-		switch (key)
-		{
-		case gameConfig::eKeys::UP:
-			if (currChar == point::LADDER)
-			{
-				myMario.setDiffX(0);
-			}
-			return myMario.getBoard()->getChar(x + myMario.getDiffX(), y - 1);
-		case gameConfig::eKeys::DOWN:
-			if (currChar == point::LADDER)
-			{
-				myMario.setDiffX(0);
-			}
-			return myMario.getBoard()->getChar(x + myMario.getDiffX(), y + 1);
-		case gameConfig::eKeys::LEFT:
-			return myMario.getBoard()->getChar(x - 1, y);
-		case gameConfig::eKeys::RIGHT:
-			return myMario.getBoard()->getChar(x + 1, y);
-		default:
-			return currChar;
-		}
-	}
+	char findNextChar(char currChar, gameConfig::eKeys key);
 
 	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
-
-	bool isFalling(char currChar, char nextChar, gameConfig::eKeys key);
 
 	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
 
@@ -88,7 +42,7 @@ class mario
 			myMario.move(0, 0);
 	}
 
-	point::States findState(char currChar, char nextChar, gameConfig::eKeys key);
+	point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
 
 	bool isAlive();
 
@@ -98,7 +52,10 @@ class mario
 	}
 
 public:
-	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
+
+    static constexpr char MARIO = '@'; 
+
+	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {}; 
 
 	void moveMario(gameConfig::eKeys &key);
 	

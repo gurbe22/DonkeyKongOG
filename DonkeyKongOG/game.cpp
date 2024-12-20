@@ -84,7 +84,7 @@ void game::runGame()
 
         while (RUNNING) 
         {
-
+            //Barrel barrel(4,37);
             if (_kbhit())
             {
                 int key = _getch();
@@ -119,13 +119,9 @@ void game::runGame()
             
             }
             mario.moveMario(keyPressed);
+			//barrel.moveBarrel();
 
             if (lives != mario.getLives()){
-                //char numOfLives;
-                //numOfLives = mario.getLives() + '0';
-                //b.setChar(75, 1, numOfLives);
-                //b.print();
-                //Sleep(1000);
                 break;
             }
         }

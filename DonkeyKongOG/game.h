@@ -8,6 +8,7 @@
 //#include "Board.h"
 //#include "gameConfig.h"
 #include "mario.h"
+#include "barrel.h" 
 
 using namespace std;
 
