@@ -12,7 +12,7 @@ class mario
 {
 	static constexpr int MARIO_STARTING_X = 1; 
 	static constexpr int MARIO_STARTING_Y = 22; 
-	static constexpr int LIVES = 1;
+	static constexpr int LIVES = 3;
 	static constexpr int CHARS_TO_DEATH = 5;
 	
 	point myMario;
