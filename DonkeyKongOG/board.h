@@ -49,5 +49,7 @@ public:
 		currentBoard[y][x] = c; 
 	}
 	void displayPauseScreen();
+
+	void displayVictory();
 };
 #endif

@@ -55,6 +55,8 @@ class mario
 
 	bool MarioIsDisqualified(Barrel barrel[], int nextChar);
 
+	void victory();
+
 public:
 
 

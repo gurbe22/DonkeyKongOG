@@ -64,3 +64,11 @@ void Board::displayPauseScreen()
 	print();
 }
 
+void Board::displayVictory()
+{
+	const char* victoryBoard[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		//! 		 "
+	}
+}
+

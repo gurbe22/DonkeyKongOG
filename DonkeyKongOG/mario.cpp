@@ -70,6 +70,10 @@ void mario::moveMario(gameConfig::eKeys& key, Barrel barrel[])
 	{
 		setLives();
 	}
+	if (nextChar == gameConfig::PAULINE)
+	{
+		victory();
+	}
 }
 
 bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
@@ -241,3 +245,9 @@ point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eK
 	 
  }
 
+ void mario::victory()
+ {
+	 myMario.getBoard()->displayVictory();
+	 Sleep(5000);
+	 exit(0);
+ }
