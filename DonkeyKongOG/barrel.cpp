@@ -1,5 +1,5 @@
 #include "barrel.h"
-#include "mario.h"
+//#include "mario.h"
 
 char Barrel::findBarrelNextChar(char currChar, char charBelow)
 {
@@ -17,8 +17,8 @@ char Barrel::findBarrelNextChar(char currChar, char charBelow)
 	case point::OPEN_SPACE:
 		return barrel.getBoard()->getChar(barrel.getX(), barrel.getY() + 1);
 		break;
-	case mario::MARIO: 
-		return mario::MARIO;
+	case gameConfig::MARIO:
+		return gameConfig::MARIO;
 		break;
 	}
 }
@@ -37,7 +37,12 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 
 void Barrel::moveBarrel()
 {
-	
+	// אם העיכוב עדיין בתוקף, עדכן את מונה הפריימים והמתן
+	if (currentFrame < startDelay) {
+		currentFrame++;
+		return;
+	}
+
 	point::States state;
 	char currChar, nextChar, charBelow;
 
@@ -56,10 +61,10 @@ void Barrel::moveBarrel()
 		{
 			barrel.erase();
 			//barrel.draw(EXPLOSION);
-			barrel.setX(BARREL_STARTING_X);
-			barrel.setY(BARREL_STARTING_Y);
-			barrel.setHightFalling(0);
-
+			//barrel.setX(BARREL_STARTING_X);
+			//barrel.setY(BARREL_STARTING_Y);
+			//barrel.setHightFalling(0);
+			setExplode(true);
 		}
 		else
 		{

@@ -74,6 +74,7 @@ void game::runGame()
 {
     Board b;
     mario mario;
+	int counter = 0;
     while (mario.getLives() > 0)
     {
         mario.setMarioToStart();
@@ -81,8 +82,15 @@ void game::runGame()
         mario.setBoard(b);
         int lives = mario.getLives();
         gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
-        Barrel barrel;
-        barrel.setBoard(b);
+
+        Barrel barrels[gameConfig::NUM_OF_BARRELS];
+        int delay = 0;
+        for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+        {
+            barrels[i] = Barrel(delay);  // יצירת חבית עם עיכוב מותאם
+            barrels[i].setBoard(b);
+            delay += 30;  // עיכוב בין חבית לחבית (למשל, 30 פריימים)       
+        }
 
         while (RUNNING) 
         {
@@ -121,17 +129,30 @@ void game::runGame()
             
             }
 
-            mario.moveMario(keyPressed);
+            mario.moveMario(keyPressed, barrels);
             mario.drawMario();
+            
+            
 
-            barrel.moveBarrel();
-            barrel.drawBarrel();
+			for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+			{
+                if (barrels[i].getIsExplode())
+                {
+                    barrels[i] = Barrel(delay);
+                    barrels[i].setBoard(b);
+
+                }
+				barrels[i].moveBarrel();
+				barrels[i].drawBarrel();
+			}
 
             Sleep(100);
 
             mario.eraseMario();
-            barrel.eraseBarrel();
-
+            for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+            {
+                barrels[i].eraseBarrel();
+            }
             
 
             if (lives != mario.getLives()){

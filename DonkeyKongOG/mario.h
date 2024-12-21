@@ -5,7 +5,7 @@
 #include <windows.h>
 #include "gameConfig.h"
 #include "barrel.h"
-
+//class Barrel;
 using namespace std;
 
 class mario
@@ -53,15 +53,16 @@ class mario
 		lives--;
 	}
 
+	bool MarioIsDisqualified(Barrel barrel[], int nextChar);
+
 public:
 
-    static constexpr char MARIO = '@'; 
 
 	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {}; 
 
 	void drawMario() const
 	{
-		myMario.draw(MARIO);
+		myMario.draw(gameConfig::MARIO);
 	}
 
 	void eraseMario() const
@@ -69,7 +70,7 @@ public:
 		myMario.erase();
 	}
 
-	void moveMario(gameConfig::eKeys &key);
+	void moveMario(gameConfig::eKeys &key , Barrel barrel[]);
 	
 	void setBoard(Board& board)
 	{

@@ -28,7 +28,7 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 	}
 }
 
-void mario::moveMario(gameConfig::eKeys& key)
+void mario::moveMario(gameConfig::eKeys& key, Barrel barrel[])
 {
 
 	point::States state; 
@@ -38,11 +38,8 @@ void mario::moveMario(gameConfig::eKeys& key)
 	nextChar = findNextChar(currChar, key);
 	state = findMarioState(currChar, nextChar, key);
 
-	if (nextChar == gameConfig::DONKEYKONG || currChar == Barrel::BARREL)
-	{
-		makeDeath();
-	}
-	else
+	
+	//else
 	{
 		switch (state)
 		{
@@ -69,7 +66,10 @@ void mario::moveMario(gameConfig::eKeys& key)
 			break;
 		}
 	}
-
+	if (MarioIsDisqualified(barrel, nextChar))
+	{
+		setLives();
+	}
 }
 
 bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
@@ -201,5 +201,43 @@ point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eK
  bool mario::isAlive()
  {
 	 return (myMario.getHeightFalling() < CHARS_TO_DEATH); 
+ }
+
+ bool mario::MarioIsDisqualified(Barrel barrel[], int nextChar)
+ {
+	 for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+	 {
+		 int barrelX = barrel[i].getX();
+		 int barrelY = barrel[i].getY();
+
+		 if (abs(myMario.getX() - barrelX) <= 1 && abs(myMario.getY() - barrelY) <= 1)
+		 {
+			 return true;
+		 }
+		 if (barrel[i].getIsExplode())
+		 {
+			 // לולאה לבדיקה ברדיוס 2 סביב מיקום החבית
+			 for (int dx = -2; dx <= 2; dx++)
+			 {
+				 for (int dy = -2; dy <= 2; dy++)
+				 {
+					 // בדיקת רדיוס מרחק בין החבית למריו
+					 if (abs(dx) + abs(dy) <= 2) // תנאי רדיוס 2
+					 {
+						 if (myMario.getX() == barrelX + dx && myMario.getY() == barrelY + dy)
+						 {
+							 return true; // מריו נמצא ברדיוס של פיצוץ החבית
+						 }
+					 }
+				 }
+			 }
+		 }
+	 }
+	 if (nextChar == gameConfig::DONKEYKONG)
+	 {
+		 return true;
+	 }
+	 return false;
+	 
  }
 

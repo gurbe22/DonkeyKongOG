@@ -5,8 +5,8 @@
 #include <conio.h> // For _kbhit and _getch
 #include <windows.h> // For Sleep and gotoxy
 
-//#include "Board.h"
-//#include "gameConfig.h"
+#include "Board.h"
+#include "gameConfig.h"
 #include "mario.h"
 #include "barrel.h" 
 
