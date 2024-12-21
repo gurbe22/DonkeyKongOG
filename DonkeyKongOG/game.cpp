@@ -75,7 +75,9 @@ void game::runGame()
     Board b;
     mario mario;
 	int counter = 0;
-    while (mario.getLives() > 0)
+    bool victory =  false;
+
+    while (mario.getLives() > 0 && victory == false) 
     {
         mario.setMarioToStart();
         displayBoard(b , mario);
@@ -92,9 +94,10 @@ void game::runGame()
             delay += 30;  // עיכוב בין חבית לחבית (למשל, 30 פריימים)       
         }
 
-        while (RUNNING) 
+        
+        while (RUNNING)
         {
-            
+
             if (_kbhit())
             {
                 int key = _getch();
@@ -103,7 +106,7 @@ void game::runGame()
 
                 if (key == (int)gameConfig::eKeys::ESC)  // ESC key
                 {
-                    b.displayPauseScreen();  
+                    b.displayPauseScreen();
                     key = 0;
                     while (true)
                     {
@@ -115,7 +118,7 @@ void game::runGame()
                 }
 
                 if (key == (int)gameConfig::eKeys::EXIT)
-                { 
+                {
                     mario.makeDeath();
                     break;
                 }
@@ -125,26 +128,31 @@ void game::runGame()
                     displayBoard(b, mario);
                 }
 
-                keyPressed = (gameConfig::eKeys)key; 
-            
+                keyPressed = (gameConfig::eKeys)key;
+
             }
 
             mario.moveMario(keyPressed, barrels);
+			if(mario.isWon()){
+                b.displayVictory();
+                Sleep(5000);
+                victory = true;
+                break;
+		   }
             mario.drawMario();
-            
-            
 
-			for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
-			{
+
+            for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+            {
                 if (barrels[i].getIsExplode())
                 {
                     barrels[i] = Barrel(delay);
                     barrels[i].setBoard(b);
 
                 }
-				barrels[i].moveBarrel();
-				barrels[i].drawBarrel();
-			}
+                barrels[i].moveBarrel();
+                barrels[i].drawBarrel();
+            }
 
             Sleep(100);
 
@@ -153,12 +161,26 @@ void game::runGame()
             {
                 barrels[i].eraseBarrel();
             }
+
             
 
-            if (lives != mario.getLives()){
+            if (lives != mario.getLives()) {
+                if (mario.getLives() != 0)
+                {
+                    b.displayDisqualified();
+                    Sleep(2000);
+                }
+                
                 break;
             }
+
+           
         }
+    }
+    if (victory == false)
+    {
+        b.displayLoss();
+        Sleep(5000);
     }
 }
 
@@ -187,3 +209,5 @@ void game::displayBoard(Board& b, mario& mario)
     b.setChar(75, 1, numOfLives);
     b.print();
 }
+
+

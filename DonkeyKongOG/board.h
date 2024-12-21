@@ -18,7 +18,7 @@ class Board
 		 "Q         H      H                H     H                 H                   Q", // 6
 		 "Q         H      H                H     H                 H                   Q", // 7
 		 "Q         H      H                H     H                 H                   Q", // 8
-		 "Q         H   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                  Q", // 9
+		 "Q         H   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<            Q", // 9
 		 "Q         H   H            H                  H                  H            Q", // 10
 		 "Q         H   H            H                  H                  H            Q", // 11
 		 "Q         H   H            H                  H                  H            Q", // 12
@@ -51,5 +51,9 @@ public:
 	void displayPauseScreen();
 
 	void displayVictory();
+
+	void displayDisqualified();
+
+	void displayLoss();
 };
 #endif
