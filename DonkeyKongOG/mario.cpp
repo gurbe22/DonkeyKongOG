@@ -23,8 +23,13 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 		return myMario.getBoard()->getChar(x - 1, y);
 	case gameConfig::eKeys::RIGHT:
 		return myMario.getBoard()->getChar(x + 1, y);
+	case gameConfig::eKeys::STAY:
+		return myMario.getBoard()->getChar(x, y);
 	default:
-		return currChar;
+		int diffX, diffY;
+		diffX = myMario.getDiffX(); 
+		diffY = myMario.getDiffY();
+		return myMario.getBoard()->getChar(x + diffX, y + diffY);
 	}
 }
 
@@ -38,34 +43,32 @@ void mario::moveMario(gameConfig::eKeys& key, Barrel barrel[])
 	nextChar = findNextChar(currChar, key);
 	state = findMarioState(currChar, nextChar, key);
 
-	
-	//else
+	switch (state)
 	{
-		switch (state)
+	case point::States::FALLING:
+		myMario.move(0, 1);
+		break;
+	case point::States::JUMPING:
+		jump(key, nextChar);
+		break;
+	case point::States::CLIMBING:
+		climbing(nextChar, key);
+		myMario.setHightFalling(0);
+		break;
+	case point::States::WALKING_OR_STAYING:
+		if (isAlive())
 		{
-		case point::States::FALLING:
-			myMario.move(0, 1);
-			break;
-		case point::States::JUMPING:
-			jump(key, nextChar);
-			break;
-		case point::States::CLIMBING:
-			climbing(nextChar, key);
-			myMario.setHightFalling(0);
-			break;
-		case point::States::WALKING_OR_STAYING:
-			if (isAlive())
-			{
-				WalkingOrStaying(key);
-			}
-			else
-			{
-				myMario.setHightFalling(0);
-				setLives();
-			}
-			break;
+			WalkingOrStaying(key);
 		}
+		else
+		{
+			myMario.setHightFalling(0);
+			setLives();
+		}
+		break;
 	}
+
+
 	if (MarioIsDisqualified(barrel, nextChar))
 	{
 		setLives();
@@ -209,24 +212,24 @@ point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eK
 	 {
 		 int barrelX = barrel[i].getX();
 		 int barrelY = barrel[i].getY();
+		 int marioX = myMario.getX();
+		 int marioY = myMario.getY();
 
-		 if (abs(myMario.getX() - barrelX) <= 1 && abs(myMario.getY() - barrelY) <= 1)
+		 if (abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1)
 		 {
 			 return true;
 		 }
 		 if (barrel[i].getIsExplode())
 		 {
-			 // לולאה לבדיקה ברדיוס 2 סביב מיקום החבית
 			 for (int dx = -2; dx <= 2; dx++)
 			 {
 				 for (int dy = -2; dy <= 2; dy++)
 				 {
-					 // בדיקת רדיוס מרחק בין החבית למריו
-					 if (abs(dx) + abs(dy) <= 2) // תנאי רדיוס 2
+					 if (abs(dx) + abs(dy) <= 2) 
 					 {
-						 if (myMario.getX() == barrelX + dx && myMario.getY() == barrelY + dy)
+						 if (marioX == barrelX + dx && marioY == barrelY + dy)
 						 {
-							 return true; // מריו נמצא ברדיוס של פיצוץ החבית
+							 return true; 
 						 }
 					 }
 				 }
@@ -248,4 +251,23 @@ point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eK
 		 return true;
 	 }
 	 return false;
+ }
+
+
+ void mario::WalkingOrStaying(gameConfig::eKeys key)
+ {
+	 if (key == gameConfig::eKeys::LEFT)
+		 myMario.move(-1, 0);
+	 else if (key == gameConfig::eKeys::RIGHT)
+		 myMario.move(1, 0);
+	 else if (key == gameConfig::eKeys::STAY)
+		 myMario.move(0, 0);
+	 else
+	 {
+		 int diffX, diffY;
+		 diffX = myMario.getDiffX();
+		 diffY = myMario.getDiffY();
+		 myMario.move(diffX, diffY);
+	 }
+
  }

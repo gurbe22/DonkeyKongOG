@@ -33,7 +33,7 @@ public:
 	// Function to display the game board
 	void displayBoard(Board& b, mario& mario);
 
-	
+	bool isPause(Board& board, int& key);  
 };
 
 #endif

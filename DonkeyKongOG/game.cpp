@@ -69,76 +69,87 @@ void game::mainMenu()
     cout << "Exiting the game. Goodbye!\n";
 }
 
+bool game::isPause(Board& board, int& key)
+{
+    if (key == (int)gameConfig::eKeys::ESC)
+    {
+        board.displayPauseScreen();
+        key = 0;
+        while (true)
+        {
+            key = _getch();
+            //key = std::tolower(key);
+            if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
+                break;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 // Function to run the game
 void game::runGame() 
 {
-    Board b;
+    Board board; 
     mario mario;
-	int counter = 0;
     bool victory =  false;
 
     while (mario.getLives() > 0 && victory == false) 
     {
         mario.setMarioToStart();
-        displayBoard(b , mario);
-        mario.setBoard(b);
+        displayBoard(board , mario); 
+        mario.setBoard(board); 
+
         int lives = mario.getLives();
-        gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY; 
+
+        gameConfig::eKeys keyPressed = gameConfig::eKeys::NONE;  
 
         Barrel barrels[gameConfig::NUM_OF_BARRELS];
         int delay = 0;
         for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
         {
-            barrels[i] = Barrel(delay);  // יצירת חבית עם עיכוב מותאם
-            barrels[i].setBoard(b);
-            delay += 30;  // עיכוב בין חבית לחבית (למשל, 30 פריימים)       
+            barrels[i] = Barrel(delay); 
+            barrels[i].setBoard(board); 
+            delay += 30;       
         }
 
-        
         while (RUNNING)
         {
-
             if (_kbhit())
             {
                 int key = _getch();
 
                 key = std::tolower(key);
 
-                if (key == (int)gameConfig::eKeys::ESC)  // ESC key
+                if (isPause(board, key)) 
                 {
-                    b.displayPauseScreen();
-                    key = 0;
-                    while (true)
+                    if (key == (int)gameConfig::eKeys::EXIT)
                     {
-                        key = _getch();
-                        //key = std::tolower(key);
-                        if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
-                            break;
+                        mario.makeDeath();
+                        break;
+                    }
+                    else if (key == (int)gameConfig::eKeys::ESC)
+                    {
+                        board.reset();  
+                        displayBoard(board, mario);  
                     }
                 }
 
-                if (key == (int)gameConfig::eKeys::EXIT)
-                {
-                    mario.makeDeath();
-                    break;
-                }
-                else if (key == (int)gameConfig::eKeys::ESC)
-                {
-                    b.reset();
-                    displayBoard(b, mario);
-                }
-
                 keyPressed = (gameConfig::eKeys)key;
-
             }
 
             mario.moveMario(keyPressed, barrels);
-			if(mario.isWon()){
-                b.displayVictory();
+
+			if (mario.isWon())
+            {
+                board.displayVictory(); 
                 Sleep(5000);
                 victory = true;
                 break;
-		   }
+		    }
+
             mario.drawMario();
 
 
@@ -147,7 +158,7 @@ void game::runGame()
                 if (barrels[i].getIsExplode())
                 {
                     barrels[i] = Barrel(delay);
-                    barrels[i].setBoard(b);
+                    barrels[i].setBoard(board);  
 
                 }
                 barrels[i].moveBarrel();
@@ -167,10 +178,9 @@ void game::runGame()
             if (lives != mario.getLives()) {
                 if (mario.getLives() != 0)
                 {
-                    b.displayDisqualified();
+                    board.displayDisqualified();  
                     Sleep(2000);
                 }
-                
                 break;
             }
 
@@ -179,7 +189,7 @@ void game::runGame()
     }
     if (victory == false)
     {
-        b.displayLoss();
+        board.displayLoss();  
         Sleep(5000);
     }
 }

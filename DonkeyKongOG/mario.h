@@ -34,15 +34,7 @@ class mario
 
 	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
 
-	void WalkingOrStaying(gameConfig::eKeys key)
-	{
-		if (key == gameConfig::eKeys::LEFT)
-			myMario.move(-1, 0);
-		else if (key == gameConfig::eKeys::RIGHT)
-			myMario.move(1, 0);
-		else if (key == gameConfig::eKeys::STAY)
-			myMario.move(0, 0);
-	}
+	void WalkingOrStaying(gameConfig::eKeys key);
 
 	point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
 

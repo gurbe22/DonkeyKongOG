@@ -10,7 +10,7 @@ class Barrel
 {
 	point barrel;
 	static constexpr int  HEIGHT_TO_EXPLODE = 8;
-	static constexpr int  BARREL_STARTING_X = 37;
+	static constexpr int  BARREL_STARTING_X = 10;
 	static constexpr int  BARREL_STARTING_Y = 4;
 	int startDelay;  // זמן העיכוב לפני תחילת התנועה
 	int currentFrame; // מספר הפריימים שעברו מאז תחילת המשחק

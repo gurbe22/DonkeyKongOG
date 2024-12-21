@@ -28,6 +28,7 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 	
 	if (barrel.isFalling(currChar))
 	{
+		
 		return point::States::FALLING;
 	}
 	else
