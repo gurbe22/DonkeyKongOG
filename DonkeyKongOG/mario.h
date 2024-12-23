@@ -10,7 +10,7 @@ using namespace std;
 
 class mario
 {
-	static constexpr int MARIO_STARTING_X = 1; 
+	static constexpr int MARIO_STARTING_X = 2; 
 	static constexpr int MARIO_STARTING_Y = 22; 
 	static constexpr int LIVES = 3;
 	static constexpr int CHARS_TO_DEATH = 5;
@@ -20,7 +20,7 @@ class mario
 	int heightJumping = 0;
 	bool jumping = false;
     bool isUp = true;
-	int lives = LIVES; //ask keren
+	int lives = LIVES; 
 	
 	// Function to make Mario jump
 	void jump(gameConfig::eKeys& key ,char nextChar);

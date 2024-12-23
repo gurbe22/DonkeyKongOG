@@ -101,7 +101,8 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 
 bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if ((currChar == point::OPEN_SPACE && myMario.isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true)
+	
+	if (((currChar == point::OPEN_SPACE && myMario.isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true) && isAlive())
 	{
 		jumping = true;
 		return true;
