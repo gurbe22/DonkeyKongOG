@@ -2,7 +2,6 @@
 #define BOARD_H
 
 #include <windows.h>
-
 #include "gameConfig.h"
 
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.

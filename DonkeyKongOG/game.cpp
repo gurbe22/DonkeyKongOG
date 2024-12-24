@@ -53,22 +53,48 @@ void game::mainMenu()
         char choice = _getch();
 
         switch (choice) {
-        case START_GAME:
-            runGame();
+        case START_NEW_GAME:
+            runGame();  // Start a new game
             break;
-        case INSTRUCTIONS:
-            displayInstructions();
+        case SHOW_INSTRUCTIONS:
+            displayInstructions();  // Show game instructions
             break;
         case EXIT_GAME:
-            running = STOP_RUNNING;
+            running = STOP_RUNNING;  // Exit the game
             break;
         default:
             cout << "Invalid choice. Try again!\n";
             Sleep(1000);
         }
     }
-    system("cls"); // Clear the screen
+    system("cls"); // Clear the screen after exiting
     cout << "Exiting the game. Goodbye!\n";
+}
+
+// Function to display the instructions
+void game::displayInstructions()
+{
+    system("cls"); // Clear the screen
+    cout << "Instructions:\n";
+    cout << "Use the following keys to move Mario:\n";
+    cout << "A/a - Move Left\n";
+    cout << "D/d - Move Right\n";
+    cout << "W/w - Jump\n";
+    cout << "X/x - Move Down\n";
+    cout << "S/s - Stay\n";
+    cout << "Press any key to return to the menu...\n";
+    _getch(); // Wait for user key press to return
+}
+
+// Function to display the board
+void game::displayBoard(Board& board, mario& mario)
+{
+    char numOfLives;
+    system("cls"); // Clear the screen
+    board.reset(); // Reset the board
+    numOfLives = mario.getLives() + '0'; // Convert lives to char for display
+    board.setChar(LIVES_POS_X, LIVES_POS_Y, numOfLives); // Set number of lives on the board
+    board.print(); // Print the board
 }
 
 // Checks if the game is paused and handles pause state
@@ -76,20 +102,21 @@ bool game::isPause(Board& board, int& key)
 {
     if (key == (int)gameConfig::eKeys::ESC)
     {
-        board.displayPauseScreen();
-        key = 0;
+        board.displayPauseScreen(); // Display pause screen
+		key = 0; // Reset key
         while (true)
         {
-            key = _getch();
+            key = _getch(); // Wait for key press
             if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
-                break;
+                break; // Exit if ESC or EXIT is pressed
         }
 
         return true;
     }
-
     return false;
 }
+
+
 
 // Function to run the game
 void game::runGame()
@@ -209,7 +236,7 @@ void game::eraseBarrels(Barrel barrels[])
 {
     for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
     {
-        barrels[i].eraseBarrel();
+        barrels[i].eraseBarrel(); // Erase the barrel
     }
 }
 
@@ -218,39 +245,14 @@ void game::moveBarrels(Barrel barrels[], int delay, Board board)
 {
     for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
     {
-        if (barrels[i].getIsExplode())
+        if (barrels[i].getIsExplode()) // If the barrel has exploded, reset it
         {
             barrels[i] = Barrel(delay);
             barrels[i].setBoard(board);
 
         }
-        barrels[i].moveBarrel();
-        barrels[i].drawBarrel();
+        barrels[i].moveBarrel(); // Move the barrel
+        barrels[i].drawBarrel(); // Draw the barrel
     }
 }
 
-// Function to display the instructions
-void game::displayInstructions()
-{
-    system("cls"); // Clear the screen
-    cout << "Instructions:\n";
-    cout << "Use the following keys to move Mario:\n";
-    cout << "A/a - Move Left\n";
-    cout << "D/d - Move Right\n";
-    cout << "W/w - Jump\n";
-    cout << "X/x - Move Down\n";
-    cout << "S/s - Stay\n";
-    cout << "Press any key to return to the menu...\n";
-    _getch(); // Wait for key press
-}
-
-// Function to display the board
-void game::displayBoard(Board& b, mario& mario)
-{
-    char numOfLives;
-    system("cls"); // Clear the screen
-    b.reset();
-    numOfLives = mario.getLives() + '0';
-    b.setChar(75, 1, numOfLives);
-    b.print();
-}

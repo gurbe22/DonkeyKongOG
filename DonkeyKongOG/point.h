@@ -3,7 +3,6 @@
 
 #include "utils.h"
 #include "board.h"  
-
 #include <iostream>
 
 // The 'point' class represents a point on a game board, including its position, movement, and interactions.

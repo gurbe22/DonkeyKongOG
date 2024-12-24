@@ -4,9 +4,8 @@
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
 #include <windows.h> // For Sleep and gotoxy
-
-#include "Board.h"
 #include "gameConfig.h"
+#include "Board.h"
 #include "mario.h"
 #include "barrel.h" 
 
@@ -17,11 +16,14 @@ using namespace std;
 class game
 {
     // Constants for menu options and game states
-    static constexpr char START_GAME = '1';        // Option to start the game
-    static constexpr char INSTRUCTIONS = '8';     // Option to view instructions
+    static constexpr char START_NEW_GAME = '1';        // Option to start the game
+    static constexpr char SHOW_INSTRUCTIONS = '8';     // Option to view instructions
     static constexpr char EXIT_GAME = '9';        // Option to exit the game
     static constexpr bool RUNNING = true;         // Game is running
     static constexpr bool STOP_RUNNING = false;   // Game is stopped
+    static constexpr int LIVES_POS_X = 75;
+    static constexpr int LIVES_POS_Y = 1;
+
 
     // Moves the barrels across the board with a specified delay
     void moveBarrels(Barrel barrels[], int delay, Board board);
@@ -36,7 +38,7 @@ class game
     void displayInstructions();
 
     // Displays the game board and updates it with Mario's position
-    void displayBoard(Board& b, mario& mario);
+    void displayBoard(Board& board, mario& mario);
 
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);

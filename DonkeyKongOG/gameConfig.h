@@ -1,3 +1,6 @@
+#ifndef GAMECONFIG_H
+#define GAMECONFIG_H
+
 class gameConfig
 {
 public:
@@ -26,3 +29,4 @@ public:
     // Number of barrels in the game
     static constexpr int NUM_OF_BARRELS = 12; // Total barrels
 };
+#endif
