@@ -1,5 +1,4 @@
 #include "point.h"
-#include "board.h" 
 
 // Checks if the new position is outside the boundaries of the game board
 bool point::isOutOfLimit(int newPos_x, int newPos_y)

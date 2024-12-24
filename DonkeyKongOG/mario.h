@@ -2,7 +2,6 @@
 #define MARIO_H
 
 #include "point.h"
-#include <windows.h>
 #include "gameConfig.h"
 #include "barrel.h"
 

@@ -1,7 +1,4 @@
-#include <cstring>
-#include <iostream>
 #include "Board.h"
-#include "utils.h"
 
 // Reset the board to its original state
 void Board::reset()     
@@ -67,6 +64,7 @@ void Board::displayPauseScreen()
 	} 
 	print();
 }
+
 // Display the victory screen
 void Board::displayVictory()
 {
@@ -108,6 +106,7 @@ void Board::displayVictory()
 	}
 	print();
 }
+
 // Display the disqualified screen
 void Board::displayDisqualified()
 {

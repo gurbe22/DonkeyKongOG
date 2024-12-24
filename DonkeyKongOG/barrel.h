@@ -2,8 +2,8 @@
 #define BARREL_H
 
 #include "point.h"
-#include <windows.h>
 #include "gameConfig.h"
+
 using namespace std;
 
 // The Barrel class represents barrels in the game, which move and interact with the game world.

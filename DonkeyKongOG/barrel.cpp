@@ -1,5 +1,6 @@
 #include "barrel.h"
 
+// Determines the next character the barrel interacts with
 char Barrel::findBarrelNextChar(char currChar, char charBelow)
 {
 	switch (charBelow)
@@ -22,6 +23,7 @@ char Barrel::findBarrelNextChar(char currChar, char charBelow)
 	}
 }
 
+// Determines the current state of the barrel (e.g., falling or walking)
 point::States Barrel::findBarrelState(char currChar, char nextChar, char charBelow)
 {
 	if (barrel.isFalling(currChar))
@@ -36,6 +38,7 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 	}
 }
 
+// Moves the barrel based on its state
 void Barrel::moveBarrel()
 {
 	// Skip movement if the current frame is before the barrel's start delay
@@ -77,6 +80,7 @@ void Barrel::moveBarrel()
 	}
 }
 
+// Handles the barrel's walking logic based on the floor type
 void Barrel::barrelWalking(char charBelow)
 {
 	switch (charBelow)

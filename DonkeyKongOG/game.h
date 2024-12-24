@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
-#include <windows.h> // For Sleep and gotoxy
 #include "gameConfig.h"
 #include "Board.h"
 #include "mario.h"
@@ -21,8 +20,8 @@ class game
     static constexpr char EXIT_GAME = '9';        // Option to exit the game
     static constexpr bool RUNNING = true;         // Game is running
     static constexpr bool STOP_RUNNING = false;   // Game is stopped
-    static constexpr int LIVES_POS_X = 75;
-    static constexpr int LIVES_POS_Y = 1;
+	static constexpr int LIVES_POS_X = 75;		// Position X to display remaining lives
+	static constexpr int LIVES_POS_Y = 1; 		// Position Y to display remaining lives
 
 
     // Moves the barrels across the board with a specified delay

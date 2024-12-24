@@ -97,27 +97,6 @@ void game::displayBoard(Board& board, mario& mario)
     board.print(); // Print the board
 }
 
-// Checks if the game is paused and handles pause state
-bool game::isPause(Board& board, int& key)
-{
-    if (key == (int)gameConfig::eKeys::ESC)
-    {
-        board.displayPauseScreen(); // Display pause screen
-		key = 0; // Reset key
-        while (true)
-        {
-            key = _getch(); // Wait for key press
-            if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
-                break; // Exit if ESC or EXIT is pressed
-        }
-
-        return true;
-    }
-    return false;
-}
-
-
-
 // Function to run the game
 void game::runGame()
 {
@@ -231,6 +210,25 @@ void game::runGame()
     }
 }
 
+// Checks if the game is paused and handles pause state
+bool game::isPause(Board& board, int& key)
+{
+    if (key == (int)gameConfig::eKeys::ESC)
+    {
+        board.displayPauseScreen(); // Display pause screen
+		key = 0; // Reset key
+        while (true)
+        {
+            key = _getch(); // Wait for key press
+            if (key == (int)gameConfig::eKeys::ESC || key == (int)gameConfig::eKeys::EXIT)
+                break; // Exit if ESC or EXIT is pressed
+        }
+
+        return true;
+    }
+    return false;
+}
+
 // Erases the barrels from their positions
 void game::eraseBarrels(Barrel barrels[])
 {
@@ -255,4 +253,3 @@ void game::moveBarrels(Barrel barrels[], int delay, Board board)
         barrels[i].drawBarrel(); // Draw the barrel
     }
 }
-
