@@ -1,6 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
-
+ 
 #include "gameConfig.h"
 //#include <cstring>
 #include "utils.h"
