@@ -1,38 +1,50 @@
 #ifndef GAME_H
-
 #define GAME_H
 
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
-#include <windows.h> // For Sleep and gotoxy
-
-#define RUNNING true
-#define STOP_RUNNING false
-
-//#include "Board.h"
-//#include "gameConfig.h"
+#include "gameConfig.h"
+#include "Board.h"
 #include "mario.h"
+#include "barrel.h" 
 
 using namespace std;
 
+// The 'game' class orchestrates the gameplay, including player interactions,
+// barrel movements, and game state management.
 class game
 {
-	static constexpr char START_GAME = '1';
-	static constexpr char INSTRUCTIONS = '8';  
-	static constexpr char EXIT_GAME = '9';  
-	
+    // Constants for menu options and game states
+    static constexpr char START_NEW_GAME = '1';        // Option to start the game
+    static constexpr char SHOW_INSTRUCTIONS = '8';     // Option to view instructions
+    static constexpr char EXIT_GAME = '9';        // Option to exit the game
+    static constexpr bool RUNNING = true;         // Game is running
+    static constexpr bool STOP_RUNNING = false;   // Game is stopped
+	static constexpr int LIVES_POS_X = 75;		// Position X to display remaining lives
+	static constexpr int LIVES_POS_Y = 1; 		// Position Y to display remaining lives
+
+
+    // Moves the barrels across the board with a specified delay
+    void moveBarrels(Barrel barrels[], int delay, Board board);
+
+    // Erases the barrels from their current positions
+    void eraseBarrels(Barrel barrels[]);
+
+    // Runs the main game loop
+    void runGame();
+
+    // Displays the instructions for the game
+    void displayInstructions();
+
+    // Displays the game board and updates it with Mario's position
+    void displayBoard(Board& board, mario& mario);
+
+    // Checks if the game is paused and handles pause state
+    bool isPause(Board& board, int& key);
+
 public:
-	// Main menu function
-	void mainMenu();
-
-	// Function to run the game
-	void runGame();
-
-	// Function to display instructions
-	void displayInstructions();
-
-	// Function to display the game board
-	void displayBoard(Board& b);
+    // Displays the main menu and manages user input
+    void mainMenu();
 };
 
 #endif

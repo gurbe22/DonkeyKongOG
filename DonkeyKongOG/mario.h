@@ -2,94 +2,103 @@
 #define MARIO_H
 
 #include "point.h"
-#include <windows.h>
+#include "gameConfig.h"
+#include "barrel.h"
 
 using namespace std;
 
+// The 'mario' class manages the behavior and state of Mario in the game.
 class mario
 {
+    // Constants for Mario's starting position, lives, and death criteria
+    static constexpr int MARIO_STARTING_X = 2;
+    static constexpr int MARIO_STARTING_Y = 22;
+    static constexpr int LIVES = 3;
+    static constexpr int CHARS_TO_DEATH = 5;
 
-	static constexpr int MARIO_STARTING_X = 1; 
-	static constexpr int MARIO_STARTING_Y = 22; 
-	static constexpr int LIVES = 3;
-	static constexpr char MARIO = '@'; 
-	
-	point myMario;
-	
-	int heightJumping = 0;
-	bool jumping = false;
-    bool isUp = true;
+    point myMario; // Represents Mario as a point on the board
 
-	
-	// Function to make Mario jump
-	void jump(gameConfig::eKeys& key ,char nextChar);
+    int heightJumping = 0; // Tracks how high Mario is jumping
+    bool jumping = false; // Indicates if Mario is currently jumping
+    bool isUp = true; // Tracks the direction of Mario's jump
+    int lives = LIVES; // Current number of lives Mario has
 
-	// Function to make Mario climb
-	void climbing(char nextChar, gameConfig::eKeys& key);
-	 
-	bool isOnFloor()
-	{
-		char ch1Below = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 1);
-		return (ch1Below == point::FLOOR || ch1Below == point::LFLOOR || ch1Below == point::RFLOOR);
+    // Function to make Mario jump
+    void jump(gameConfig::eKeys& key, char nextChar);
 
-	}
+    // Function to make Mario climb
+    void climbing(char nextChar, gameConfig::eKeys& key);
 
-	void draw(char c)
-	{
-		myMario.draw(c);
-	}
+    // Determines the next character based on Mario's position and input
+    char findNextChar(char currChar, gameConfig::eKeys key);
 
-	void erase()
-	{
-		myMario.erase();
-	}
+    // Checks if Mario is in a climbing state
+    bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
 
-	char findNextChar(char currChar, gameConfig::eKeys key)
-	{
-		int x = myMario.getX();
-		int y = myMario.getY();
-		switch (key)
-		{
-		case gameConfig::eKeys::UP:
-			return myMario.getBoard()->getChar(x, y - 1);
-		case gameConfig::eKeys::DOWN:
-			return myMario.getBoard()->getChar(x, y + 1);
-		case gameConfig::eKeys::LEFT:
-			return myMario.getBoard()->getChar(x - 1, y);
-		case gameConfig::eKeys::RIGHT:
-			return myMario.getBoard()->getChar(x + 1, y);
-		default:
-			return currChar;
-		}
-	}
+    // Checks if Mario is in a jumping state
+    bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
 
-	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
+    // Handles Mario's walking or stationary behavior
+    void WalkingOrStaying(gameConfig::eKeys key);
 
-	bool isFalling(char currChar, char nextChar, gameConfig::eKeys key);
+    // Determines Mario's current state based on the environment and input
+    point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
 
-	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
+    // Checks if Mario is alive
+    bool isAlive();
 
-	void WalkingOrStaying(gameConfig::eKeys key)
-	{
-		if (key == gameConfig::eKeys::LEFT)
-			myMario.move(-1, 0);
-		else if (key == gameConfig::eKeys::RIGHT)
-			myMario.move(1, 0);
-		else if (key == gameConfig::eKeys::STAY)
-			myMario.move(0, 0);
-	}
+    // Decrements Mario's life count
+    void setLives()
+    {
+        lives--;
+    }
 
-	point::States findState(char currChar, char nextChar, gameConfig::eKeys key);
+    // Checks if Mario is disqualified due to interaction with barrels
+    bool MarioIsDisqualified(Barrel barrel[], int nextChar);
 
 public:
-	mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
+    // Constructor to initialize Mario's starting position
+    mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
 
-	void moveMario(gameConfig::eKeys &key);
-	
-	void setBoard(Board& board)
-	{
-		myMario.setBoard(board);
-	}
+    // Draws Mario on the board
+    void drawMario() const
+    {
+        myMario.draw(gameConfig::MARIO);
+    }
+
+    // Erases Mario from the board
+    void eraseMario() const
+    {
+        myMario.erase();
+    }
+
+    // Moves Mario based on the player's input and barrel interactions
+    void moveMario(gameConfig::eKeys& key, Barrel barrel[]);
+
+    // Sets the game board for Mario's reference
+    void setBoard(Board& board)
+    {
+        myMario.setBoard(board);
+    }
+
+    // Returns the number of lives Mario has left
+    int getLives() const { return lives; }
+
+    // Resets Mario to the starting position
+    void setMarioToStart()
+    {
+        myMario.setX(MARIO_STARTING_X);
+        myMario.setY(MARIO_STARTING_Y);
+    }
+
+    // Sets Mario's lives to zero (indicates death)
+    void makeDeath()
+    {
+        lives = 0;
+    }
+
+    // Checks if Mario has won the game
+    bool isWon();
 };
 
 #endif

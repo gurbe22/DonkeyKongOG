@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="barrel.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="barrel.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="mario.h" />

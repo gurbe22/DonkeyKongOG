@@ -1,9 +1,6 @@
 #include "utils.h"
 
-#include <windows.h> // for gotoxy
-#include <process.h> // for system
-#include <iostream>
-
+// Moves the cursor to the specified x, y position
 void gotoxy(int x, int y)
 {
     HANDLE hConsoleOutput;
@@ -15,6 +12,7 @@ void gotoxy(int x, int y)
     SetConsoleCursorPosition(hConsoleOutput, dwCursorPosition);
 }
 
+// Hides or shows the console cursor
 void ShowConsoleCursor(bool showFlag) {
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO     cursorInfo;
@@ -23,6 +21,7 @@ void ShowConsoleCursor(bool showFlag) {
 	SetConsoleCursorInfo(out, &cursorInfo);
 }
 
+// Clears the console screen
 void clear_screen()
 {
     system("cls");
