@@ -20,6 +20,53 @@ void Board::print() const
 	std::cout << currentBoard[gameConfig::GAME_HEIGHT - 1];
 }
 
+//
+void Board::load(const std::string& filename, int& marioStartingX, int& marioStartingY) {
+	std::ifstream screen_file(filename);
+	std::cout << screen_file.is_open() << std::endl;
+	// TODO: handle errors (all sort of...) - do not submit it like that :)
+	int curr_row = 0;
+	int curr_col = 0;
+	char c;
+	while (!screen_file.get(c).eof() && curr_row < gameConfig::GAME_HEIGHT) {
+		if (c == '\n') {
+			if (curr_col < gameConfig::GAME_WIDTH) {
+				// add spaces for missing cols
+#pragma warning(suppress : 4996) // to allow strcpy
+				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col - 1, ' ').c_str());
+			}
+			++curr_row;
+			curr_col = 0;
+			continue;
+		}
+		if (curr_col < gameConfig::GAME_WIDTH) {
+			// handle special chars
+			if (c == gameConfig::MARIO) {
+				marioStartingX = curr_col;
+				marioStartingY = curr_row;
+			}
+			else if (c == gameConfig::PAULINE) {
+				//endPos = { curr_col, curr_row };
+				;
+			}
+			originalBoard[curr_row][curr_col++] = c;
+		}
+	}
+	int last_row = (curr_row < gameConfig::GAME_HEIGHT ? curr_row : gameConfig::GAME_HEIGHT - 1);
+	// add a closing frame
+	// first line
+#pragma warning(suppress : 4996) // to allow strcpy
+	strcpy(originalBoard[0], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+	// last line
+#pragma warning(suppress : 4996) // to allow strcpy
+	strcpy(originalBoard[last_row], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+	// first col + last col
+	for (int row = 1; row < last_row; ++row) {
+		originalBoard[row][0] = gameConfig::LIMIT;
+		originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
+	}
+}
+
 // Display the pause screen
 void Board::displayPauseScreen()
 {

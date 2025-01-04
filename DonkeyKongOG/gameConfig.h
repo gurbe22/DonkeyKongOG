@@ -25,6 +25,7 @@ public:
     static constexpr char DONKEYKONG = '&'; // Donkey Kong character
     static constexpr char BARREL = 'O';     // Barrel character
     static constexpr char MARIO = '@';      // Mario character
+    static constexpr char LIMIT = 'Q';      // Limit character
 
     // Number of barrels in the game
     static constexpr int NUM_OF_BARRELS = 12; // Total barrels

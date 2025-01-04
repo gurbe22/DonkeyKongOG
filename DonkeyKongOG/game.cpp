@@ -100,113 +100,136 @@ void game::displayBoard(Board& board, mario& mario)
 // Function to run the game
 void game::runGame()
 {
-    Board board;
+    vector<std::string> fileNames;
+    Board board;  
     mario mario;
     bool victory = false;
-
-    while (mario.getLives() > 0 && victory == false)
+    getAllBoardFileNames(fileNames);
+	sort(fileNames.begin(), fileNames.end());
+    for (const auto& filename : fileNames)
     {
-        // Set Mario to his starting position at the beginning of each game
-        mario.setMarioToStart();
-
-        // Display the game board with Mario at the starting position
-        displayBoard(board, mario);
-
-        // Link Mario to the game board
-        mario.setBoard(board);
-
-        // Store the current number of lives for comparison
-        int lives = mario.getLives();
-
-        // Initialize key press state to NONE
-        gameConfig::eKeys keyPressed = gameConfig::eKeys::NONE;
-
-        // Initialize barrels with staggered delay
-        Barrel barrels[gameConfig::NUM_OF_BARRELS];
-        int delay = 0;
-        for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+        int x = 0,y = 0;
+        board.load(filename, x , y);
+        mario.setStartingX(x);
+        mario.setStartingY(y);
+        while (mario.getLives() > 0 && victory == false)
         {
-            barrels[i] = Barrel(delay);
-            barrels[i].setBoard(board);
-            delay += 30;
+            // Set Mario to his starting position at the beginning of each game
+            mario.setMarioToStart();
+
+            // Display the game board with Mario at the starting position
+            displayBoard(board, mario);
+
+            // Link Mario to the game board
+            mario.setBoard(board);
+
+            // Store the current number of lives for comparison
+            int lives = mario.getLives();
+
+            // Initialize key press state to NONE
+            gameConfig::eKeys keyPressed = gameConfig::eKeys::NONE;
+
+            // Initialize barrels with staggered delay
+            Barrel barrels[gameConfig::NUM_OF_BARRELS];
+            int delay = 0;
+            for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+            {
+                barrels[i] = Barrel(delay);
+                barrels[i].setBoard(board);
+                delay += 30;
+            }
+
+            while (RUNNING)
+            {
+                // Check for user input
+                if (_kbhit())
+                {
+                    int key = _getch();
+
+                    key = std::tolower(key);
+
+                    // Handle pause functionality
+                    if (isPause(board, key))
+                    {
+                        if (key == (int)gameConfig::eKeys::EXIT)
+                        {
+                            // End game if exit is chosen
+                            mario.makeDeath();
+                            break;
+                        }
+                        else if (key == (int)gameConfig::eKeys::ESC)
+                        {
+                            // Reset and redisplay the board on resume
+                            board.reset();
+                            displayBoard(board, mario);
+                        }
+                    }
+
+                    // Update the key pressed
+                    keyPressed = (gameConfig::eKeys)key;
+                }
+
+                // Move Mario based on the key pressed
+                mario.moveMario(keyPressed, barrels);
+
+                // Check if Mario has won the game
+                if (mario.isWon())
+                {
+                    board.displayVictory();
+                    Sleep(5000);
+                    victory = true;
+                    break;
+                }
+
+                // Draw Mario in his updated position
+                mario.drawMario();
+
+                // Move barrels and update their positions
+                moveBarrels(barrels, delay, board);
+
+                // Add a delay for smooth gameplay
+                Sleep(100);
+
+                // Erase Mario from the previous position
+                mario.eraseMario();
+
+                // Erase barrels from the previous positions
+                eraseBarrels(barrels);
+
+                // Check if Mario lost a life
+                if (lives != mario.getLives()) {
+                    if (mario.getLives() != 0)
+                    {
+                        // Display disqualification screen if a life is lost
+                        board.displayDisqualified();
+                        Sleep(2000);
+                    }
+                    break;
+                }
+
+
+            }
         }
-
-        while (RUNNING)
+        if (victory == false)
         {
-            // Check for user input
-            if (_kbhit())
-            {
-                int key = _getch();
-
-                key = std::tolower(key);
-
-                // Handle pause functionality
-                if (isPause(board, key))
-                {
-                    if (key == (int)gameConfig::eKeys::EXIT)
-                    {
-                        // End game if exit is chosen
-                        mario.makeDeath();
-                        break;
-                    }
-                    else if (key == (int)gameConfig::eKeys::ESC)
-                    {
-                        // Reset and redisplay the board on resume
-                        board.reset();
-                        displayBoard(board, mario);
-                    }
-                }
-
-                // Update the key pressed
-                keyPressed = (gameConfig::eKeys)key;
-            }
-
-            // Move Mario based on the key pressed
-            mario.moveMario(keyPressed, barrels);
-
-            // Check if Mario has won the game
-            if (mario.isWon())
-            {
-                board.displayVictory();
-                Sleep(5000);
-                victory = true;
-                break;
-            }
-
-            // Draw Mario in his updated position
-            mario.drawMario();
-
-            // Move barrels and update their positions
-            moveBarrels(barrels, delay, board);
-
-            // Add a delay for smooth gameplay
-            Sleep(100);
-
-            // Erase Mario from the previous position
-            mario.eraseMario();
-
-            // Erase barrels from the previous positions
-            eraseBarrels(barrels);
-
-            // Check if Mario lost a life
-            if (lives != mario.getLives()) {
-                if (mario.getLives() != 0)
-                {
-                    // Display disqualification screen if a life is lost
-                    board.displayDisqualified();
-                    Sleep(2000);
-                }
-                break;
-            }
-
-
+            // Display the loss screen if Mario has no more lives
+            board.displayLoss();
+            Sleep(5000);
         }
     }
-    if (victory == false)
-    {
-        // Display the loss screen if Mario has no more lives
-        board.displayLoss();
-        Sleep(5000);
+    
+}
+
+
+void game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
+    namespace fs = std::filesystem;
+    for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+        auto filename = entry.path().filename();
+        auto filenameStr = filename.string();
+        if (filenameStr.substr(0, 6) == "dkong_" && filename.extension() == ".screen") {
+            std::cout << " ^ added!!\n";
+            vec_to_fill.push_back(filenameStr);
+        }
     }
 }
 

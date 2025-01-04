@@ -31,7 +31,7 @@ public:
     static constexpr char OPEN_SPACE = ' ';
 
     // Constructor initializing the point's position and setting movement to zero
-    point(const int xStart, const int yStart) : x(xStart), y(yStart) { diff_x = 0; diff_y = 0; }
+    point(const int xStart = 0, const int yStart = 0) : x(xStart), y(yStart) { diff_x = 0; diff_y = 0; }
    
     // Moves the point by updating its velocity in x and y directions
     void move(int newDiff_X, int newDiff_Y);

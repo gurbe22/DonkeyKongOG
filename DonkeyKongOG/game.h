@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <conio.h> // For _kbhit and _getch
+#include <algorithm>
 #include "gameConfig.h"
 #include "Board.h"
 #include "mario.h"
@@ -32,6 +33,9 @@ class game
 
     // Runs the main game loop
     void runGame();
+
+    //
+    void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
 
     // Displays the instructions for the game
     void displayInstructions();

@@ -11,13 +11,13 @@ using namespace std;
 class mario
 {
     // Constants for Mario's starting position, lives, and death criteria
-    static constexpr int MARIO_STARTING_X = 2;
-    static constexpr int MARIO_STARTING_Y = 22;
+    
     static constexpr int LIVES = 3;
     static constexpr int CHARS_TO_DEATH = 5;
 
-    point myMario; // Represents Mario as a point on the board
-
+    point myMario; // Represents Mario as a point on the board 
+    int marioStartingX = 0;
+    int marioStartingY = 0;
     int heightJumping = 0; // Tracks how high Mario is jumping
     bool jumping = false; // Indicates if Mario is currently jumping
     bool isUp = true; // Tracks the direction of Mario's jump
@@ -58,7 +58,7 @@ class mario
 
 public:
     // Constructor to initialize Mario's starting position
-    mario() : myMario(MARIO_STARTING_X, MARIO_STARTING_Y) {};
+    mario() : myMario() {};
 
     // Draws Mario on the board
     void drawMario() const
@@ -87,8 +87,8 @@ public:
     // Resets Mario to the starting position
     void setMarioToStart()
     {
-        myMario.setX(MARIO_STARTING_X);
-        myMario.setY(MARIO_STARTING_Y);
+        myMario.setX(marioStartingX);
+        myMario.setY(marioStartingY);
     }
 
     // Sets Mario's lives to zero (indicates death)
@@ -99,6 +99,10 @@ public:
 
     // Checks if Mario has won the game
     bool isWon();
+
+    void setStartingX(int startingX){ marioStartingX = startingX; }
+
+    void setStartingY(int startingY){ marioStartingY = startingY; }
 };
 
 #endif
