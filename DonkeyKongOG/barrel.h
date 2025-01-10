@@ -3,7 +3,7 @@
 
 #include "point.h"
 #include "gameConfig.h"
-
+#include "Board.h"
 using namespace std;
 
 // The Barrel class represents barrels in the game, which move and interact with the game world.
@@ -12,8 +12,8 @@ class Barrel
     point barrel; // Represents the barrel's position and state
     static constexpr int HEIGHT_TO_EXPLODE = 8; // Height after which the barrel explodes
 
-    int startDelay; // Delay before the barrel starts moving
-    int currentFrame; // Tracks the current frame of the barrel's movement
+    //int startDelay; // Delay before the barrel starts moving
+    //int currentFrame; // Tracks the current frame of the barrel's movement
     bool explode = false; // Indicates whether the barrel has exploded
 
     // Determines the next character the barrel interacts with
@@ -32,8 +32,11 @@ public:
 	Barrel(); // Default constructor
 
     // Constructor to initialize the barrel with an optional delay
-    Barrel( int barrelStartingX, int barrelStartingY, int delay)
-        : barrel(barrelStartingX, barrelStartingY), startDelay(delay), currentFrame(0) {}
+    Barrel( int barrelStartingX, int barrelStartingY, Board board)
+        : barrel(barrelStartingX, barrelStartingY)
+        {
+            this->setBoard(board);
+        }
 
     // Moves the barrel based on its state
     void moveBarrel();

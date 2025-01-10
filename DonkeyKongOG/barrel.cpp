@@ -44,11 +44,7 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 // Moves the barrel based on its state
 void Barrel::moveBarrel()
 {
-	// Skip movement if the current frame is before the barrel's start delay
-	if (currentFrame < startDelay) {
-		currentFrame++;
-		return;
-	}
+	
 
 	// Variables for barrel state and surroundings
 	point::States state;

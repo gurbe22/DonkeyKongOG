@@ -21,15 +21,14 @@ class game
     static constexpr char EXIT_GAME = '9';        // Option to exit the game
     static constexpr bool RUNNING = true;         // Game is running
     static constexpr bool STOP_RUNNING = false;   // Game is stopped
-	static constexpr int LIVES_POS_X = 75;		// Position X to display remaining lives
-	static constexpr int LIVES_POS_Y = 1; 		// Position Y to display remaining lives
 
+	
 
     // Moves the barrels across the board with a specified delay
-    void moveBarrels(Barrel barrels[], int delay, Board board);
+    void moveBarrels( vector<Barrel> barrels, int delay, Board board);
 
     // Erases the barrels from their current positions
-    void eraseBarrels(Barrel barrels[]);
+    void eraseBarrels(vector <Barrel> barrels);
 
     // Runs the main game loop
     void runGame();
@@ -46,7 +45,7 @@ class game
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);
 
-    void setCharactersPos(Board board, mario mario /*, vector<Ghost> ghosts */);
+    void setCharactersPos(Board& board, mario& mario /*, vector<Ghost> ghosts */);
 
 public:
     // Displays the main menu and manages user input

@@ -13,6 +13,11 @@
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.
 class Board
 {
+    static constexpr int LIVES_INDENTATION_X = 12;
+    static constexpr int LIVES_INDENTATION_Y = 1;
+    static constexpr int INFO_WIDTH = 20;
+    static constexpr int INFO_HEIGHT = 3;
+
     // The initial state of the board (original layout)
     char originalBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
 
@@ -29,6 +34,8 @@ class Board
 
     int infoPosX;
     int infoPosY;
+
+    void addInfo(int infoPosX, int infoPosY);
 
 public:
     // Resets the board to its original state
@@ -47,8 +54,21 @@ public:
         currentBoard[y][x] = c;
     }
 
+    int getLivesPositionX() const
+    {
+        return infoPosX + LIVES_INDENTATION_X;
+    }
 
+	int getLivesPositionY() const
+	{
+        return infoPosY + LIVES_INDENTATION_Y;
+	}
 
+	void setLivesPosition(int x, int y)
+	{
+		infoPosX = x;
+		infoPosY = y;
+	}
     //
     void load(const std::string& filename);
 

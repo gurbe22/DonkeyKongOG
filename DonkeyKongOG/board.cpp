@@ -56,7 +56,7 @@ void Board::load(const std::string& filename) {
 			case gameConfig::INFO_POS:
 				infoPosX = curr_col;
 				infoPosY = curr_row;
-				originalBoard[curr_row][curr_col++] = c;
+				originalBoard[curr_row][curr_col++] = ' ';
 				break;
 			case gameConfig::GHOST:
 				ghostPos.push_back({ curr_col, curr_row });
@@ -90,6 +90,24 @@ void Board::load(const std::string& filename) {
 		originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
 		originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
 	}
+
+	addInfo(infoPosX, infoPosY);
+}
+
+void Board::addInfo(int infoPosX, int infoPosY)
+{
+	const char* info[INFO_HEIGHT] =
+	{ // !123456789!123456789!
+		"     Score: 0000    ",
+		"     Lives: 3       ",
+		"     Hammer: X      "
+	};
+
+	for (int i = 0; i < INFO_HEIGHT; i++)
+	{
+		memcpy(originalBoard[infoPosY + i] + infoPosX, info[i], INFO_WIDTH); 
+	}
+	
 }
 
 // Display the pause screen

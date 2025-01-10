@@ -93,11 +93,11 @@ void game::displayBoard(Board& board, mario& mario)
     system("cls"); // Clear the screen
     board.reset(); // Reset the board
     numOfLives = mario.getLives() + '0'; // Convert lives to char for display
-    board.setChar(LIVES_POS_X, LIVES_POS_Y, numOfLives); // Set number of lives on the board
+    board.setChar(board.getLivesPositionX(), board.getLivesPositionY(), numOfLives); // Set number of lives on the board
     board.print(); // Print the board
 }
 
-void game::setCharactersPos(Board board, mario mario /*, vector<Ghost> ghosts */)
+void game::setCharactersPos(Board& board, mario& mario /*, vector<Ghost> ghosts */)
 {
 	mario.setStartingX(board.getMarioStartingX());
 	mario.setStartingY(board.getMarioStartingY());
@@ -114,11 +114,26 @@ void game::runGame()
     getAllBoardFileNames(fileNames);
 	sort(fileNames.begin(), fileNames.end());
 
+    
+
     for (const auto& filename : fileNames)
     {
         int x = 0,y = 0;
         board.load(filename);
 		setCharactersPos(board, mario);
+
+        vector<Barrel> barrels;
+        barrels.reserve(10);
+
+        int delay = 30;
+		int currentFrame = 30;
+        int barrelsX;
+        int barrelsY = board.getDonkeyPosY();
+
+        if (board.getDonkeyPosX() <= gameConfig::GAME_WIDTH / 2)
+            barrelsX = board.getDonkeyPosX() + 1;
+        else
+            barrelsX = board.getDonkeyPosX() - 1;
 
         while (mario.getLives() > 0 && victory == false)
         {
@@ -134,25 +149,19 @@ void game::runGame()
             // Store the current number of lives for comparison
             int lives = mario.getLives();
 
-            // Initialize key press state to NONE
-            gameConfig::eKeys keyPressed = gameConfig::eKeys::NONE;
+            // Initialize key press state to STAY
+            gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY;
 
             // Initialize barrels with staggered delay
-            Barrel barrels[gameConfig::NUM_OF_BARRELS];
-            int delay = 0;
-            for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+            if (currentFrame % delay == 0)
             {
-                int donkeyKongX = board.getDonkeyPosX();
-                int donkeyKongY = board.getDonkeyPosY();
-
-                if (donkeyKongX <= gameConfig::GAME_WIDTH / 2)
-                    barrels[i] = Barrel(donkeyKongX + 1, donkeyKongY, delay);
-                else
-					barrels[i] = Barrel(donkeyKongX - 1 , donkeyKongY, delay); 
-				
-                barrels[i].setBoard(board);
-                delay += 30;
+                barrels.push_back(Barrel(barrelsX, barrelsY, board));
             }
+
+            if (barrels.size() == barrels.capacity())
+                barrels.reserve(barrels.size() * 2);
+
+            currentFrame++;
 
             while (RUNNING)
             {
@@ -266,24 +275,24 @@ bool game::isPause(Board& board, int& key)
 }
 
 // Erases the barrels from their positions
-void game::eraseBarrels(Barrel barrels[])
+void game::eraseBarrels(vector <Barrel> barrels)
 {
-    for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+    for (int i = 0; i < barrels.size(); i++)
     {
         barrels[i].eraseBarrel(); // Erase the barrel
     }
 }
 
 // Moves the barrels and handles their behaviors
-void game::moveBarrels(Barrel barrels[], int delay, Board board)
+void game::moveBarrels(vector<Barrel> barrels, int delay, Board board)
 {
-    for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
+    for (int i = 0; i < barrels.size(); i++)
     {
         if (barrels[i].getIsExplode()) // If the barrel has exploded, reset it
         {
             //barrels[i] = Barrel(delay);
             //barrels[i].setBoard(board);
-            ;
+            barrels.erase(barrels.begin() + i);
         }
         barrels[i].moveBarrel(); // Move the barrel
         barrels[i].drawBarrel(); // Draw the barrel
