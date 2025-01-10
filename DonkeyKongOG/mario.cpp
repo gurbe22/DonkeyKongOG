@@ -39,7 +39,7 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 	}
 }
 
-void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> barrels)
+void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels)
 {
 	// Variables for Mario's state and position
 	point::States state;

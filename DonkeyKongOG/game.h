@@ -25,10 +25,10 @@ class game
 	
 
     // Moves the barrels across the board with a specified delay
-    void moveBarrels( vector<Barrel> barrels, int delay, Board board);
+    void moveBarrels( vector<Barrel> &barrels, Board board);
 
     // Erases the barrels from their current positions
-    void eraseBarrels(vector <Barrel> barrels);
+    void eraseBarrels(vector <Barrel> &barrels);
 
     // Runs the main game loop
     void runGame();

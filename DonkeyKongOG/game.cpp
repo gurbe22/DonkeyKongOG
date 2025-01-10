@@ -125,15 +125,18 @@ void game::runGame()
         vector<Barrel> barrels;
         barrels.reserve(10);
 
+       
         int delay = 30;
 		int currentFrame = 30;
         int barrelsX;
         int barrelsY = board.getDonkeyPosY();
 
+		
         if (board.getDonkeyPosX() <= gameConfig::GAME_WIDTH / 2)
             barrelsX = board.getDonkeyPosX() + 1;
         else
             barrelsX = board.getDonkeyPosX() - 1;
+
 
         while (mario.getLives() > 0 && victory == false)
         {
@@ -153,13 +156,11 @@ void game::runGame()
             gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY;
 
             // Initialize barrels with staggered delay
-            if (currentFrame % delay == 0)
-            {
+            if (currentFrame % delay == 0) {
                 barrels.push_back(Barrel(barrelsX, barrelsY, board));
             }
-
-            if (barrels.size() == barrels.capacity())
-                barrels.reserve(barrels.size() * 2);
+            
+			moveBarrels(barrels, board);
 
             currentFrame++;
 
@@ -209,7 +210,7 @@ void game::runGame()
                 mario.drawMario();
 
                 // Move barrels and update their positions
-                moveBarrels(barrels, delay, board);
+                moveBarrels(barrels, board);
 
                 // Add a delay for smooth gameplay
                 Sleep(100);
@@ -275,7 +276,7 @@ bool game::isPause(Board& board, int& key)
 }
 
 // Erases the barrels from their positions
-void game::eraseBarrels(vector <Barrel> barrels)
+void game::eraseBarrels(vector <Barrel> &barrels)
 {
     for (int i = 0; i < barrels.size(); i++)
     {
@@ -284,17 +285,20 @@ void game::eraseBarrels(vector <Barrel> barrels)
 }
 
 // Moves the barrels and handles their behaviors
-void game::moveBarrels(vector<Barrel> barrels, int delay, Board board)
+void game::moveBarrels(vector<Barrel> &barrels, Board board)
 {
-    for (int i = 0; i < barrels.size(); i++)
+    for (auto it = barrels.begin(); it != barrels.end(); )
     {
-        if (barrels[i].getIsExplode()) // If the barrel has exploded, reset it
+        if (it->getIsExplode()) // אם החבית התפוצצה
         {
-            //barrels[i] = Barrel(delay);
-            //barrels[i].setBoard(board);
-            barrels.erase(barrels.begin() + i);
+            it = barrels.erase(it); // מוחקים את החבית ומעדכנים את האיטרטור
         }
-        barrels[i].moveBarrel(); // Move the barrel
-        barrels[i].drawBarrel(); // Draw the barrel
+        else
+        {
+            it->moveBarrel(); // מזיזים את החבית
+            it->drawBarrel(); // מציירים את החבית
+            ++it; // ממשיכים לאיטרטור הבא
+        }
     }
+
 }

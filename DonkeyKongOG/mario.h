@@ -73,7 +73,7 @@ public:
     }
 
     // Moves Mario based on the player's input and barrel interactions
-    void moveMario(gameConfig::eKeys& key, vector <Barrel> barrels);
+    void moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels);
 
     // Sets the game board for Mario's reference
     void setBoard(Board& board)
