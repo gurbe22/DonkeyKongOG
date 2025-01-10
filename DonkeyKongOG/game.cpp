@@ -97,6 +97,12 @@ void game::displayBoard(Board& board, mario& mario)
     board.print(); // Print the board
 }
 
+void game::setCharactersPos(Board board, mario mario /*, vector<Ghost> ghosts */)
+{
+	mario.setStartingX(board.getMarioStartingX());
+	mario.setStartingY(board.getMarioStartingY());
+	//ghosts[0].setStartingX(board.getGhostX());
+}
 // Function to run the game
 void game::runGame()
 {
@@ -104,14 +110,16 @@ void game::runGame()
     Board board;  
     mario mario;
     bool victory = false;
+
     getAllBoardFileNames(fileNames);
 	sort(fileNames.begin(), fileNames.end());
+
     for (const auto& filename : fileNames)
     {
         int x = 0,y = 0;
-        board.load(filename, x , y);
-        mario.setStartingX(x);
-        mario.setStartingY(y);
+        board.load(filename);
+		setCharactersPos(board, mario);
+
         while (mario.getLives() > 0 && victory == false)
         {
             // Set Mario to his starting position at the beginning of each game
@@ -134,7 +142,14 @@ void game::runGame()
             int delay = 0;
             for (int i = 0; i < gameConfig::NUM_OF_BARRELS; i++)
             {
-                barrels[i] = Barrel(delay);
+                int donkeyKongX = board.getDonkeyPosX();
+                int donkeyKongY = board.getDonkeyPosY();
+
+                if (donkeyKongX <= gameConfig::GAME_WIDTH / 2)
+                    barrels[i] = Barrel(donkeyKongX + 1, donkeyKongY, delay);
+                else
+					barrels[i] = Barrel(donkeyKongX - 1 , donkeyKongY, delay); 
+				
                 barrels[i].setBoard(board);
                 delay += 30;
             }
@@ -206,8 +221,6 @@ void game::runGame()
                     }
                     break;
                 }
-
-
             }
         }
         if (victory == false)
@@ -268,9 +281,9 @@ void game::moveBarrels(Barrel barrels[], int delay, Board board)
     {
         if (barrels[i].getIsExplode()) // If the barrel has exploded, reset it
         {
-            barrels[i] = Barrel(delay);
-            barrels[i].setBoard(board);
-
+            //barrels[i] = Barrel(delay);
+            //barrels[i].setBoard(board);
+            ;
         }
         barrels[i].moveBarrel(); // Move the barrel
         barrels[i].drawBarrel(); // Draw the barrel

@@ -1,5 +1,8 @@
 #include "barrel.h"
 
+
+Barrel::Barrel() {};
+
 // Determines the next character the barrel interacts with
 char Barrel::findBarrelNextChar(char currChar, char charBelow)
 {

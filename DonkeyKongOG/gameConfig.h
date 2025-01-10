@@ -26,6 +26,11 @@ public:
     static constexpr char BARREL = 'O';     // Barrel character
     static constexpr char MARIO = '@';      // Mario character
     static constexpr char LIMIT = 'Q';      // Limit character
+	static constexpr char INFO_POS = 'L';     // Indicating the legend top-left position, where Score and Remaining Live information shall be presented
+    static constexpr char GHOST = 'x';      // Ghost
+    static constexpr char HAMMER = 'p';      // Hammer
+
+
 
     // Number of barrels in the game
     static constexpr int NUM_OF_BARRELS = 12; // Total barrels

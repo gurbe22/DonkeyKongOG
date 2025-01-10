@@ -11,8 +11,7 @@ class Barrel
 {
     point barrel; // Represents the barrel's position and state
     static constexpr int HEIGHT_TO_EXPLODE = 8; // Height after which the barrel explodes
-    static constexpr int BARREL_STARTING_X = 10; // Starting X-coordinate for barrels
-    static constexpr int BARREL_STARTING_Y = 4; // Starting Y-coordinate for barrels
+
     int startDelay; // Delay before the barrel starts moving
     int currentFrame; // Tracks the current frame of the barrel's movement
     bool explode = false; // Indicates whether the barrel has exploded
@@ -30,9 +29,11 @@ class Barrel
     void barrelWalking(char charBelow);
 
 public:
+	Barrel(); // Default constructor
+
     // Constructor to initialize the barrel with an optional delay
-    Barrel(int delay = 0)
-        : barrel(BARREL_STARTING_X, BARREL_STARTING_Y), startDelay(delay), currentFrame(0) {}
+    Barrel( int barrelStartingX, int barrelStartingY, int delay)
+        : barrel(barrelStartingX, barrelStartingY), startDelay(delay), currentFrame(0) {}
 
     // Moves the barrel based on its state
     void moveBarrel();

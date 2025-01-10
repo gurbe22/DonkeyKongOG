@@ -10,7 +10,7 @@ void Board::reset()
 }
 
 // Print the board to the console
-void Board::print() const 
+void Board::print() const  
 {
 	// Loop through each row and print it
 	for (int i = 0; i < gameConfig::GAME_HEIGHT - 1; i++) {
@@ -21,7 +21,7 @@ void Board::print() const
 }
 
 //
-void Board::load(const std::string& filename, int& marioStartingX, int& marioStartingY) {
+void Board::load(const std::string& filename) {
 	std::ifstream screen_file(filename);
 	std::cout << screen_file.is_open() << std::endl;
 	// TODO: handle errors (all sort of...) - do not submit it like that :)
@@ -41,15 +41,37 @@ void Board::load(const std::string& filename, int& marioStartingX, int& marioSta
 		}
 		if (curr_col < gameConfig::GAME_WIDTH) {
 			// handle special chars
-			if (c == gameConfig::MARIO) {
+			switch (c)
+			{
+			case gameConfig::MARIO:
 				marioStartingX = curr_col;
 				marioStartingY = curr_row;
+				originalBoard[curr_row][curr_col++] = ' ';
+				break;
+			case gameConfig::DONKEYKONG: 
+				donkeyPosX = curr_col;
+				donkeyPosY = curr_row;
+				originalBoard[curr_row][curr_col++] = c;
+				break;
+			case gameConfig::INFO_POS:
+				infoPosX = curr_col;
+				infoPosY = curr_row;
+				originalBoard[curr_row][curr_col++] = c;
+				break;
+			case gameConfig::GHOST:
+				ghostPos.push_back({ curr_col, curr_row });
+				originalBoard[curr_row][curr_col++] = c;
+				break;
+			case gameConfig::HAMMER:
+				originalBoard[curr_row][curr_col++] = c;
+				break;
+			default:
+				originalBoard[curr_row][curr_col++] = c;
+				break;
 			}
-			else if (c == gameConfig::PAULINE) {
-				//endPos = { curr_col, curr_row };
-				;
-			}
-			originalBoard[curr_row][curr_col++] = c;
+			
+			
+			//originalBoard[curr_row][curr_col++] = c;
 		}
 	}
 	int last_row = (curr_row < gameConfig::GAME_HEIGHT ? curr_row : gameConfig::GAME_HEIGHT - 1);
@@ -57,13 +79,16 @@ void Board::load(const std::string& filename, int& marioStartingX, int& marioSta
 	// first line
 #pragma warning(suppress : 4996) // to allow strcpy
 	strcpy(originalBoard[0], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+	originalBoard[0][gameConfig::GAME_WIDTH] = '\0';
 	// last line
 #pragma warning(suppress : 4996) // to allow strcpy
 	strcpy(originalBoard[last_row], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+	originalBoard[last_row][gameConfig::GAME_WIDTH] = '\0';
 	// first col + last col
 	for (int row = 1; row < last_row; ++row) {
 		originalBoard[row][0] = gameConfig::LIMIT;
 		originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
+		originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
 	}
 }
 

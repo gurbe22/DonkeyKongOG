@@ -46,6 +46,8 @@ class game
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);
 
+    void setCharactersPos(Board board, mario mario /*, vector<Ghost> ghosts */);
+
 public:
     // Displays the main menu and manages user input
     void mainMenu();

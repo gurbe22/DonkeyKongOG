@@ -8,15 +8,27 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#include <utility> // For std::pair
 
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.
 class Board
 {
     // The initial state of the board (original layout)
-    char* originalBoard[gameConfig::GAME_HEIGHT];
+    char originalBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
 
     // Current state of the board (modifiable during gameplay)
     char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1]; // +1 for null terminator
+
+    int marioStartingX;
+    int marioStartingY;
+
+    int donkeyPosX;
+    int donkeyPosY;
+
+	std::vector<std::pair<int, int>> ghostPos;//ask Amir
+
+    int infoPosX;
+    int infoPosY;
 
 public:
     // Resets the board to its original state
@@ -35,10 +47,10 @@ public:
         currentBoard[y][x] = c;
     }
 
-    
+
 
     //
-    void load(const std::string& filename, int& marioStartingX, int& marioStartingY);
+    void load(const std::string& filename);
 
     //void setStartingX(int startingX) { marioStartingX = startingX; } 
 
@@ -59,6 +71,31 @@ public:
 
     // Displays a loss screen to the player
     void displayLoss();
+
+    int getDonkeyPosX() const
+    {
+        return donkeyPosX;
+    }
+
+    int getDonkeyPosY() const
+    {
+		return donkeyPosY;
+    }
+
+	int getMarioStartingX() const
+	{
+		return marioStartingX;
+	}
+
+    int getMarioStartingY() const
+    {
+		return marioStartingY;
+    }
+
+	// vector<int[2]> getGhostPos() const
+	// {
+		
+	// }
 };
 
 #endif
