@@ -94,6 +94,7 @@ void game::displayBoard(Board& board, mario& mario)
     board.reset(); // Reset the board
     numOfLives = mario.getLives() + '0'; // Convert lives to char for display
     board.setChar(board.getLivesPositionX(), board.getLivesPositionY(), numOfLives); // Set number of lives on the board
+	board.setChar(board.getLevelPositionX(), board.getLevelPositionY(), level + '0'); // Set number of lives on the board
     board.print(); // Print the board
 }
 
@@ -106,137 +107,148 @@ void game::setCharactersPos(Board& board, mario& mario /*, vector<Ghost> ghosts 
 // Function to run the game
 void game::runGame()
 {
+    system("cls"); // Clear the screen
     vector<std::string> fileNames;
     Board board;  
     mario mario;
     bool victory = false;
-
     getAllBoardFileNames(fileNames);
-	sort(fileNames.begin(), fileNames.end());
 
-    
-
-    for (const auto& filename : fileNames)
+    if(fileNames.size() == 0)
     {
-        int x = 0,y = 0;
-        board.load(filename);
-		setCharactersPos(board, mario);
+        board.displayErrorNoFiles();
+        Sleep(5000);
+    }
+    else
+    {
+        sort(fileNames.begin(), fileNames.end());
 
-        vector<Barrel> barrels;
-        barrels.reserve(10);
-
-       
-        int delay = 30;
-		int currentFrame = 30;
-        int barrelsX;
-        int barrelsY = board.getDonkeyPosY();
-
-		
-        if (board.getDonkeyPosX() <= gameConfig::GAME_WIDTH / 2)
-            barrelsX = board.getDonkeyPosX() + 1;
-        else
-            barrelsX = board.getDonkeyPosX() - 1;
-
-
-        while (mario.getLives() > 0 && victory == false)
+        for (const auto& filename : fileNames)
         {
-            // Set Mario to his starting position at the beginning of each game
-            mario.setMarioToStart();
+            level++;
+            int x = 0, y = 0;
+            victory = false;
+            board.load(filename);
+            setCharactersPos(board, mario);
+            vector<Barrel> barrels;
+            barrels.reserve(10);
 
-            // Display the game board with Mario at the starting position
-            displayBoard(board, mario);
 
-            // Link Mario to the game board
-            mario.setBoard(board);
+            int delay = 30;
+            int currentFrame = 30;
+            int barrelsX;
+            int barrelsY = board.getDonkeyPosY();
 
-            // Store the current number of lives for comparison
-            int lives = mario.getLives();
 
-            // Initialize key press state to STAY
-            gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY;
+            if (board.getDonkeyPosX() <= gameConfig::GAME_WIDTH / 2)
+                barrelsX = board.getDonkeyPosX() + 1;
+            else
+                barrelsX = board.getDonkeyPosX() - 1;
 
-            // Initialize barrels with staggered delay
-            if (currentFrame % delay == 0) {
-                barrels.push_back(Barrel(barrelsX, barrelsY, board));
-            }
-            
-			moveBarrels(barrels, board);
 
-            currentFrame++;
-
-            while (RUNNING)
+            while (mario.getLives() > 0 && victory == false)
             {
-                // Check for user input
-                if (_kbhit())
+                // Set Mario to his starting position at the beginning of each game
+                mario.setMarioToStart();
+
+                // Display the game board with Mario at the starting position
+                displayBoard(board, mario);
+
+                // Link Mario to the game board
+                mario.setBoard(board);
+
+                // Store the current number of lives for comparison
+                int lives = mario.getLives();
+
+                // Initialize key press state to STAY
+                gameConfig::eKeys keyPressed = gameConfig::eKeys::STAY;
+
+                while (RUNNING)
                 {
-                    int key = _getch();
+                    // Initialize barrels with staggered delay
+                    if (currentFrame % delay == 0) {
+                        barrels.push_back(Barrel(barrelsX, barrelsY, board));
+                    }
+                    currentFrame++;
 
-                    key = std::tolower(key);
-
-                    // Handle pause functionality
-                    if (isPause(board, key))
+                    // Check for user input
+                    if (_kbhit())
                     {
-                        if (key == (int)gameConfig::eKeys::EXIT)
+                        int key = _getch();
+
+                        key = std::tolower(key);
+
+                        // Handle pause functionality
+                        if (isPause(board, key))
                         {
-                            // End game if exit is chosen
-                            mario.makeDeath();
-                            break;
+                            if (key == (int)gameConfig::eKeys::EXIT)
+                            {
+                                // End game if exit is chosen
+                                mario.makeDeath();
+                                break;
+                            }
+                            else if (key == (int)gameConfig::eKeys::ESC)
+                            {
+                                // Reset and redisplay the board on resume
+                                board.reset();
+                                displayBoard(board, mario);
+                            }
                         }
-                        else if (key == (int)gameConfig::eKeys::ESC)
-                        {
-                            // Reset and redisplay the board on resume
-                            board.reset();
-                            displayBoard(board, mario);
-                        }
+
+                        // Update the key pressed
+                        keyPressed = (gameConfig::eKeys)key;
                     }
 
-                    // Update the key pressed
-                    keyPressed = (gameConfig::eKeys)key;
-                }
+                    // Move Mario based on the key pressed
+                    mario.moveMario(keyPressed, barrels);
 
-                // Move Mario based on the key pressed
-                mario.moveMario(keyPressed, barrels);
-
-                // Check if Mario has won the game
-                if (mario.isWon())
-                {
-                    board.displayVictory();
-                    Sleep(5000);
-                    victory = true;
-                    break;
-                }
-
-                // Draw Mario in his updated position
-                mario.drawMario();
-
-                // Move barrels and update their positions
-                moveBarrels(barrels, board);
-
-                // Add a delay for smooth gameplay
-                Sleep(100);
-
-                // Erase Mario from the previous position
-                mario.eraseMario();
-
-                // Erase barrels from the previous positions
-                eraseBarrels(barrels);
-
-                // Check if Mario lost a life
-                if (lives != mario.getLives()) {
-                    if (mario.getLives() != 0)
+                    // Check if Mario has won the game
+                    if (mario.isWon())
                     {
-                        // Display disqualification screen if a life is lost
-                        board.displayDisqualified();
-                        Sleep(2000);
+                        //board.displayVictory();
+                        //Sleep(5000);
+                        victory = true;
+                        break;
                     }
-                    break;
+
+                    // Draw Mario in his updated position
+                    mario.drawMario();
+
+                    // Move barrels and update their positions
+                    moveBarrels(barrels, board);
+
+                    // Add a delay for smooth gameplay
+                    Sleep(100);
+
+                    // Erase Mario from the previous position
+                    mario.eraseMario();
+
+                    // Erase barrels from the previous positions
+                    eraseBarrels(barrels);
+
+                    // Check if Mario lost a life
+                    if (lives != mario.getLives()) {
+                        if (mario.getLives() != 0)
+                        {
+                            // Display disqualification screen if a life is lost
+                            board.displayDisqualified();
+                            Sleep(2000);
+                        }
+                        break;
+                    }
                 }
+            }
+            if (victory == false)
+            {
+                // Display the loss screen if Mario has no more lives
+                board.displayLoss();
+                Sleep(5000);
             }
         }
-        if (victory == false)
+        if (victory)
         {
-            // Display the loss screen if Mario has no more lives
-            board.displayLoss();
+            // Display the Victory screen
+            board.displayVictory();
             Sleep(5000);
         }
     }
@@ -253,6 +265,10 @@ void game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
             std::cout << " ^ added!!\n";
             vec_to_fill.push_back(filenameStr);
         }
+    }
+    if (vec_to_fill.size() == 0)
+    {
+        cout << " ";
     }
 }
 

@@ -23,7 +23,9 @@ class Barrel
     point::States findBarrelState(char currChar, char nextChar, char charBelow);
 
     // Checks if the barrel is exploding
-    bool isExploding() { return (barrel.getHeightFalling() >= HEIGHT_TO_EXPLODE); }
+    bool isExploding() { 
+        return (barrel.getHeightFalling() >= HEIGHT_TO_EXPLODE);
+    }
 
     // Handles the barrel's walking logic based on the floor type
     void barrelWalking(char charBelow);

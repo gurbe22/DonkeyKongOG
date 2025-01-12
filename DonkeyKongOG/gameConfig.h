@@ -13,7 +13,6 @@ public:
         STAY = 's',   // Stay in the current position
         ESC = 27,     // Escape key for pause menu
         EXIT = '\r',  // Enter key for exiting
-        NONE = '0'    // No key pressed
     };
 
     // Game board dimensions
@@ -29,7 +28,12 @@ public:
 	static constexpr char INFO_POS = 'L';     // Indicating the legend top-left position, where Score and Remaining Live information shall be presented
     static constexpr char GHOST = 'x';      // Ghost
     static constexpr char HAMMER = 'p';      // Hammer
-
+    // Constants representing various types of terrain or objects on the game board
+    static constexpr char FLOOR = '=';
+    static constexpr char LFLOOR = '<';
+    static constexpr char RFLOOR = '>';
+    static constexpr char LADDER = 'H';
+    static constexpr char OPEN_SPACE = ' ';
 
 
     // Number of barrels in the game

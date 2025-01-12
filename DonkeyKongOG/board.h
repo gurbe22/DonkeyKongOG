@@ -13,8 +13,10 @@
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.
 class Board
 {
-    static constexpr int LIVES_INDENTATION_X = 12;
-    static constexpr int LIVES_INDENTATION_Y = 1;
+    static constexpr int LIVES_INDENTATION_X = 9;
+    static constexpr int LIVES_INDENTATION_Y = 2;
+    static constexpr int LEVEL_INDENTATION_Y = 0;
+    static constexpr int LEVEL_INDENTATION_X = 12;
     static constexpr int INFO_WIDTH = 20;
     static constexpr int INFO_HEIGHT = 3;
 
@@ -64,6 +66,16 @@ public:
         return infoPosY + LIVES_INDENTATION_Y;
 	}
 
+	int getLevelPositionX() const
+	{
+		return infoPosX + LEVEL_INDENTATION_X;
+	}
+
+	int getLevelPositionY() const
+	{
+		return infoPosY + LEVEL_INDENTATION_Y;
+	}
+
 	void setLivesPosition(int x, int y)
 	{
 		infoPosX = x;
@@ -85,6 +97,8 @@ public:
 
     // Displays a victory screen to the player
     void displayVictory();
+
+    void displayErrorNoFiles();
 
     // Displays a disqualified screen to the player
     void displayDisqualified();

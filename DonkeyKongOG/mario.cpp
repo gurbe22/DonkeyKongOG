@@ -9,14 +9,14 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 	switch (key)
 	{
 	case gameConfig::eKeys::UP:
-		if (currChar == point::LADDER)
+		if (currChar == gameConfig::LADDER)
 		{
 			// Reset horizontal movement when climbing a ladder
 			myMario.setDiffX(0);
 		}
 		return myMario.getBoard()->getChar(x + myMario.getDiffX(), y - 1);
 	case gameConfig::eKeys::DOWN:
-		if (currChar == point::LADDER)
+		if (currChar == gameConfig::LADDER)
 		{
 			// Reset horizontal movement when climbing a ladder
 			myMario.setDiffX(0);
@@ -89,10 +89,10 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels)
 
 bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 {
-	if (currChar == point::LADDER)
+	if (currChar == gameConfig::LADDER)
 	{
 		// Check if Mario can continue climbing
-		if (nextChar == point::LADDER || ((nextChar == point::LFLOOR || nextChar == point::RFLOOR || nextChar == point::FLOOR)
+		if (nextChar == gameConfig::LADDER || ((nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR || nextChar == gameConfig::FLOOR)
 			&& key == gameConfig::eKeys::UP || key == gameConfig::eKeys::STAY))
 		{
 			return true;
@@ -102,7 +102,7 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	{
 		// Check if Mario can start climbing downward from the floor
 		char ch2Above = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2);
-		if (myMario.isOnFloor() && ch2Above == point::LADDER && key == gameConfig::eKeys::DOWN)
+		if (myMario.isOnFloor() && ch2Above == gameConfig::LADDER && key == gameConfig::eKeys::DOWN)
 		{
 			return true;
 		}
@@ -113,7 +113,7 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 {
 	// Determine if Mario is jumping based on the environment and state
-	if (((currChar == point::OPEN_SPACE && myMario.isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true) && isAlive())
+	if (((currChar == gameConfig::OPEN_SPACE && myMario.isOnFloor() && key == gameConfig::eKeys::UP) || jumping == true) && isAlive())
 	{
 		jumping = true;
 		return true;
@@ -187,7 +187,7 @@ void mario::climbing(char nextChar, gameConfig::eKeys& key)
 	if (key == gameConfig::eKeys::UP)
 	{
 		// Move Mario upward when climbing
-		if (nextChar == point::FLOOR || nextChar == point::LFLOOR || nextChar == point::RFLOOR)
+		if (nextChar == gameConfig::FLOOR || nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR)
 		{
 			myMario.move(0, -2);
 			key = gameConfig::eKeys::STAY;
@@ -200,7 +200,7 @@ void mario::climbing(char nextChar, gameConfig::eKeys& key)
 	else if (key == gameConfig::eKeys::DOWN)
 	{
 		// Move Mario downward when climbing
-		if (nextChar == point::FLOOR || nextChar == point::LFLOOR || nextChar == point::RFLOOR)
+		if (nextChar == gameConfig::FLOOR || nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR)
 		{
 			myMario.move(0, 2);
 		}

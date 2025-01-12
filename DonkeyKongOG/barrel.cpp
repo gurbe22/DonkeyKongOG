@@ -8,16 +8,16 @@ char Barrel::findBarrelNextChar(char currChar, char charBelow)
 {
 	switch (charBelow)
 	{
-	case point::FLOOR:
+	case gameConfig::FLOOR:
 		// Get the character in the direction of barrel movement on the '=' floor
 		return barrel.getBoard()->getChar(barrel.getX() + barrel.getDiffX(), barrel.getY());
-	case point::RFLOOR:
+	case gameConfig::RFLOOR:
 		// Get the character to the right of the barrel on a '>' floor
 		return barrel.getBoard()->getChar(barrel.getX() + 1, barrel.getY());
-	case point::LFLOOR:
+	case gameConfig::LFLOOR:
 		// Get the character to the left of the barrel on a '<' floor
 		return barrel.getBoard()->getChar(barrel.getX() - 1, barrel.getY());
-	case point::OPEN_SPACE:
+	case gameConfig::OPEN_SPACE:
 		// Get the character directly below the barrel in open space
 		return barrel.getBoard()->getChar(barrel.getX(), barrel.getY() + 1);
 	case gameConfig::MARIO:
@@ -44,8 +44,6 @@ point::States Barrel::findBarrelState(char currChar, char nextChar, char charBel
 // Moves the barrel based on its state
 void Barrel::moveBarrel()
 {
-	
-
 	// Variables for barrel state and surroundings
 	point::States state;
 	char currChar, nextChar, charBelow;
@@ -82,17 +80,25 @@ void Barrel::moveBarrel()
 // Handles the barrel's walking logic based on the floor type
 void Barrel::barrelWalking(char charBelow)
 {
+	int diffX = barrel.getDiffX();
 	switch (charBelow)
 	{
-	case point::FLOOR:
+	case gameConfig::FLOOR:
 		// Move the barrel in its current horizontal direction
-		barrel.move(barrel.getDiffX(), 0);
+		if (diffX == 0)
+		{
+			setExplode(true);
+		}
+		else
+		{
+			barrel.move(diffX, 0);
+		}
 		break;
-	case point::RFLOOR:
+	case gameConfig::RFLOOR:
 		// Move the barrel to the right
 		barrel.move(1, 0);
 		break;
-	case point::LFLOOR:
+	case gameConfig::LFLOOR:
 		// Move the barrel to the left
 		barrel.move(-1, 0);
 		break;

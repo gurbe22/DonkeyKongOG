@@ -1,7 +1,7 @@
 #include "Board.h"
 
 // Reset the board to its original state
-void Board::reset()     
+void Board::reset()
 {
 	// Copy the original board layout into the current board
 	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++) {
@@ -10,7 +10,7 @@ void Board::reset()
 }
 
 // Print the board to the console
-void Board::print() const  
+void Board::print() const
 {
 	// Loop through each row and print it
 	for (int i = 0; i < gameConfig::GAME_HEIGHT - 1; i++) {
@@ -28,12 +28,16 @@ void Board::load(const std::string& filename) {
 	int curr_row = 0;
 	int curr_col = 0;
 	char c;
+	bool isGameWithLimit = false;
 	while (!screen_file.get(c).eof() && curr_row < gameConfig::GAME_HEIGHT) {
 		if (c == '\n') {
 			if (curr_col < gameConfig::GAME_WIDTH) {
 				// add spaces for missing cols
+
 #pragma warning(suppress : 4996) // to allow strcpy
 				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col - 1, ' ').c_str());
+
+
 			}
 			++curr_row;
 			curr_col = 0;
@@ -48,7 +52,7 @@ void Board::load(const std::string& filename) {
 				marioStartingY = curr_row;
 				originalBoard[curr_row][curr_col++] = ' ';
 				break;
-			case gameConfig::DONKEYKONG: 
+			case gameConfig::DONKEYKONG:
 				donkeyPosX = curr_col;
 				donkeyPosY = curr_row;
 				originalBoard[curr_row][curr_col++] = c;
@@ -65,30 +69,55 @@ void Board::load(const std::string& filename) {
 			case gameConfig::HAMMER:
 				originalBoard[curr_row][curr_col++] = c;
 				break;
+			case gameConfig::LIMIT:
+				isGameWithLimit = true;
+				if (curr_row < gameConfig::GAME_WIDTH - 1 && curr_row > 0 && curr_col < gameConfig::GAME_HEIGHT - 1 && curr_col > 0)
+				{
+					originalBoard[curr_row][curr_col++] = ' ';
+				}
+				break;
 			default:
 				originalBoard[curr_row][curr_col++] = c;
 				break;
 			}
-			
-			
-			//originalBoard[curr_row][curr_col++] = c;
 		}
 	}
 	int last_row = (curr_row < gameConfig::GAME_HEIGHT ? curr_row : gameConfig::GAME_HEIGHT - 1);
 	// add a closing frame
 	// first line
+	if (isGameWithLimit)
+	{
 #pragma warning(suppress : 4996) // to allow strcpy
-	strcpy(originalBoard[0], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
-	originalBoard[0][gameConfig::GAME_WIDTH] = '\0';
-	// last line
+		strcpy(originalBoard[0], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+		originalBoard[0][gameConfig::GAME_WIDTH] = '\0';
+		// last line
 #pragma warning(suppress : 4996) // to allow strcpy
-	strcpy(originalBoard[last_row], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
-	originalBoard[last_row][gameConfig::GAME_WIDTH] = '\0';
-	// first col + last col
-	for (int row = 1; row < last_row; ++row) {
-		originalBoard[row][0] = gameConfig::LIMIT;
-		originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
-		originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
+		strcpy(originalBoard[last_row], std::string(gameConfig::GAME_WIDTH, gameConfig::LIMIT).c_str());
+		originalBoard[last_row][gameConfig::GAME_WIDTH] = '\0';
+		// first col + last col
+
+		for (int row = 1; row < last_row; ++row) {
+			originalBoard[row][0] = gameConfig::LIMIT;
+			originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
+			originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
+		}
+		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
+		{
+			if (originalBoard[gameConfig::GAME_HEIGHT - 2][col] == ' ')
+			{
+				originalBoard[gameConfig::GAME_HEIGHT - 2][col] = '=';
+			}
+		}
+	}
+	else
+	{
+		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
+		{
+			if (originalBoard[gameConfig::GAME_HEIGHT - 1][col] == ' ')
+			{
+				originalBoard[gameConfig::GAME_HEIGHT - 1][col] = '=';
+			}
+		}
 	}
 
 	addInfo(infoPosX, infoPosY);
@@ -97,64 +126,104 @@ void Board::load(const std::string& filename) {
 void Board::addInfo(int infoPosX, int infoPosY)
 {
 	const char* info[INFO_HEIGHT] =
-	{ // !123456789!123456789!
-		"     Score: 0000    ",
-		"     Lives: 3       ",
-		"     Hammer: X      "
+	{ //!123456789!123456789!
+		"    Level: 1        ",
+		"    Score: 0000     ",
+		" Lives: 3  Hammer:X "
+
 	};
 
 	for (int i = 0; i < INFO_HEIGHT; i++)
 	{
-		memcpy(originalBoard[infoPosY + i] + infoPosX, info[i], INFO_WIDTH); 
+		memcpy(originalBoard[infoPosY + i] + infoPosX + 1, info[i], INFO_WIDTH);
 	}
-	
+
 }
 
 // Display the pause screen
 void Board::displayPauseScreen()
 {
-	const char* pauseBoard[gameConfig::GAME_HEIGHT] = 
+	const char* pauseBoard[gameConfig::GAME_HEIGHT] =
 	{
-		   //!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
-			"QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-			"Q                $                                                             Q", // 1
-			"Q              ======                                                          Q", // 2
-			"Q              H                                                               Q", // 3
-			"Q        &     H                                                               Q", // 4
-			"Q       ==>>==================================                                 Q", // 5
-			"Q                                 H                    _                       Q", // 6
-			"Q                       _ __   __ _ _   _ ___  ___  __| |                      Q", // 7
-			"Q                      | '_ \\ / _` | | | / __|/ _ \\/ _` |                      Q", // 8
-			"Q                      | |_) | (_| | |_| \\__ \\  __/ (_| |                      Q", // 9
-			"Q                      | .__/ \\__,_|\\__,_|___/\\___|\\__,_|                      Q", // 10
-			"Q                      |_|     H                                               Q", // 11
-			"Q                      >>>>>=====================  ====                        Q", // 12
-			"Q                                                   H                          Q", // 13
-			"Q           press ESC to continue or ENTER to exit and lose the game :(        Q", // 14
-			"Q                                                   H                          Q", // 15
-			"Q               =================================  ==========                  Q", // 16
-			"Q                 H                                                            Q", // 17
-			"Q                 H                                                            Q", // 18
-			"Q                 H                                                            Q", // 19
-			"Q            ============================================================      Q", // 20
-			"Q                                                                       H      Q", // 21
-			"Q                                                                       H      Q", // 22
-			"Q==============================================================================Q", // 23
-			"QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                $                                                             Q", // 1
+		 "Q              ======                                                          Q", // 2
+		 "Q              H                                                               Q", // 3
+		 "Q        &     H                                                               Q", // 4
+		 "Q       ==>>==================================                                 Q", // 5
+		 "Q                                 H                    _                       Q", // 6
+		 "Q                       _ __   __ _ _   _ ___  ___  __| |                      Q", // 7
+		 "Q                      | '_ \\ / _` | | | / __|/ _ \\/ _` |                      Q", // 8
+		 "Q                      | |_) | (_| | |_| \\__ \\  __/ (_| |                      Q", // 9
+		 "Q                      | .__/ \\__,_|\\__,_|___/\\___|\\__,_|                      Q", // 10
+		 "Q                      |_|     H                                               Q", // 11
+		 "Q                      >>>>>=====================  ====                        Q", // 12
+		 "Q                                                   H                          Q", // 13
+		 "Q           press ESC to continue or ENTER to exit and lose the game :(        Q", // 14
+		 "Q                                                   H                          Q", // 15
+		 "Q               =================================  ==========                  Q", // 16
+		 "Q                 H                                                            Q", // 17
+		 "Q                 H                                                            Q", // 18
+		 "Q                 H                                                            Q", // 19
+		 "Q            ============================================================      Q", // 20
+		 "Q                                                                       H      Q", // 21
+		 "Q                                                                       H      Q", // 22
+		 "Q==============================================================================Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"
 
 	};
 
-	
+
 	system("cls");
 
 	// Copy the pause board layout into the current board
 	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
 	{
-		memcpy(currentBoard[i], pauseBoard[i], gameConfig::GAME_WIDTH + 1); 
-	} 
+		memcpy(currentBoard[i], pauseBoard[i], gameConfig::GAME_WIDTH + 1);
+	}
 	print();
 }
+void Board::displayErrorNoFiles()
+{
+	const char* noFilesErrorBoard[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q                  No suitable files for the game to begin                     Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
 
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], noFilesErrorBoard[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
 // Display the victory screen
 void Board::displayVictory()
 {
@@ -163,7 +232,7 @@ void Board::displayVictory()
 		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
 		 "Q                                                                             Q", // 1
 		 "Q                                                                             Q", // 2
-		 "Q                                                                             Q", // 3
+		 "Q                  Well Done! You finished all the levels                     Q", // 3
 		 "Q                                                                             Q", // 4
 		 "Q                                                                             Q", // 5
 		 "Q                            _                       _                        Q", // 6

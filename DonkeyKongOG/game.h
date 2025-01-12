@@ -22,7 +22,7 @@ class game
     static constexpr bool RUNNING = true;         // Game is running
     static constexpr bool STOP_RUNNING = false;   // Game is stopped
 
-	
+	int level = 0; // The current level of the game
 
     // Moves the barrels across the board with a specified delay
     void moveBarrels( vector<Barrel> &barrels, Board board);

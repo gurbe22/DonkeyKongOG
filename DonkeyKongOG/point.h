@@ -23,12 +23,7 @@ public:
     // Enumeration representing the different states of the point's movement or action
     enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING };
 
-    // Constants representing various types of terrain or objects on the game board
-    static constexpr char FLOOR = '=';
-    static constexpr char LFLOOR = '<';
-    static constexpr char RFLOOR = '>';
-    static constexpr char LADDER = 'H';
-    static constexpr char OPEN_SPACE = ' ';
+    
 
     // Constructor initializing the point's position and setting movement to zero
     point(const int xStart = 0, const int yStart = 0) : x(xStart), y(yStart) { diff_x = 0; diff_y = 0; }
