@@ -84,14 +84,6 @@ public:
     //
     void load(const std::string& filename);
 
-    //void setStartingX(int startingX) { marioStartingX = startingX; } 
-
-    //void setStartingY(int startingY) { marioStartingY = startingY; } 
-
-    //int getStartingX() const { return marioStartingX; }
-
-    //int getStartingY() const { return marioStartingY; }
-
     // Displays a pause screen to the player
     void displayPauseScreen();
 

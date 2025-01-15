@@ -132,7 +132,9 @@ void game::runGame()
             setCharactersPos(board, mario);
             vector<Barrel> barrels;
             barrels.reserve(10);
-
+			//ghost ghost(board , 15, 15);
+            vector<ghost> ghosts;
+            ghosts.push_back(ghost(board, 16, 15));
 
             int delay = 30;
             int currentFrame = 30;
@@ -215,7 +217,10 @@ void game::runGame()
                     mario.drawMario();
 
                     // Move barrels and update their positions
-                    moveBarrels(barrels, board);
+                    moveBarrels(barrels);
+
+					ghosts[0].moveGhost();
+					ghosts[0].drawGhost();
 
                     // Add a delay for smooth gameplay
                     Sleep(100);
@@ -225,6 +230,8 @@ void game::runGame()
 
                     // Erase barrels from the previous positions
                     eraseBarrels(barrels);
+
+					ghosts[0].eraseGhost();
 
                     // Check if Mario lost a life
                     if (lives != mario.getLives()) {
@@ -301,7 +308,7 @@ void game::eraseBarrels(vector <Barrel> &barrels)
 }
 
 // Moves the barrels and handles their behaviors
-void game::moveBarrels(vector<Barrel> &barrels, Board board)
+void game::moveBarrels(vector<Barrel> &barrels )
 {
     for (auto it = barrels.begin(); it != barrels.end(); )
     {

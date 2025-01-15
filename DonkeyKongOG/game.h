@@ -8,7 +8,7 @@
 #include "Board.h"
 #include "mario.h"
 #include "barrel.h" 
-
+#include "ghost.h"
 using namespace std;
 
 // The 'game' class orchestrates the gameplay, including player interactions,
@@ -25,7 +25,7 @@ class game
 	int level = 0; // The current level of the game
 
     // Moves the barrels across the board with a specified delay
-    void moveBarrels( vector<Barrel> &barrels, Board board);
+    void moveBarrels( vector<Barrel> &barrels);
 
     // Erases the barrels from their current positions
     void eraseBarrels(vector <Barrel> &barrels);

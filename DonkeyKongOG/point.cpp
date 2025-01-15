@@ -47,7 +47,7 @@ void point::move(int newDiff_X, int newDiff_Y)
 bool point::isFalling(char currChar)
 {
     // If the current character represents open space
-    if (currChar == OPEN_SPACE)
+    if (currChar == gameConfig::OPEN_SPACE)
     {
         // Check if the point is not standing on a floor
         if (isOnFloor() == false)
@@ -65,7 +65,7 @@ bool point::isOnFloor()
     char ch1Below = pBoard->getChar(x, y + 1);
 
     // Check if the character below represents any type of floor
-    return (ch1Below == FLOOR ||
-        ch1Below == LFLOOR ||
-        ch1Below == RFLOOR);
+    return (ch1Below == gameConfig::FLOOR ||
+        ch1Below == gameConfig::LFLOOR ||
+        ch1Below == gameConfig::RFLOOR);
 }

@@ -2,6 +2,8 @@
 #include "point.h"
 #include "gameConfig.h"
 #include "Board.h"
+#include <cstdlib> // For rand()
+
 class ghost
 {
 	enum class directions {
@@ -15,13 +17,15 @@ class ghost
 	{
 		direction == directions::RIGHT ? direction = directions::LEFT : direction = directions::RIGHT;
 	}
+	bool isWithinBounds(int x, int y) const;
+	bool isMovableTile(char tile) const;
+
 public:
 	ghost() : myGhost() {};
-	ghost(int ghostStartingX, int ghostStartingY, Board board, directions direction)
+	ghost( Board board,int ghostStartingX, int ghostStartingY)
 		: myGhost(ghostStartingX, ghostStartingY)
 	{
 		this->setBoard(board);
-		this->direction = direction;
 	}
 
 	void moveGhost();
@@ -40,6 +44,14 @@ public:
 	int getY() const
 	{
 		return myGhost.getY();
+	}
+	void drawGhost() const
+	{
+		myGhost.draw(gameConfig::GHOST);
+	}
+	void eraseGhost() const
+	{
+		myGhost.erase();
 	}
 };
 

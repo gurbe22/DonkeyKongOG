@@ -35,7 +35,7 @@ void Board::load(const std::string& filename) {
 				// add spaces for missing cols
 
 #pragma warning(suppress : 4996) // to allow strcpy
-				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col - 1, ' ').c_str());
+				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col  - 1 , gameConfig::OPEN_SPACE).c_str());
 
 
 			}
@@ -50,7 +50,7 @@ void Board::load(const std::string& filename) {
 			case gameConfig::MARIO:
 				marioStartingX = curr_col;
 				marioStartingY = curr_row;
-				originalBoard[curr_row][curr_col++] = ' ';
+				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 				break;
 			case gameConfig::DONKEYKONG:
 				donkeyPosX = curr_col;
@@ -60,7 +60,7 @@ void Board::load(const std::string& filename) {
 			case gameConfig::INFO_POS:
 				infoPosX = curr_col;
 				infoPosY = curr_row;
-				originalBoard[curr_row][curr_col++] = ' ';
+				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 				break;
 			case gameConfig::GHOST:
 				ghostPos.push_back({ curr_col, curr_row });
@@ -73,7 +73,7 @@ void Board::load(const std::string& filename) {
 				isGameWithLimit = true;
 				if (curr_row < gameConfig::GAME_WIDTH - 1 && curr_row > 0 && curr_col < gameConfig::GAME_HEIGHT - 1 && curr_col > 0)
 				{
-					originalBoard[curr_row][curr_col++] = ' ';
+					originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 				}
 				break;
 			default:
@@ -103,19 +103,22 @@ void Board::load(const std::string& filename) {
 		}
 		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
 		{
-			if (originalBoard[gameConfig::GAME_HEIGHT - 2][col] == ' ')
+			if (originalBoard[gameConfig::GAME_HEIGHT - 2][col] == gameConfig::OPEN_SPACE)
 			{
-				originalBoard[gameConfig::GAME_HEIGHT - 2][col] = '=';
+				originalBoard[gameConfig::GAME_HEIGHT - 2][col] = gameConfig::FLOOR;
 			}
 		}
 	}
 	else
 	{
+		for (int row = 0; row < gameConfig::GAME_HEIGHT; ++row) {
+			originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
+		}
 		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
 		{
-			if (originalBoard[gameConfig::GAME_HEIGHT - 1][col] == ' ')
+			if (originalBoard[gameConfig::GAME_HEIGHT - 1][col] == gameConfig::OPEN_SPACE)
 			{
-				originalBoard[gameConfig::GAME_HEIGHT - 1][col] = '=';
+				originalBoard[gameConfig::GAME_HEIGHT - 1][col] = gameConfig::FLOOR;
 			}
 		}
 	}
