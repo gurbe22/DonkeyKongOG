@@ -19,16 +19,17 @@ class ghost
 	}
 	bool isWithinBounds(int x, int y) const;
 	bool isMovableTile(char tile) const;
+	void preventCollision(vector<ghost>& ghosts);
 
 public:
 	ghost() : myGhost() {};
-	ghost( Board board,int ghostStartingX, int ghostStartingY)
+	ghost( Board &board,int ghostStartingX, int ghostStartingY)
 		: myGhost(ghostStartingX, ghostStartingY)
 	{
 		this->setBoard(board);
 	}
 
-	void moveGhost();
+	void moveGhost(vector<ghost>& ghosts);
 	void setBoard(Board& board)
 	{
 		myGhost.setBoard(board);

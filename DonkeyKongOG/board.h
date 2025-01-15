@@ -32,7 +32,7 @@ class Board
     int donkeyPosX;
     int donkeyPosY;
 
-	std::vector<std::pair<int, int>> ghostPos;//ask Amir
+	std::vector<std::pair<int, int>> ghostPos;
 
     int infoPosX;
     int infoPosY;
@@ -118,10 +118,10 @@ public:
 		return marioStartingY;
     }
 
-	// vector<int[2]> getGhostPos() const
-	// {
-		
-	// }
+	std::vector<std::pair<int, int>>& getGhostPos()
+    {
+        return ghostPos;
+    }
 };
 
 #endif

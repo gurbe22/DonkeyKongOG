@@ -98,12 +98,23 @@ void game::displayBoard(Board& board, mario& mario)
     board.print(); // Print the board
 }
 
-void game::setCharactersPos(Board& board, mario& mario /*, vector<Ghost> ghosts */)
+void game::setMarioPos(Board& board, mario& mario)
 {
 	mario.setStartingX(board.getMarioStartingX());
 	mario.setStartingY(board.getMarioStartingY());
-	//ghosts[0].setStartingX(board.getGhostX());
 }
+
+// Function to create all ghosts
+void game::createAllGhosts(vector<ghost>& ghosts, Board board)
+{
+    std::vector<std::pair<int, int>> ghostPos = board.getGhostPos();
+    int size = ghostPos.size();
+	for (int i = 0; i < size; i++)
+	{
+		ghosts.push_back(ghost(board, ghostPos[i].first, ghostPos[i].second));
+	}
+}
+
 // Function to run the game
 void game::runGame()
 {
@@ -126,15 +137,19 @@ void game::runGame()
         for (const auto& filename : fileNames)
         {
             level++;
+
             int x = 0, y = 0;
+
             victory = false;
+
             board.load(filename);
-            setCharactersPos(board, mario);
+
+            setMarioPos(board, mario);
+
+			vector<ghost> ghosts;
             vector<Barrel> barrels;
+
             barrels.reserve(10);
-			//ghost ghost(board , 15, 15);
-            vector<ghost> ghosts;
-            ghosts.push_back(ghost(board, 16, 15));
 
             int delay = 30;
             int currentFrame = 30;
@@ -150,11 +165,15 @@ void game::runGame()
 
             while (mario.getLives() > 0 && victory == false)
             {
+
                 // Set Mario to his starting position at the beginning of each game
                 mario.setMarioToStart();
 
                 // Display the game board with Mario at the starting position
                 displayBoard(board, mario);
+
+				// Create all ghosts
+                createAllGhosts(ghosts ,board);
 
                 // Link Mario to the game board
                 mario.setBoard(board);
@@ -202,7 +221,7 @@ void game::runGame()
                     }
 
                     // Move Mario based on the key pressed
-                    mario.moveMario(keyPressed, barrels);
+                    mario.moveMario(keyPressed, barrels, ghosts);
 
                     // Check if Mario has won the game
                     if (mario.isWon())
@@ -219,8 +238,7 @@ void game::runGame()
                     // Move barrels and update their positions
                     moveBarrels(barrels);
 
-					ghosts[0].moveGhost();
-					ghosts[0].drawGhost();
+					moveGhosts(ghosts);
 
                     // Add a delay for smooth gameplay
                     Sleep(100);
@@ -231,7 +249,7 @@ void game::runGame()
                     // Erase barrels from the previous positions
                     eraseBarrels(barrels);
 
-					ghosts[0].eraseGhost();
+					eraseGhosts(ghosts);
 
                     // Check if Mario lost a life
                     if (lives != mario.getLives()) {
@@ -262,6 +280,23 @@ void game::runGame()
     
 }
 
+void game::moveGhosts(vector<ghost>& ghosts)
+{
+    for (auto it = ghosts.begin(); it != ghosts.end(); )
+    {
+         it->moveGhost(ghosts); // מזיזים את הרוח
+         it->drawGhost(); // מציירים את הרוח
+         ++it; // ממשיכים לאיטרטור הבא
+    }
+}
+
+void game::eraseGhosts(vector<ghost>& ghosts)
+{
+    for (int i = 0; i < ghosts.size(); i++)
+    {
+        ghosts[i].eraseGhost(); // Erase the ghost
+    }
+}
 
 void game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
     namespace fs = std::filesystem;

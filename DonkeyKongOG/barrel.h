@@ -34,7 +34,7 @@ public:
 	Barrel(); // Default constructor
 
     // Constructor to initialize the barrel with an optional delay
-    Barrel( int barrelStartingX, int barrelStartingY, Board board)
+    Barrel( int barrelStartingX, int barrelStartingY, Board& board)
         : barrel(barrelStartingX, barrelStartingY)
         {
             this->setBoard(board);

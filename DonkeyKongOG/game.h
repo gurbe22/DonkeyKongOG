@@ -45,7 +45,13 @@ class game
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);
 
-    void setCharactersPos(Board& board, mario& mario /*, vector<Ghost> ghosts */);
+    void setMarioPos(Board& board, mario& mario);
+
+    void createAllGhosts(vector<ghost>& ghosts, Board board);
+
+    void moveGhosts(vector<ghost>& ghosts);
+
+	void eraseGhosts(vector<ghost>& ghosts);
 
 public:
     // Displays the main menu and manages user input

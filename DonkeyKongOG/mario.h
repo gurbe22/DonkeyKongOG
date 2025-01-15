@@ -4,7 +4,7 @@
 #include "point.h"
 #include "gameConfig.h"
 #include "barrel.h"
-
+#include "ghost.h"
 using namespace std;
 
 // The 'mario' class manages the behavior and state of Mario in the game.
@@ -54,7 +54,7 @@ class mario
     }
 
     // Checks if Mario is disqualified due to interaction with barrels
-    bool MarioIsDisqualified(vector <Barrel> barrels, int nextChar);
+    bool MarioIsDisqualified(vector <Barrel> barrels, vector <ghost> ghosts, int nextChar);
 
 public:
     // Constructor to initialize Mario's starting position
@@ -73,7 +73,7 @@ public:
     }
 
     // Moves Mario based on the player's input and barrel interactions
-    void moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels);
+    void moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <ghost> ghosts);
 
     // Sets the game board for Mario's reference
     void setBoard(Board& board)

@@ -39,7 +39,7 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 	}
 }
 
-void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels)
+void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <ghost> ghosts)
 {
 	// Variables for Mario's state and position
 	point::States state;
@@ -81,7 +81,7 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels)
 	}
 
 	// Check if Mario is disqualified by barrels or other conditions
-	if (MarioIsDisqualified(barrels, nextChar)) 
+	if (MarioIsDisqualified(barrels, ghosts, nextChar))
 	{
 		setLives();
 	}
@@ -222,15 +222,16 @@ bool mario::isAlive()
 	return (myMario.getHeightFalling() < CHARS_TO_DEATH);
 }
 
-bool mario::MarioIsDisqualified(vector <Barrel> barrels, int nextChar)
+bool mario::MarioIsDisqualified(vector <Barrel> barrels, vector <ghost> ghosts, int nextChar)
 {
+	int marioX = myMario.getX();
+	int marioY = myMario.getY();
 	// Check for collision or proximity with barrels
 	for (int i = 0; i < barrels.size(); i++)
 	{
 		int barrelX = barrels[i].getX();
 		int barrelY = barrels[i].getY();
-		int marioX = myMario.getX();
-		int marioY = myMario.getY();
+		
 
 		if (abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1)
 		{
@@ -254,6 +255,18 @@ bool mario::MarioIsDisqualified(vector <Barrel> barrels, int nextChar)
 			}
 		}
 	}
+
+	for (int i = 0; i < ghosts.size(); i++)
+	{
+		int ghostX = ghosts[i].getX();
+		int ghostY = ghosts[i].getY();
+
+		if (abs(marioX - ghostX) < 1 && abs(marioY - ghostY) < 1)
+		{
+			return true;
+		}
+	}
+
 	// Check if Mario interacts with Donkey Kong
 	if (nextChar == gameConfig::DONKEYKONG)
 	{

@@ -64,7 +64,7 @@ void Board::load(const std::string& filename) {
 				break;
 			case gameConfig::GHOST:
 				ghostPos.push_back({ curr_col, curr_row });
-				originalBoard[curr_row][curr_col++] = c;
+				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 				break;
 			case gameConfig::HAMMER:
 				originalBoard[curr_row][curr_col++] = c;
