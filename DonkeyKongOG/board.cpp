@@ -20,22 +20,24 @@ void Board::print() const
 	std::cout << currentBoard[gameConfig::GAME_HEIGHT - 1];
 }
 
-//
+
 void Board::load(const std::string& filename) {
 	std::ifstream screen_file(filename);
 	std::cout << screen_file.is_open() << std::endl;
-	// TODO: handle errors (all sort of...) - do not submit it like that :)
 	int curr_row = 0;
 	int curr_col = 0;
 	char c;
 	bool isGameWithLimit = false;
+	bool isPaulineFound = false;
+	bool isDonkeyKongFound = false;
+	bool isHammerFound = false;
+
 	while (!screen_file.get(c).eof() && curr_row < gameConfig::GAME_HEIGHT) {
 		if (c == '\n') {
 			if (curr_col < gameConfig::GAME_WIDTH) {
 				// add spaces for missing cols
-
 #pragma warning(suppress : 4996) // to allow strcpy
-				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col  - 1 , gameConfig::OPEN_SPACE).c_str());
+				strcpy(originalBoard[curr_row] + curr_col, std::string(gameConfig::GAME_WIDTH - curr_col - 1, gameConfig::OPEN_SPACE).c_str());
 
 
 			}
@@ -43,48 +45,17 @@ void Board::load(const std::string& filename) {
 			curr_col = 0;
 			continue;
 		}
-		if (curr_col < gameConfig::GAME_WIDTH) {
-			// handle special chars
-			switch (c)
-			{
-			case gameConfig::MARIO:
-				marioStartingX = curr_col;
-				marioStartingY = curr_row;
-				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
-				break;
-			case gameConfig::DONKEYKONG:
-				donkeyPosX = curr_col;
-				donkeyPosY = curr_row;
-				originalBoard[curr_row][curr_col++] = c;
-				break;
-			case gameConfig::INFO_POS:
-				infoPosX = curr_col;
-				infoPosY = curr_row;
-				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
-				break;
-			case gameConfig::GHOST:
-				ghostPos.push_back({ curr_col, curr_row });
-				originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
-				break;
-			case gameConfig::HAMMER:
-				originalBoard[curr_row][curr_col++] = c;
-				break;
-			case gameConfig::LIMIT:
+		if (curr_col < gameConfig::GAME_WIDTH)
+		{
+			if (c == gameConfig::LIMIT) {
 				isGameWithLimit = true;
-				if (curr_row < gameConfig::GAME_WIDTH - 1 && curr_row > 0 && curr_col < gameConfig::GAME_HEIGHT - 1 && curr_col > 0)
-				{
-					originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
-				}
-				break;
-			default:
-				originalBoard[curr_row][curr_col++] = c;
-				break;
 			}
+			// handle special chars
+			handleSpecialChar(c, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound);
 		}
 	}
-	int last_row = (curr_row < gameConfig::GAME_HEIGHT ? curr_row : gameConfig::GAME_HEIGHT - 1);
-	// add a closing frame
-	// first line
+	int last_row = min(curr_row, gameConfig::GAME_HEIGHT - 1);
+
 	if (isGameWithLimit)
 	{
 #pragma warning(suppress : 4996) // to allow strcpy
@@ -101,33 +72,107 @@ void Board::load(const std::string& filename) {
 			originalBoard[row][gameConfig::GAME_WIDTH - 1] = gameConfig::LIMIT;
 			originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
 		}
-		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
-		{
-			if (originalBoard[gameConfig::GAME_HEIGHT - 2][col] == gameConfig::OPEN_SPACE)
-			{
-				originalBoard[gameConfig::GAME_HEIGHT - 2][col] = gameConfig::FLOOR;
-			}
-		}
+
+		addFloor(originalBoard[gameConfig::GAME_HEIGHT - 2], gameConfig::GAME_WIDTH);
 	}
 	else
 	{
-		for (int row = 0; row < gameConfig::GAME_HEIGHT; ++row) {
+		for (int row = 0; row < gameConfig::GAME_HEIGHT; ++row)
+		{
 			originalBoard[row][gameConfig::GAME_WIDTH] = '\0';
 		}
-		for (int col = 0; col < gameConfig::GAME_WIDTH; ++col)
-		{
-			if (originalBoard[gameConfig::GAME_HEIGHT - 1][col] == gameConfig::OPEN_SPACE)
-			{
-				originalBoard[gameConfig::GAME_HEIGHT - 1][col] = gameConfig::FLOOR;
-			}
-		}
+
+		addFloor(originalBoard[gameConfig::GAME_HEIGHT - 1], gameConfig::GAME_WIDTH);
 	}
 
 	addInfo(infoPosX, infoPosY);
 }
 
+// Handle special characters in the board layout
+void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound) {
+	switch (c) {
+	case gameConfig::MARIO:
+		marioStartingX = curr_col;
+		marioStartingY = curr_row;
+		originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		break;
+	case gameConfig::DONKEYKONG:
+		if (!isDonkeyKongFound)
+		{
+			donkeyPosX = curr_col;
+			donkeyPosY = curr_row;
+			originalBoard[curr_row][curr_col++] = c;
+			isDonkeyKongFound = true;
+		}
+		else
+		{
+			originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		}
+		break;
+	case gameConfig::INFO_POS:
+		infoPosX = curr_col;
+		infoPosY = curr_row;
+		originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		break;
+	case gameConfig::GHOST:
+		ghostPos.push_back({ curr_col, curr_row });
+		originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		break;
+	case gameConfig::HAMMER:
+		if (!isHammerFound)
+		{
+			originalBoard[curr_row][curr_col++] = c;
+			isHammerFound = true;
+		}
+		else
+		{
+			originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		}
+		break;
+	case gameConfig::PAULINE:
+		if (!isPaulineFound)
+		{
+			originalBoard[curr_row][curr_col++] = c;
+			isPaulineFound = true;
+		}
+		else
+		{
+			originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
+		}
+		break;
+	case gameConfig::LIMIT:
+	case gameConfig::FLOOR:
+	case gameConfig::LFLOOR:
+	case gameConfig::RFLOOR:
+	case gameConfig::LADDER:
+	case gameConfig::OPEN_SPACE:
+	case gameConfig::BARREL:
+		originalBoard[curr_row][curr_col++] = c;
+		break;
+	default:
+		displayErrorUnacceptableCharacter();
+		Sleep(2000);
+		break;
+	}
+}
+
+// Add floor to a row
+void Board::addFloor(char* row, int width) {
+	for (int col = 0; col < width; ++col) {
+		if (row[col] == gameConfig::OPEN_SPACE) {
+			row[col] = gameConfig::FLOOR;
+		}
+	}
+}
+
+// Add the information to the board
 void Board::addInfo(int infoPosX, int infoPosY)
 {
+	if (infoPosY + INFO_HEIGHT > gameConfig::GAME_HEIGHT || infoPosX + INFO_WIDTH > gameConfig::GAME_WIDTH) {
+		std::cerr << "Error: Info position is out of bounds." << std::endl;
+		return;
+	}
+
 	const char* info[INFO_HEIGHT] =
 	{ //!123456789!123456789!
 		"    Level: 1        ",
@@ -187,6 +232,8 @@ void Board::displayPauseScreen()
 	}
 	print();
 }
+
+// Display the error screen when no files are found
 void Board::displayErrorNoFiles()
 {
 	const char* noFilesErrorBoard[gameConfig::GAME_HEIGHT] = {
@@ -227,6 +274,49 @@ void Board::displayErrorNoFiles()
 	}
 	print();
 }
+
+// Display the error screen when no files are found
+void Board::displayErrorUnacceptableCharacter()
+{
+	const char* UnacceptableCharacter[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q            An unacceptable character was found in the keyboard.              Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
+
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], UnacceptableCharacter[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
+
 // Display the victory screen
 void Board::displayVictory()
 {

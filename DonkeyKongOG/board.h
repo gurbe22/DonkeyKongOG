@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <string>
 #include <utility> // For std::pair
+#include <algorithm>
 
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.
 class Board
@@ -38,6 +39,10 @@ class Board
     int infoPosY;
 
     void addInfo(int infoPosX, int infoPosY);
+    void handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound);
+    void fillRemainingSpaces(char* row, int start_col, int width);
+    void addBordersToRow(char* row, int width);
+    void addFloor(char* row, int width);
 
 public:
     // Resets the board to its original state
@@ -92,6 +97,10 @@ public:
 
     void displayErrorNoFiles();
 
+
+    void displayErrorUnacceptableCharacter();
+
+
     // Displays a disqualified screen to the player
     void displayDisqualified();
 
@@ -122,6 +131,11 @@ public:
     {
         return ghostPos;
     }
+
+	void resetGhostPos()
+	{
+		ghostPos.clear();
+	}
 };
 
 #endif

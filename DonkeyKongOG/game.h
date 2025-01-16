@@ -9,6 +9,7 @@
 #include "mario.h"
 #include "barrel.h" 
 #include "ghost.h"
+#include <vector>
 using namespace std;
 
 // The 'game' class orchestrates the gameplay, including player interactions,

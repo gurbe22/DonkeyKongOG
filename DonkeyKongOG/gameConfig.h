@@ -35,8 +35,5 @@ public:
     static constexpr char LADDER = 'H';
     static constexpr char OPEN_SPACE = ' ';
 
-
-    // Number of barrels in the game
-    static constexpr int NUM_OF_BARRELS = 12; // Total barrels
 };
 #endif

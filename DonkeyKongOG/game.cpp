@@ -123,6 +123,7 @@ void game::runGame()
     Board board;  
     mario mario;
     bool victory = false;
+    level = 0;
     getAllBoardFileNames(fileNames);
 
     if(fileNames.size() == 0)
@@ -142,6 +143,8 @@ void game::runGame()
 
             victory = false;
 
+            board.resetGhostPos();
+
             board.load(filename);
 
             setMarioPos(board, mario);
@@ -152,9 +155,10 @@ void game::runGame()
             barrels.reserve(10);
 
             int delay = 30;
-            int currentFrame = 30;
+            int currentFrame;
             int barrelsX;
             int barrelsY = board.getDonkeyPosY();
+            
 
 
             if (board.getDonkeyPosX() <= gameConfig::GAME_WIDTH / 2)
@@ -165,15 +169,18 @@ void game::runGame()
 
             while (mario.getLives() > 0 && victory == false)
             {
-
+                currentFrame = 30;
                 // Set Mario to his starting position at the beginning of each game
                 mario.setMarioToStart();
 
+                barrels.clear();
+				ghosts.clear();
                 // Display the game board with Mario at the starting position
                 displayBoard(board, mario);
 
-				// Create all ghosts
-                createAllGhosts(ghosts ,board);
+                    // Create all ghosts
+                    createAllGhosts(ghosts, board);
+				
 
                 // Link Mario to the game board
                 mario.setBoard(board);
@@ -267,14 +274,15 @@ void game::runGame()
             {
                 // Display the loss screen if Mario has no more lives
                 board.displayLoss();
-                Sleep(5000);
+                Sleep(4000);
+				break;
             }
         }
         if (victory)
         {
             // Display the Victory screen
             board.displayVictory();
-            Sleep(5000);
+            Sleep(4000);
         }
     }
     

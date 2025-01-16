@@ -84,6 +84,9 @@ public:
 
     // Gets whether the barrel is in an exploded state
     bool getIsExplode() const { return explode; }
+
+	int getDiffX() const { return barrel.getDiffX(); }
+	int getDiffY() const { return barrel.getDiffY(); }
 };
 
 #endif

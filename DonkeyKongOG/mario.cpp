@@ -226,14 +226,22 @@ bool mario::MarioIsDisqualified(vector <Barrel> barrels, vector <ghost> ghosts, 
 {
 	int marioX = myMario.getX();
 	int marioY = myMario.getY();
+	int marioNextX = marioX + myMario.getDiffX();
+	int marioNextY = marioY + myMario.getDiffY();
+
 	// Check for collision or proximity with barrels
 	for (int i = 0; i < barrels.size(); i++)
 	{
 		int barrelX = barrels[i].getX();
 		int barrelY = barrels[i].getY();
-		
+		int barrelNextX = barrelX + barrels[i].getDiffX();
+		int barrelNextY = barrelY + barrels[i].getDiffY();
 
-		if (abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1)
+		// Check for current or next-step collision
+		if ((abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1) ||
+			(marioNextX == barrelNextX && marioNextY == barrelNextY) ||
+			(marioNextX == barrelX && marioNextY == barrelY) ||
+			(marioX == barrelNextX && marioY == barrelNextY))
 		{
 			return true;
 		}
@@ -260,8 +268,14 @@ bool mario::MarioIsDisqualified(vector <Barrel> barrels, vector <ghost> ghosts, 
 	{
 		int ghostX = ghosts[i].getX();
 		int ghostY = ghosts[i].getY();
+		int ghostNextX = ghostX + ghosts[i].getDirectionX();
+		int ghostNextY = ghostY + ghosts[i].getDirectionY();
 
-		if (abs(marioX - ghostX) < 1 && abs(marioY - ghostY) < 1)
+		// Check for current or next-step collision
+		if ((abs(marioX - ghostX) < 1 && abs(marioY - ghostY) < 1) ||
+			(marioNextX == ghostNextX && marioNextY == ghostNextY) ||
+			(marioNextX == ghostX && marioNextY == ghostY) ||
+			(marioX == ghostNextX && marioY == ghostNextY))
 		{
 			return true;
 		}

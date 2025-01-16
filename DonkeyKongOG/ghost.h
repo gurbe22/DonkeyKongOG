@@ -54,5 +54,14 @@ public:
 	{
 		myGhost.erase();
 	}
+
+	int getDirectionX()
+	{
+		return static_cast<int>(direction);
+	}
+	int getDirectionY()
+	{
+		return 0;
+	}
 };
 
