@@ -21,9 +21,13 @@ void Board::print() const
 }
 
 
-void Board::load(const std::string& filename) {
+bool Board::load(const std::string& filename) {
 	std::ifstream screen_file(filename);
-	std::cout << screen_file.is_open() << std::endl;
+	if (!screen_file.is_open())
+	{
+		displayLoadingFileFailed();
+		return false;
+	}
 	int curr_row = 0;
 	int curr_col = 0;
 	char c;
@@ -32,6 +36,7 @@ void Board::load(const std::string& filename) {
 	bool isDonkeyKongFound = false;
 	bool isHammerFound = false;
 	bool isMarioFound = false;
+	bool isInfoFound = false;
 
 	while (!screen_file.get(c).eof() && curr_row < gameConfig::GAME_HEIGHT) {
 		if (c == '\n') {
@@ -52,15 +57,25 @@ void Board::load(const std::string& filename) {
 				isGameWithLimit = true;
 			}
 			// handle special chars
-			handleSpecialChar(c, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound, isMarioFound);
+			if (!handleSpecialChar(c, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound, isMarioFound, isInfoFound))
+			{
+				return false;
+			}
 		}
 	}
 
-	if (!(isPaulineFound || isDonkeyKongFound || isHammerFound || isMarioFound))
+	if (!(isPaulineFound && isDonkeyKongFound && isHammerFound && isMarioFound && isInfoFound))
 	{
-		displayErrorNoFiles();
+		displaySignificantCharacterMissing();
 		Sleep(2000);
-		//exit(1);
+		return false;
+	}
+
+	if(!isDonkeyKongInLegalPlace())
+	{
+		displayDonkeyKongInIllegalPlace();
+		Sleep(2000);
+		return false;
 	}
 
 	int last_row = min(curr_row, gameConfig::GAME_HEIGHT - 1);
@@ -95,10 +110,11 @@ void Board::load(const std::string& filename) {
 	}
 
 	addInfo(infoPosX, infoPosY);
+	return true;
 }
 
 // Handle special characters in the board layout
-void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound) {
+bool Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound, bool& isInfoFound) {
 	switch (c) {
 	case gameConfig::MARIO:
 		if (!isMarioFound)
@@ -123,8 +139,12 @@ void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaul
 		}
 		break;
 	case gameConfig::INFO_POS:
-		infoPosX = curr_col;
-		infoPosY = curr_row;
+		if (!isInfoFound)
+		{
+			infoPosX = curr_col;
+			infoPosY = curr_row;
+			isInfoFound = true;
+		}
 		originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 		break;
 	case gameConfig::GHOST:
@@ -165,8 +185,10 @@ void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaul
 	default:
 		displayErrorUnacceptableCharacter();
 		Sleep(2000);
+		return false;
 		break;
 	}
+	return true;
 }
 
 // Add floor to a row
@@ -198,6 +220,20 @@ void Board::addInfo(int infoPosX, int infoPosY)
 	{
 		memcpy(originalBoard[infoPosY + i] + infoPosX + 1, info[i], INFO_WIDTH);
 	}
+
+}
+
+bool Board::isDonkeyKongInLegalPlace()
+{
+	if (donkeyPosY < gameConfig::GAME_HEIGHT - 2)
+	{
+		char ch = originalBoard[donkeyPosY + 1][donkeyPosX];
+		if (ch == gameConfig::FLOOR || ch == gameConfig::LFLOOR || ch == gameConfig::RFLOOR)
+		{
+			return true;
+		}
+	}
+	return false;
 
 }
 
@@ -287,6 +323,172 @@ void Board::displayErrorNoFiles()
 	}
 	print();
 }
+
+void Board::displayDonkeyKongInIllegalPlace()
+{
+	const char* donkeyKongInIllegalPlace[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q             Donkey Kong is in illegal place (has to be on a floor)           Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
+
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], donkeyKongInIllegalPlace[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
+
+void Board::displayErrorNotExistFile()
+{
+
+	const char* notExistFile[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q             You asked to play on a board that does not exist.                Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
+
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], notExistFile[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
+
+void Board::displayLoadingFileFailed()
+{
+	const char* loadingFileFailed[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q                          Failed to load th file                              Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
+
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], loadingFileFailed[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
+
+void Board::displaySignificantCharacterMissing()
+{
+	const char* significantCharacterMissing[gameConfig::GAME_HEIGHT] = {
+		//!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
+		 "Q                                                                              Q", // 1
+		 "Q                                                                              Q", // 2
+		 "Q                                                                              Q", // 3
+		 "Q                                                                              Q", // 4
+		 "Q                                                                              Q", // 5
+		 "Q                                                                              Q", // 6
+		 "Q                                                                              Q", // 7
+		 "Q                                                                              Q", // 8
+		 "Q                                 ERROR                                        Q", // 9
+		 "Q                                                                              Q", // 10
+		 "Q            Significant character is missing cannot begin the game            Q", // 11
+		 "Q                                                                              Q", // 12
+		 "Q                       Check your files and try again                         Q", // 13
+		 "Q                                                                              Q", // 14
+		 "Q                                                                              Q", // 15
+		 "Q                                                                              Q", // 16
+		 "Q                                                                              Q", // 17
+		 "Q                                                                              Q", // 18
+		 "Q                                                                              Q", // 19
+		 "Q                                                                              Q", // 20
+		 "Q                                                                              Q", // 21
+		 "Q                                                                              Q", // 22
+		 "Q                                                                              Q", // 23
+		 "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
+	};
+
+	system("cls");
+
+	// Copy the pause board layout into the current board
+	for (int i = 0; i < gameConfig::GAME_HEIGHT; i++)
+	{
+		memcpy(currentBoard[i], significantCharacterMissing[i], gameConfig::GAME_WIDTH + 1);
+	}
+	print();
+}
+
 
 // Display the error screen when no files are found
 void Board::displayErrorUnacceptableCharacter()

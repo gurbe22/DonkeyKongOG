@@ -39,10 +39,9 @@ class Board
     int infoPosY;
 
     void addInfo(int infoPosX, int infoPosY);
-    void handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound);
-    void fillRemainingSpaces(char* row, int start_col, int width);
-    void addBordersToRow(char* row, int width);
+    bool handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound, bool& isInfoFound);
     void addFloor(char* row, int width);
+    bool isDonkeyKongInLegalPlace();
 
 public:
     // Resets the board to its original state
@@ -87,7 +86,7 @@ public:
 		infoPosY = y;
 	}
     //
-    void load(const std::string& filename);
+    bool load(const std::string& filename);
 
     // Displays a pause screen to the player
     void displayPauseScreen();
@@ -97,9 +96,15 @@ public:
 
     void displayErrorNoFiles();
 
-
     void displayErrorUnacceptableCharacter();
 
+    void displaySignificantCharacterMissing();
+
+    void displayLoadingFileFailed();
+
+    void displayDonkeyKongInIllegalPlace();
+
+    void displayErrorNotExistFile();
 
     // Displays a disqualified screen to the player
     void displayDisqualified();

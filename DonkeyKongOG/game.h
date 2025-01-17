@@ -18,6 +18,7 @@ class game
 {
     // Constants for menu options and game states
     static constexpr char START_NEW_GAME = '1';        // Option to start the game
+    static constexpr char START_NEW_SPECIFC_LEVEL = '2';        // Option to start the game
     static constexpr char SHOW_INSTRUCTIONS = '8';     // Option to view instructions
     static constexpr char EXIT_GAME = '9';        // Option to exit the game
     static constexpr bool RUNNING = true;         // Game is running
@@ -32,16 +33,19 @@ class game
     void eraseBarrels(vector <Barrel> &barrels);
 
     // Runs the main game loop
-    void runGame();
+    void runGame(vector<string> fileNames, int levelChoice = 0);
 
     //
-    void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
+    void getAllBoardFileNames(vector<string>& vec_to_fill);
 
     // Displays the instructions for the game
     void displayInstructions();
 
     // Displays the game board and updates it with Mario's position
     void displayBoard(Board& board, mario& mario);
+
+
+    void displayLevelsChoices(vector<string>& fileNames);
 
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);
