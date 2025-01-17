@@ -39,7 +39,7 @@ class Board
     int infoPosY;
 
     void addInfo(int infoPosX, int infoPosY);
-    void handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound);
+    void handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound);
     void fillRemainingSpaces(char* row, int start_col, int width);
     void addBordersToRow(char* row, int width);
     void addFloor(char* row, int width);

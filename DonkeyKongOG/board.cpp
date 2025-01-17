@@ -31,6 +31,7 @@ void Board::load(const std::string& filename) {
 	bool isPaulineFound = false;
 	bool isDonkeyKongFound = false;
 	bool isHammerFound = false;
+	bool isMarioFound = false;
 
 	while (!screen_file.get(c).eof() && curr_row < gameConfig::GAME_HEIGHT) {
 		if (c == '\n') {
@@ -51,9 +52,17 @@ void Board::load(const std::string& filename) {
 				isGameWithLimit = true;
 			}
 			// handle special chars
-			handleSpecialChar(c, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound);
+			handleSpecialChar(c, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound, isMarioFound);
 		}
 	}
+
+	if (!(isPaulineFound || isDonkeyKongFound || isHammerFound || isMarioFound))
+	{
+		displayErrorNoFiles();
+		Sleep(2000);
+		//exit(1);
+	}
+
 	int last_row = min(curr_row, gameConfig::GAME_HEIGHT - 1);
 
 	if (isGameWithLimit)
@@ -89,11 +98,15 @@ void Board::load(const std::string& filename) {
 }
 
 // Handle special characters in the board layout
-void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound) {
+void Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound) {
 	switch (c) {
 	case gameConfig::MARIO:
-		marioStartingX = curr_col;
-		marioStartingY = curr_row;
+		if (!isMarioFound)
+		{
+			marioStartingX = curr_col;
+			marioStartingY = curr_row;
+			isMarioFound = true;
+		}
 		originalBoard[curr_row][curr_col++] = gameConfig::OPEN_SPACE;
 		break;
 	case gameConfig::DONKEYKONG:
