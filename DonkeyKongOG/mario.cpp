@@ -249,7 +249,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 {
 	for (auto it = barrels.begin(); it != barrels.end(); )
 	{
-		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) < 1) // אם החבית נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם החבית נפגעה על ידי הפתיש
 		{
 			it->eraseBarrel();       // פעולה על החבית (אם נדרש)
 			it = barrels.erase(it);  // מוחקים את החבית ומתקדמים לאיטרטור הבא
@@ -263,7 +263,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 	// טיפול ברוחות
 	for (auto it = ghosts.begin(); it != ghosts.end(); )
 	{
-		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) < 1) // אם רוח נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם רוח נפגעה על ידי הפתיש
 		{
 			it = ghosts.erase(it);  // מוחקים את הרוח ומתקדמים
 		}
