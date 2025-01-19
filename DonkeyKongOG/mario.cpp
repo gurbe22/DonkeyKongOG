@@ -293,8 +293,7 @@ bool mario::MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost> &ghosts
 		// Check for current or next-step collision
 		if ((abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1) ||
 			(marioNextX == barrelNextX && marioNextY == barrelNextY) ||
-			(marioNextX == barrelX && marioNextY == barrelY) ||
-			(marioX == barrelNextX && marioY == barrelNextY))
+			(marioNextX == barrelX && marioNextY == barrelY))
 		{
 			return true;
 		}
@@ -327,8 +326,7 @@ bool mario::MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost> &ghosts
 		// Check for current or next-step collision
 		if ((abs(marioX - ghostX) < 1 && abs(marioY - ghostY) < 1) ||
 			(marioNextX == ghostNextX && marioNextY == ghostNextY) ||
-			(marioNextX == ghostX && marioNextY == ghostY) ||
-			(marioX == ghostNextX && marioY == ghostNextY))
+			(marioNextX == ghostX && marioNextY == ghostY))
 		{
 			return true;
 		}

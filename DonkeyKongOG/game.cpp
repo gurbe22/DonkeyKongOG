@@ -13,6 +13,7 @@ void game::mainMenu()
 
     while (running) {
         system("cls"); // Clear the screen
+        cin.clear();
 
         // Display the game title
         /************************  ASCII art generated with the help of ChatGPT ****************************/
@@ -75,8 +76,9 @@ void game::mainMenu()
             running = STOP_RUNNING;  // Exit the game
             break;
         default:
-            cout << "Invalid choice. Try again!\n";
+            cout << "Invalid choice. Please enter a valid option (1, 2, 8, 9).\n";
             Sleep(1000);
+            break;
         }
     }
     system("cls"); // Clear the screen after exiting
@@ -139,15 +141,7 @@ int game::displayLevelsChoices(vector<string>& fileNames) {
         cout << "Enter the level number and press Enter: ";
 
         cin >> levelChoice;
-
-        // בדיקה אם הקלט מכיל תווים חוקיים בלבד
-        if (levelChoice.size() > 1 ||/* (!isdigit(levelChoice[0]) && */(levelChoice != "n" && levelChoice != "p" && levelChoice != "m")) {
-            cout << "Invalid input. Please enter a valid level number or command (n, p, m).\n";
-            cin.ignore();
-            Sleep(1500);
-            continue;
-        }
-
+        
         // טיפול באפשרויות הקלט
         if (levelChoice == "m" || levelChoice == "M") {
             return -1; // חזרה לתפריט הראשי
@@ -176,7 +170,7 @@ int game::displayLevelsChoices(vector<string>& fileNames) {
         }
 
         // בדיקה אם הקלט הוא מספר
-        if (isdigit(levelChoice[0])) {
+        if (levelChoice[0] >= '1' && levelChoice[0] <= '9') {
             int choice = stoi(levelChoice);
             if (choice >= 1 && choice <= size) {
                 return choice; // מחזיר את המספר המתאים באינדקס
