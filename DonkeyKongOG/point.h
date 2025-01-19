@@ -21,9 +21,7 @@ class point
 
 public:
     // Enumeration representing the different states of the point's movement or action
-    enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING };
-
-    
+    enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING};
 
     // Constructor initializing the point's position and setting movement to zero
     point(const int xStart = 0, const int yStart = 0) : x(xStart), y(yStart) { diff_x = 0; diff_y = 0; }
@@ -44,6 +42,10 @@ public:
         char ch;
         ch = pBoard->getChar(x, y); // Retrieves the character at the point's position on the board
         draw(ch);
+    }
+    void eraseCompletely () const
+    {
+        draw(gameConfig::OPEN_SPACE); 
     }
 
     // Sets the associated game board

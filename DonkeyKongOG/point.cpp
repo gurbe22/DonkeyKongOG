@@ -47,7 +47,7 @@ void point::move(int newDiff_X, int newDiff_Y)
 bool point::isFalling(char currChar)
 {
     // If the current character represents open space
-    if (currChar == gameConfig::OPEN_SPACE)
+    if (currChar == gameConfig::OPEN_SPACE || currChar == gameConfig::HAMMER)
     {
         // Check if the point is not standing on a floor
         if (isOnFloor() == false)

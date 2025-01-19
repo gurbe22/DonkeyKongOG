@@ -18,6 +18,8 @@ class Board
     static constexpr int LIVES_INDENTATION_Y = 2;
     static constexpr int LEVEL_INDENTATION_Y = 0;
     static constexpr int LEVEL_INDENTATION_X = 12;
+	static constexpr int HAMMER_INDENTATION_X = 19;
+	static constexpr int HAMMER_INDENTATION_Y = 2;
     static constexpr int INFO_WIDTH = 20;
     static constexpr int INFO_HEIGHT = 3;
 
@@ -64,27 +66,40 @@ public:
     {
         return infoPosX + LIVES_INDENTATION_X;
     }
-
 	int getLivesPositionY() const
 	{
         return infoPosY + LIVES_INDENTATION_Y;
 	}
+	/*void setLivesPosition(int x, int y)
+	{
+		infoPosX = x;
+		infoPosY = y;
+	}*/
+
+
+
+	int getHammerPositionX() const
+	{
+		return infoPosX + HAMMER_INDENTATION_X;
+	}
+	int getHammerPositionY() const
+	{
+		return infoPosY + HAMMER_INDENTATION_Y;
+	}
+
+
+
 
 	int getLevelPositionX() const
 	{
 		return infoPosX + LEVEL_INDENTATION_X;
 	}
-
 	int getLevelPositionY() const
 	{
 		return infoPosY + LEVEL_INDENTATION_Y;
 	}
 
-	void setLivesPosition(int x, int y)
-	{
-		infoPosX = x;
-		infoPosY = y;
-	}
+
     //
     bool load(const std::string& filename);
 

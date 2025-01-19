@@ -179,7 +179,6 @@ bool Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaul
 	case gameConfig::RFLOOR:
 	case gameConfig::LADDER:
 	case gameConfig::OPEN_SPACE:
-	case gameConfig::BARREL:
 		originalBoard[curr_row][curr_col++] = c;
 		break;
 	default:

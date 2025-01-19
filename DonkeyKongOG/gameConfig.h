@@ -11,6 +11,7 @@ public:
         UP = 'w',     // Move up
         DOWN = 'x',   // Move down
         STAY = 's',   // Stay in the current position
+		HAMMER = 'p', // Use the hammer
         ESC = 27,     // Escape key for pause menu
         EXIT = '\r',  // Enter key for exiting
     };
@@ -34,6 +35,8 @@ public:
     static constexpr char RFLOOR = '>';
     static constexpr char LADDER = 'H';
     static constexpr char OPEN_SPACE = ' ';
+
+    static constexpr char WITH_HAMMER = 'V';
 
 };
 #endif

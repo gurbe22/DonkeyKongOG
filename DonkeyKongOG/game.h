@@ -45,7 +45,7 @@ class game
     void displayBoard(Board& board, mario& mario);
 
 
-    void displayLevelsChoices(vector<string>& fileNames);
+    int displayLevelsChoices(vector<string>& fileNames);
 
     // Checks if the game is paused and handles pause state
     bool isPause(Board& board, int& key);

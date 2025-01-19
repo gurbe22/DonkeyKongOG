@@ -10,99 +10,112 @@ using namespace std;
 // The 'mario' class manages the behavior and state of Mario in the game.
 class mario
 {
-    // Constants for Mario's starting position, lives, and death criteria
-    
-    static constexpr int LIVES = 3;
-    static constexpr int CHARS_TO_DEATH = 5;
+	// Constants for Mario's starting position, lives, and death criteria
 
-    point myMario; // Represents Mario as a point on the board 
-    int marioStartingX = 0;
-    int marioStartingY = 0;
-    int heightJumping = 0; // Tracks how high Mario is jumping
-    bool jumping = false; // Indicates if Mario is currently jumping
-    bool isUp = true; // Tracks the direction of Mario's jump
-    int lives = LIVES; // Current number of lives Mario has
+	static constexpr int LIVES = 3;
+	static constexpr int CHARS_TO_DEATH = 5;
 
-    // Function to make Mario jump
-    void jump(gameConfig::eKeys& key, char nextChar);
+	point myMario; // Represents Mario as a point on the board 
+	int marioStartingX = 0;
+	int marioStartingY = 0;
+	int heightJumping = 0; // Tracks how high Mario is jumping
+	bool jumping = false; // Indicates if Mario is currently jumping
+	bool isUp = true; // Tracks the direction of Mario's jump
+	int lives = LIVES; // Current number of lives Mario has
+	bool isHammer = false; // Indicates if Mario has a hammer
+	gameConfig::eKeys prevKey = gameConfig::eKeys::STAY;
+	// Function to make Mario jump
+	void jump(gameConfig::eKeys& key, char nextChar);
 
-    // Function to make Mario climb
-    void climbing(char nextChar, gameConfig::eKeys& key);
+	// Function to make Mario climb
+	void climbing(char nextChar, gameConfig::eKeys& key);
 
-    // Determines the next character based on Mario's position and input
-    char findNextChar(char currChar, gameConfig::eKeys key);
+	// Determines the next character based on Mario's position and input
+	char findNextChar(char currChar, gameConfig::eKeys key);
 
-    // Checks if Mario is in a climbing state
-    bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
+	// Checks if Mario is in a climbing state
+	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
 
-    // Checks if Mario is in a jumping state
-    bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
+	// Checks if Mario is in a jumping state
+	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
 
-    // Handles Mario's walking or stationary behavior
-    void WalkingOrStaying(gameConfig::eKeys key);
+	// Handles Mario's walking or stationary behavior
+	void WalkingOrStaying(gameConfig::eKeys key);
 
-    // Determines Mario's current state based on the environment and input
-    point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
+	// Determines Mario's current state based on the environment and input
+	point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
 
-    // Checks if Mario is alive
-    bool isAlive();
+	// Checks if Mario is alive
+	bool isAlive();
 
-    // Decrements Mario's life count
-    void setLives()
-    {
-        lives--;
-    }
+	// Decrements Mario's life count
+	void setLives()
+	{
+		lives--;
+	}
 
-    // Checks if Mario is disqualified due to interaction with barrels
-    bool MarioIsDisqualified(vector <Barrel> barrels, vector <ghost> ghosts, int nextChar);
+	// Checks if Mario is disqualified due to interaction with barrels
+	bool MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost>& ghosts, int nextChar);
+
+	void hammering(vector <Barrel>& barrels, vector <ghost>& ghosts);
+
 
 public:
-    // Constructor to initialize Mario's starting position
-    mario() : myMario() {};
+	// Constructor to initialize Mario's starting position
+	mario() : myMario() {};
 
-    // Draws Mario on the board
-    void drawMario() const
-    {
-        myMario.draw(gameConfig::MARIO);
-    }
+	// Draws Mario on the board
+	void drawMario() const
+	{
+		myMario.draw(gameConfig::MARIO);
+	}
 
-    // Erases Mario from the board
-    void eraseMario() const
-    {
-        myMario.erase();
-    }
+	// Erases Mario from the board
+	void eraseMario() const
+	{
+		char currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); // Retrieves the character at the point's position on the board
+		if (currChar == gameConfig::HAMMER)
+		{
+			myMario.eraseCompletely();
+		}
+		else
+		{
+			myMario.erase();
+		}
+	}
 
-    // Moves Mario based on the player's input and barrel interactions
-    void moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <ghost> ghosts);
+	// Moves Mario based on the player's input and barrel interactions
+	void moveMario(gameConfig::eKeys& key, vector <Barrel>& barrels, vector <ghost>& ghosts);
 
-    // Sets the game board for Mario's reference
-    void setBoard(Board& board)
-    {
-        myMario.setBoard(board);
-    }
+	// Sets the game board for Mario's reference
+	void setBoard(Board& board)
+	{
+		myMario.setBoard(board);
+	}
 
-    // Returns the number of lives Mario has left
-    int getLives() const { return lives; }
+	// Returns the number of lives Mario has left
+	int getLives() const { return lives; }
 
-    // Resets Mario to the starting position
-    void setMarioToStart()
-    {
-        myMario.setX(marioStartingX);
-        myMario.setY(marioStartingY);
-    }
+	// Resets Mario to the starting position
+	void setMarioToStart()
+	{
+		isHammer = false;
+		myMario.setX(marioStartingX);
+		myMario.setY(marioStartingY);
+	}
 
-    // Sets Mario's lives to zero (indicates death)
-    void makeDeath()
-    {
-        lives = 0;
-    }
+	// Sets Mario's lives to zero (indicates death)
+	void makeDeath()
+	{
+		lives = 0;
+	}
 
-    // Checks if Mario has won the game
-    bool isWon();
+	// Checks if Mario has won the game
+	bool isWon();
 
-    void setStartingX(int startingX){ marioStartingX = startingX; }
+	void setStartingX(int startingX) { marioStartingX = startingX; }
 
-    void setStartingY(int startingY){ marioStartingY = startingY; }
+	void setStartingY(int startingY) { marioStartingY = startingY; }
 };
 
 #endif

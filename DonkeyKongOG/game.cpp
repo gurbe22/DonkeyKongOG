@@ -9,6 +9,7 @@ void game::mainMenu()
     bool running = RUNNING;
     ShowConsoleCursor(false); // Hide the cursor
     getAllBoardFileNames(fileNames);
+    sort(fileNames.begin(), fileNames.end());
 
     while (running) {
         system("cls"); // Clear the screen
@@ -61,9 +62,11 @@ void game::mainMenu()
             runGame(fileNames);  // Start a new game
             break;
         case START_NEW_SPECIFC_LEVEL:
-            displayLevelsChoices(fileNames);
-			levelChoice = _getch();
-			runGame(fileNames,(int)(levelChoice - '0'));
+			levelChoice = displayLevelsChoices(fileNames);
+            if (levelChoice == -1) {
+                continue; // חזרה ללולאה
+            }
+            runGame(fileNames, levelChoice); // קריאה למשחק
             break;
         case SHOW_INSTRUCTIONS:
             displayInstructions();  // Show game instructions
@@ -107,20 +110,92 @@ void game::displayBoard(Board& board, mario& mario)
     board.print(); // Print the board
 }
 
-void game::displayLevelsChoices(vector<string>& fileNames)
-{
-	system("cls"); // Clear the screen
-	cout << "Choose a level to play:\n";
+// Function to display the levels and get the user's choice
+int game::displayLevelsChoices(vector<string>& fileNames) {
+    int size = fileNames.size();
+    int currentPage = 0;
+    const int levelsPerPage = 2; // מספר שלבים בכל עמוד
+    string levelChoice;
 
-    for (int i = 0; i < fileNames.size(); i++)
-    {
-        cout << i + 1 << ". " << fileNames[i] << endl;
+    while (true) {
+        system("cls"); // מנקה את המסך
+        cout << "Choose a level to play:" << endl;
+
+        // הדפסת השלבים בעמוד הנוכחי
+        int start = currentPage * levelsPerPage;
+        int end = min(start + levelsPerPage, size); // עד העמוד האחרון או סוף הרשימה
+        for (int i = start; i < end; i++) {
+            cout << i + 1 << ". " << fileNames[i] << endl;
+        }
+
+        // הודעה אם יש עמודים נוספים
+        if (start + levelsPerPage < size) {
+            cout << "n. Next page\n";
+        }
+        if (currentPage > 0) {
+            cout << "p. Previous page\n";
+        }
+        cout << "m. Return to main menu\n";
+        cout << "Enter the level number and press Enter: ";
+
+        cin >> levelChoice;
+
+        // בדיקה אם הקלט מכיל תווים חוקיים בלבד
+        if (levelChoice.size() > 1 ||/* (!isdigit(levelChoice[0]) && */(levelChoice != "n" && levelChoice != "p" && levelChoice != "m")) {
+            cout << "Invalid input. Please enter a valid level number or command (n, p, m).\n";
+            cin.ignore();
+            Sleep(1500);
+            continue;
+        }
+
+        // טיפול באפשרויות הקלט
+        if (levelChoice == "m" || levelChoice == "M") {
+            return -1; // חזרה לתפריט הראשי
+        }
+        if (levelChoice == "n" || levelChoice == "N") {
+            if (start + levelsPerPage < size) {
+                currentPage++; // מעבר לעמוד הבא
+            }
+            else {
+                cout << "No more pages. Press any key to continue...\n";
+                cin.ignore();
+                Sleep(1500);
+            }
+            continue;
+        }
+        if (levelChoice == "p" || levelChoice == "P") {
+            if (currentPage > 0) {
+                currentPage--; // חזרה לעמוד הקודם
+            }
+            else {
+                cout << "No previous page. Press any key to continue...\n";
+                cin.ignore();
+                Sleep(1500);
+            }
+            continue;
+        }
+
+        // בדיקה אם הקלט הוא מספר
+        if (isdigit(levelChoice[0])) {
+            int choice = stoi(levelChoice);
+            if (choice >= 1 && choice <= size) {
+                return choice; // מחזיר את המספר המתאים באינדקס
+            }
+            else {
+                cout << "Invalid choice. Please try again.\n";
+                cin.ignore();
+                Sleep(1500);
+            }
+        }
+        else {
+            cout << "Invalid input. Please try again.\n";
+            cin.ignore();
+            Sleep(1500);
+        }
     }
-
-    cout << "Enter the level number: ";
-
 }
 
+// Function to set Mario's starting position
 void game::setMarioPos(Board& board, mario& mario)
 {
 	mario.setStartingX(board.getMarioStartingX());
@@ -159,8 +234,6 @@ void game::runGame(vector<std::string> fileNames, int levelChoice)
     }
     else
     {
-        sort(fileNames.begin(), fileNames.end());
-
         for (const auto& filename : fileNames)
         {
 
