@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "gameConfig.h"
 
 // Moves the cursor to the specified x, y position
 void gotoxy(int x, int y)
@@ -25,4 +26,9 @@ void ShowConsoleCursor(bool showFlag) {
 void clear_screen()
 {
     system("cls");
+}
+
+int bendingDir(const int posX)
+{
+    return  posX < gameConfig::GAME_WIDTH / 2 ? 1 : -1;
 }

@@ -58,6 +58,11 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 	// Determine Mario's state based on current and next characters
 	state = findMarioState(currChar, nextChar, key);
 
+	if (key == gameConfig::eKeys::RIGHT)
+		setHammerDirection(RIGHT);
+	else if (key == gameConfig::eKeys::LEFT)
+		setHammerDirection(LEFT);
+
 	if (key == gameConfig::eKeys::HAMMER && isHammer)
 	{
 		hammering(barrels, ghosts);
@@ -249,7 +254,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 {
 	for (auto it = barrels.begin(); it != barrels.end(); )
 	{
-		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם החבית נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם החבית נפגעה על ידי הפתיש
 		{
 			it->eraseBarrel();       // פעולה על החבית (אם נדרש)
 			it = barrels.erase(it);  // מוחקים את החבית ומתקדמים לאיטרטור הבא
@@ -263,7 +268,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 	// טיפול ברוחות
 	for (auto it = ghosts.begin(); it != ghosts.end(); )
 	{
-		if (abs(myMario.getX() + myMario.getDiffX() - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם רוח נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם רוח נפגעה על ידי הפתיש
 		{
 			it = ghosts.erase(it);  // מוחקים את הרוח ומתקדמים
 		}
@@ -366,4 +371,13 @@ void mario::WalkingOrStaying(gameConfig::eKeys key)
 		int diffY = myMario.getDiffY();
 		myMario.move(diffX, diffY);
 	}
+}
+
+
+void mario::setHammerDirection() {
+	hammerDirection = bendingDir(myMario.getX());
+}
+
+void mario::setHammerDirection(int dir) {
+	hammerDirection = dir;
 }

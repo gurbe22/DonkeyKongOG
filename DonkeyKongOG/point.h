@@ -75,7 +75,10 @@ public:
     // Checks if the given character represents a floor
     bool isFloor(char nextChar)
     {
-        return nextChar == gameConfig::FLOOR || nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR;
+        return nextChar == gameConfig::FLOOR ||
+            nextChar == gameConfig::LFLOOR ||
+            nextChar == gameConfig::RFLOOR ||
+            nextChar == gameConfig::LIMIT;
     }
 
     // Accessor methods to get and set the height the point has fallen

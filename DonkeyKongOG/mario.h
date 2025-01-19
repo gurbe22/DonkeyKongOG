@@ -14,6 +14,8 @@ class mario
 
 	static constexpr int LIVES = 3;
 	static constexpr int CHARS_TO_DEATH = 5;
+	static constexpr int RIGHT = 1;
+	static constexpr int LEFT = -1;
 
 	point myMario; // Represents Mario as a point on the board 
 	int marioStartingX = 0;
@@ -23,6 +25,7 @@ class mario
 	bool isUp = true; // Tracks the direction of Mario's jump
 	int lives = LIVES; // Current number of lives Mario has
 	bool isHammer = false; // Indicates if Mario has a hammer
+	int hammerDirection;
 	gameConfig::eKeys prevKey = gameConfig::eKeys::STAY;
 	// Function to make Mario jump
 	void jump(gameConfig::eKeys& key, char nextChar);
@@ -116,6 +119,10 @@ public:
 	void setStartingX(int startingX) { marioStartingX = startingX; }
 
 	void setStartingY(int startingY) { marioStartingY = startingY; }
+
+	void setHammerDirection();
+
+	void setHammerDirection(int dir);
 };
 
 #endif

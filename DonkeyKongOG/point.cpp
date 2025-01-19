@@ -67,5 +67,6 @@ bool point::isOnFloor()
     // Check if the character below represents any type of floor
     return (ch1Below == gameConfig::FLOOR ||
         ch1Below == gameConfig::LFLOOR ||
-        ch1Below == gameConfig::RFLOOR);
+        ch1Below == gameConfig::RFLOOR ||
+        ch1Below == gameConfig::LIMIT);
 }
