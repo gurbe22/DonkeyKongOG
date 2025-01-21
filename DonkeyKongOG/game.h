@@ -42,8 +42,7 @@ class game
     void displayInstructions();
 
     // Displays the game board and updates it with Mario's position
-    void displayBoard(Board& board, mario& mario);
-
+    void displayBoard(Board& board, mario& mario) const;
 
     int displayLevelsChoices(vector<string>& fileNames);
 

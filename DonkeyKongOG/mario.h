@@ -16,6 +16,8 @@ class mario
 	static constexpr int CHARS_TO_DEATH = 5;
 	static constexpr int RIGHT = 1;
 	static constexpr int LEFT = -1;
+	static constexpr int BARREL_SCORE = 50;
+	static constexpr int GHOST_SCORE = 100;
 
 	point myMario; // Represents Mario as a point on the board 
 	int marioStartingX = 0;
@@ -25,8 +27,10 @@ class mario
 	bool isUp = true; // Tracks the direction of Mario's jump
 	int lives = LIVES; // Current number of lives Mario has
 	bool isHammer = false; // Indicates if Mario has a hammer
-	int hammerDirection;
+	int hammerDirection = 0;
 	gameConfig::eKeys prevKey = gameConfig::eKeys::STAY;
+	int score = 0;
+
 	// Function to make Mario jump
 	void jump(gameConfig::eKeys& key, char nextChar);
 
@@ -65,7 +69,7 @@ class mario
 
 public:
 	// Constructor to initialize Mario's starting position
-	mario() : myMario() {};
+	mario() : myMario() { };
 
 	// Draws Mario on the board
 	void drawMario() const
@@ -98,6 +102,7 @@ public:
 
 	// Returns the number of lives Mario has left
 	int getLives() const { return lives; }
+	int getScore() const { return score; }
 
 	// Resets Mario to the starting position
 	void setMarioToStart()
@@ -123,6 +128,8 @@ public:
 	void setHammerDirection();
 
 	void setHammerDirection(int dir);
+
+	void addScore(int newPoints);
 };
 
 #endif

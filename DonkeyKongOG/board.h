@@ -16,12 +16,20 @@ class Board
 {
     static constexpr int LIVES_INDENTATION_X = 9;
     static constexpr int LIVES_INDENTATION_Y = 2;
-    static constexpr int LEVEL_INDENTATION_Y = 0;
+
     static constexpr int LEVEL_INDENTATION_X = 12;
+    static constexpr int LEVEL_INDENTATION_Y = 0;
+    
 	static constexpr int HAMMER_INDENTATION_X = 19;
 	static constexpr int HAMMER_INDENTATION_Y = 2;
+
+	static constexpr int SCORE_INDENTATION_X = 12;
+	static constexpr int SCORE_INDENTATION_Y = 1;
+
     static constexpr int INFO_WIDTH = 20;
     static constexpr int INFO_HEIGHT = 3;
+
+    
 
     // The initial state of the board (original layout)
     char originalBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
@@ -44,8 +52,10 @@ class Board
     bool handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound, bool& isInfoFound);
     void addFloor(char* row, int width);
     bool isDonkeyKongInLegalPlace();
-
+    
+    int getMaxNewPointIndentation() const;
 public:
+    
     // Resets the board to its original state
     void reset();
 
@@ -87,7 +97,7 @@ public:
 		return infoPosY + HAMMER_INDENTATION_Y;
 	}
 
-
+    
 
 
 	int getLevelPositionX() const
@@ -98,6 +108,15 @@ public:
 	{
 		return infoPosY + LEVEL_INDENTATION_Y;
 	}
+
+    int getScorePositionX() const
+    {
+        return infoPosX + SCORE_INDENTATION_X;
+    }
+    int getScorePositionY() const
+    {
+        return infoPosY + SCORE_INDENTATION_Y;
+    }
 
 
     //
@@ -156,6 +175,14 @@ public:
 	{
 		ghostPos.clear();
 	}
+
+    void addScore(int score, int returningX, int returningY);
+
+    void printScore(int score, int returningX, int returingY, int indentation) const;
+
+    void setLine(std::string line ,int posX, int posY);
+
+    int getNewScoreIndetation(int score) const;
 };
 
 #endif

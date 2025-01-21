@@ -254,27 +254,29 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 {
 	for (auto it = barrels.begin(); it != barrels.end(); )
 	{
-		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם החבית נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) 
 		{
-			it->eraseBarrel();       // פעולה על החבית (אם נדרש)
-			it = barrels.erase(it);  // מוחקים את החבית ומתקדמים לאיטרטור הבא
+			addScore(BARREL_SCORE);	
+			it->eraseBarrel();       
+			it = barrels.erase(it);  
 		}
 		else
 		{
-			++it;  // אם לא מחקנו, נתקדם לאיטרטור הבא
+			++it;  
 		}
 	}
 
-	// טיפול ברוחות
+	
 	for (auto it = ghosts.begin(); it != ghosts.end(); )
 	{
-		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) // אם רוח נפגעה על ידי הפתיש
+		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) 
 		{
-			it = ghosts.erase(it);  // מוחקים את הרוח ומתקדמים
+			addScore(GHOST_SCORE);
+			it = ghosts.erase(it);  
 		}
 		else
 		{
-			++it;  // אם לא מחקנו, נתקדם לאיטרטור הבא
+			++it;  
 		}
 	}
 }
@@ -381,3 +383,14 @@ void mario::setHammerDirection() {
 void mario::setHammerDirection(int dir) {
 	hammerDirection = dir;
 }
+
+void mario::addScore(int newPoints){
+
+	score = score + newPoints;
+	if (score > gameConfig::MAX_SCORE)
+	{
+		score = gameConfig::MAX_SCORE;
+	}
+	myMario.getBoard()->addScore(score, myMario.getX(), myMario.getY());
+}
+

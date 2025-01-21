@@ -38,5 +38,6 @@ public:
 
     static constexpr char WITH_HAMMER = 'V';
 
+    static constexpr int MAX_SCORE = 9999;
 };
 #endif

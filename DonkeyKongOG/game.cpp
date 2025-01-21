@@ -101,14 +101,24 @@ void game::displayInstructions()
 }
 
 // Function to display the board
-void game::displayBoard(Board& board, mario& mario)
+void game::displayBoard(Board& board, mario& mario) const
 {
     char numOfLives;
+    int score, scoreIdentation;
+
     system("cls"); // Clear the screen
     board.reset(); // Reset the board
+
     numOfLives = mario.getLives() + '0'; // Convert lives to char for display
     board.setChar(board.getLivesPositionX(), board.getLivesPositionY(), numOfLives); // Set number of lives on the board
+
+    score = mario.getScore();
+    std::string strScore = std::to_string(score);
+    scoreIdentation = board.getNewScoreIndetation(score);
+    board.setLine(strScore, board.getScorePositionX() + scoreIdentation, board.getScorePositionY());
+
 	board.setChar(board.getLevelPositionX(), board.getLevelPositionY(), level + '0'); // Set number of lives on the board
+   
     board.print(); // Print the board
 }
 
