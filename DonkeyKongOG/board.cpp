@@ -208,7 +208,7 @@ void Board::addInfo(int infoPosX, int infoPosY)
 	}
 
 	const char* info[INFO_HEIGHT] =
-	{ //!123456789!123456789!
+	{ // !123456789!123456789!
 		"    Level: 1        ",
 		"    Score: 0000     ",
 		" Lives: 3  Hammer:X "
@@ -655,4 +655,65 @@ void Board::displayLoss()
 		memcpy(currentBoard[i], victoryBoard[i], gameConfig::GAME_WIDTH + 1);
 	}
 	print();
+}
+
+void Board::addScore(int score, int returningX, int returningY) 
+{
+	std::string strScore;
+
+	int indentation;
+
+	indentation = getNewScoreIndetation(score);
+	
+	printScore(score, returningX, returningY, indentation);
+
+	strScore = std::to_string(score);
+
+	setLine(strScore, getScorePositionX() + indentation, getScorePositionY());
+}
+
+void Board::printScore(int score, int returningX, int returningY, int indentation) const
+{
+	gotoxy(getScorePositionX() + indentation, getScorePositionY());
+	cout << score;
+	gotoxy(returningX, returningY);
+}
+
+int Board::getNewScoreIndetation(int score) const
+{
+	int indentation = 0;
+
+	indentation = getMaxNewPointIndentation(); 
+	score = score / 10;
+
+	while ( score != 0)
+	{
+		indentation -- ;
+		score = score / 10;
+	}
+
+	return indentation; 
+}
+
+int Board::getMaxNewPointIndentation() const 
+{
+	int maxScore = gameConfig::MAX_SCORE; 
+	int maxIndentation = 0;
+
+	maxScore = maxScore / 10;
+
+	while (maxScore != 0)
+	{
+		maxIndentation++;
+		maxScore = maxScore / 10;
+	}
+
+	return maxIndentation;
+}
+
+void Board::setLine(std::string line, int posX, int posY)
+{
+	const char* newLine = line.c_str();
+	
+	memcpy(originalBoard[posY] + posX + 1 , newLine , line.length()); 
 }
