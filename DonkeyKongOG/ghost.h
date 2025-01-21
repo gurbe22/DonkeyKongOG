@@ -3,57 +3,44 @@
 #include "gameConfig.h"
 #include "Board.h"
 #include <cstdlib> // For rand()
+#include "enemy.h"
+using namespace std;
 
-class ghost
+class ghost : public enemy
 {
 	enum class directions {
 		LEFT = -1,   // Move left
 		RIGHT = 1,  // Move right
 	};
-	point myGhost;
+	//point myGhost;
+
 	directions direction = directions::RIGHT;
 	
+
+	// Function to change the direction of the ghost
 	void changeDirection()
 	{
 		direction == directions::RIGHT ? direction = directions::LEFT : direction = directions::RIGHT;
 	}
-	bool isWithinBounds(int x, int y) const;
+
+	// Function to check if a tile is movable
 	bool isMovableTile(char tile) const;
+
+	// Function to prevent collisions between ghosts
 	void preventCollision(vector<ghost>& ghosts);
 
 public:
-	ghost() : myGhost() {};
+	
 	ghost( Board &board,int ghostStartingX, int ghostStartingY)
-		: myGhost(ghostStartingX, ghostStartingY)
-	{
-		this->setBoard(board);
-	}
+		: enemy(board, ghostStartingX, ghostStartingY ){}
 
-	void moveGhost(vector<ghost>& ghosts);
-	void setBoard(Board& board)
+	void moveGhost (vector<ghost>& ghosts);
+	
+	void draw() const override
 	{
-		myGhost.setBoard(board);
+		myEnemy.draw(gameConfig::GHOST);
 	}
-	Board* getBoard() const
-	{
-		return myGhost.getBoard();
-	}
-	int getX() const
-	{
-		return myGhost.getX();
-	}
-	int getY() const
-	{
-		return myGhost.getY();
-	}
-	void drawGhost() const
-	{
-		myGhost.draw(gameConfig::GHOST);
-	}
-	void eraseGhost() const
-	{
-		myGhost.erase();
-	}
+	
 
 	int getDirectionX()
 	{

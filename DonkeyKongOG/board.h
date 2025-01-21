@@ -2,7 +2,6 @@
 #define BOARD_H
  
 #include "gameConfig.h"
-//#include <cstring>
 #include "utils.h"
 #include <vector>
 #include <fstream>
@@ -31,12 +30,11 @@ class Board
 
     
 
-    // The initial state of the board (original layout)
+    // Board representation
     char originalBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
+    char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
 
-    // Current state of the board (modifiable during gameplay)
-    char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1]; // +1 for null terminator
-
+    //// Positions
     int marioStartingX;
     int marioStartingY;
 
@@ -48,30 +46,27 @@ class Board
     int infoPosX;
     int infoPosY;
 
+    // Helper methods
     void addInfo(int infoPosX, int infoPosY);
     bool handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound, bool& isInfoFound);
     void addFloor(char* row, int width);
-    bool isDonkeyKongInLegalPlace();
+    bool isDonkeyKongInLegalPlace() const;
     
     int getMaxNewPointIndentation() const;
 public:
     
-    // Resets the board to its original state
+    // Board management
     void reset();
-
-    // Prints the current state of the board to the console
     void print() const;
+    bool load(const std::string& filename);
 
-    // Retrieves the character at a specific position on the board
-    char getChar(int x, int y) const {
-        return currentBoard[y][x];
-    }
 
-    // Sets a character at a specific position on the board
-    void setChar(int x, int y, char c) {
-        currentBoard[y][x] = c;
-    }
+    // Board character manipulation
+    char getChar(int x, int y) const { return currentBoard[y][x]; }
+    void setChar(int x, int y, char c) { currentBoard[y][x] = c; }
+    void setLine(std::string line, int posX, int posY);
 
+    // Info section getters
     int getLivesPositionX() const
     {
         return infoPosX + LIVES_INDENTATION_X;
@@ -80,13 +75,6 @@ public:
 	{
         return infoPosY + LIVES_INDENTATION_Y;
 	}
-	/*void setLivesPosition(int x, int y)
-	{
-		infoPosX = x;
-		infoPosY = y;
-	}*/
-
-
 
 	int getHammerPositionX() const
 	{
@@ -96,9 +84,6 @@ public:
 	{
 		return infoPosY + HAMMER_INDENTATION_Y;
 	}
-
-    
-
 
 	int getLevelPositionX() const
 	{
@@ -118,69 +103,52 @@ public:
         return infoPosY + SCORE_INDENTATION_Y;
     }
 
-
-    //
-    bool load(const std::string& filename);
-
-    // Displays a pause screen to the player
-    void displayPauseScreen();
-
-    // Displays a victory screen to the player
-    void displayVictory();
-
+    // Error displays
     void displayErrorNoFiles();
-
     void displayErrorUnacceptableCharacter();
-
     void displaySignificantCharacterMissing();
-
     void displayLoadingFileFailed();
-
     void displayDonkeyKongInIllegalPlace();
-
     void displayErrorNotExistFile();
 
-    // Displays a disqualified screen to the player
+    // Game state displays
+    void displayPauseScreen();
+    void displayVictory();
     void displayDisqualified();
-
-    // Displays a loss screen to the player
     void displayLoss();
 
+    //Key positions getters
     int getDonkeyPosX() const
     {
         return donkeyPosX;
     }
-
     int getDonkeyPosY() const
     {
 		return donkeyPosY;
     }
-
 	int getMarioStartingX() const
 	{
 		return marioStartingX;
 	}
-
     int getMarioStartingY() const
     {
 		return marioStartingY;
     }
 
+    // Ghost management
 	std::vector<std::pair<int, int>>& getGhostPos()
     {
         return ghostPos;
     }
-
 	void resetGhostPos()
 	{
 		ghostPos.clear();
 	}
 
+    // Score handling
     void addScore(int score, int returningX, int returningY);
+    void printScore(int score, int returningX, int returningY, int indentation) const;
 
-    void printScore(int score, int returningX, int returingY, int indentation) const;
-
-    void setLine(std::string line ,int posX, int posY);
 
     int getNewScoreIndetation(int score) const;
 };

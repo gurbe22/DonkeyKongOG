@@ -81,7 +81,7 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 	case point::States::CLIMBING:
 		// Handle Mario's climbing mechanics
 		climbing(nextChar, key);
-		myMario.setHightFalling(0);
+		myMario.setHeightFalling(0);
 		break;
 	case point::States::WALKING_OR_STAYING:
 		if (isAlive())
@@ -92,7 +92,7 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 		else
 		{
 			// Update falling state and decrement lives if Mario is not alive
-			myMario.setHightFalling(0);
+			myMario.setHeightFalling(0);
 			setLives();
 		}
 		break;
@@ -257,7 +257,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) 
 		{
 			addScore(BARREL_SCORE);	
-			it->eraseBarrel();       
+			it->erase();       
 			it = barrels.erase(it);  
 		}
 		else

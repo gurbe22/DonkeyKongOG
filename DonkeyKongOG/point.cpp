@@ -1,72 +1,61 @@
 #include "point.h"
 
 // Checks if the new position is outside the boundaries of the game board
-bool point::isOutOfLimit(int newPos_x, int newPos_y)
+bool point::isOutOfLimit(int newPos_x, int newPos_y) const
 {
-    return (newPos_x >= gameConfig::GAME_WIDTH - 1 || // Right boundary
-        newPos_y >= gameConfig::GAME_HEIGHT ||   // Bottom boundary
-        newPos_x <= 0 ||                        // Left boundary
-        newPos_y <= 0);                         // Top boundary
+	const bool outRight = (newPos_x >= gameConfig::GAME_WIDTH - 1);
+	const bool outBottom = (newPos_y >= gameConfig::GAME_HEIGHT);
+	const bool outLeft = (newPos_x <= 0);
+	const bool outTop = (newPos_y <= 0);
+
+	return outRight || outBottom || outLeft || outTop;
 }
 
 // Moves the point by updating its position and checking for limits or collisions
 void point::move(int newDiff_X, int newDiff_Y)
 {
-    // Calculate the new potential position
-    int newPos_x = x + newDiff_X;
-    int newPos_y = y + newDiff_Y;
-    char nextChar = pBoard->getChar(newPos_x, newPos_y);
+	// Calculate the new potential position
+	int newPos_x = x + newDiff_X;
+	int newPos_y = y + newDiff_Y;
+	char nextChar = pBoard->getChar(newPos_x, newPos_y);
 
-    // Check if the new position is out of limits or hits a floor
-    if (isOutOfLimit(newPos_x, newPos_y) || isFloor(nextChar))
-    {
-        newDiff_X = 0; // Stop horizontal movement
-        newDiff_Y = 0; // Stop vertical movement
-    }
+	// Check if the new position is out of limits or hits a floor
+	if (isOutOfLimit(newPos_x, newPos_y) || isFloor(nextChar))
+	{
+		newDiff_X = 0; // Stop horizontal movement
+		newDiff_Y = 0; // Stop vertical movement
+	}
 
-    // Update velocity
-    diff_x = newDiff_X;
-    diff_y = newDiff_Y;
+	// Update velocity
+	diff_x = newDiff_X;
+	diff_y = newDiff_Y;
 
-    // If moving downwards, increase the falling height counter
-    if (diff_y == 1)
-    {
-        heightFalling++;
-    }
-    else
-    {
-        heightFalling = 0; // Reset falling height if not falling
-    }
+	// Update falling height if moving downward
+	heightFalling = (diff_y == 1) ? heightFalling + 1 : 0;
 
-    // Updating the new position of the point
-    x += diff_x;
-    y += diff_y;
+	// Updating the new position of the point
+	x += diff_x;
+	y += diff_y;
 }
 
 // Checks if the point is currently falling based on the character below it
-bool point::isFalling(char currChar)
+bool point::isFalling(char currChar) const
 {
-    // If the current character represents open space
-    if (currChar == gameConfig::OPEN_SPACE || currChar == gameConfig::HAMMER)
-    {
-        // Check if the point is not standing on a floor
-        if (isOnFloor() == false)
-        {
-            return true; // The point is falling
-        }
-    }
-    return false; // The point is not falling
+	if (isOutOfLimit(x, y + 1))
+		return false; // Out of bounds
+
+	if (currChar == gameConfig::LADDER)
+		return false; // Hammer is not falling
+
+	if (isOnFloor())
+		return false; // On the floor
+
+	return true; // Point is falling
 }
 
 // Determines if the point is standing on a floor
-bool point::isOnFloor()
+bool point::isOnFloor() const
 {
-    // Get the character directly below the point
-    char ch1Below = pBoard->getChar(x, y + 1);
-
-    // Check if the character below represents any type of floor
-    return (ch1Below == gameConfig::FLOOR ||
-        ch1Below == gameConfig::LFLOOR ||
-        ch1Below == gameConfig::RFLOOR ||
-        ch1Below == gameConfig::LIMIT);
+	char charBelow = pBoard->getChar(x, y + 1);
+	return isFloor(charBelow);
 }

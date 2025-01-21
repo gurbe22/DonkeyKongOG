@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="barrel.cpp" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
@@ -141,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="barrel.h" />
     <ClInclude Include="board.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="ghost.h" />
     <ClInclude Include="mario.h" />

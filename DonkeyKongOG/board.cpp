@@ -222,7 +222,7 @@ void Board::addInfo(int infoPosX, int infoPosY)
 
 }
 
-bool Board::isDonkeyKongInLegalPlace()
+bool Board::isDonkeyKongInLegalPlace()const
 {
 	if (donkeyPosY < gameConfig::GAME_HEIGHT - 2)
 	{
