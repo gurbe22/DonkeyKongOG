@@ -1,6 +1,8 @@
 #include "ghost.h"
 
-void ghost::moveGhost(vector<ghost>& ghosts) {
+using namespace std;
+
+void Ghost::moveGhost(vector<Ghost>& ghosts) {
 	// Check if the ghost is in the air
 	int currentX = myEnemy.getX();
 	int currentY = myEnemy.getY();
@@ -8,7 +10,7 @@ void ghost::moveGhost(vector<ghost>& ghosts) {
 
 	// Keep moving the ghost down while there is no floor beneath it and it's within bounds
 	if (isWithinBounds(currentX, belowY) &&
-		!isMovableTile(myEnemy.getBoard()->getChar(currentX, belowY))) {
+		!GameConfig::isFloor(myEnemy.getBoard()->getChar(currentX, belowY))) {
 		myEnemy.move(0, 1); // Move the ghost one step down
 		return;
 	}
@@ -32,7 +34,9 @@ void ghost::moveGhost(vector<ghost>& ghosts) {
 
 		// If movement is not valid, change direction and retry
 		if (!isWithinBounds(nextX, nextY) ||
-			!isMovableTile(myEnemy.getBoard()->getChar(belowNextX, belowNextY))) {
+			!GameConfig::isFloor(myEnemy.getBoard()->getChar(belowNextX, belowNextY))||
+			GameConfig::isFloor(myEnemy.getBoard()->getChar(nextX, nextY)))
+		{
 			changeDirection();
 			maxAttempts--;
 			continue;
@@ -47,15 +51,8 @@ void ghost::moveGhost(vector<ghost>& ghosts) {
 	return;
 }
 
-bool ghost::isMovableTile(char tile) const {
-	// Check if the tile is a valid surface for movement
-	return tile == gameConfig::FLOOR ||
-		tile == gameConfig::LFLOOR ||
-		tile == gameConfig::RFLOOR ||
-		tile == gameConfig::LIMIT;
-}
 
-void ghost::preventCollision(vector<ghost>& ghosts) {
+void Ghost::preventCollision(vector<Ghost>& ghosts) {
 	for (auto& otherGhost : ghosts) {
 		if (&otherGhost == this) continue; // Skip self-comparison
 

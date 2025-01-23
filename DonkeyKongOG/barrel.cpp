@@ -1,25 +1,26 @@
 #include "barrel.h"
+using namespace std;
 
 // Determines the next character the barrel interacts with
-char Barrel::findBarrelNextChar(char currChar, char charBelow)
+char Barrel::findBarrelNextChar(char currChar, char charBelow) const
 {
 	switch (charBelow)
 	{
-	case gameConfig::FLOOR:
-	case gameConfig::LIMIT:
+	case GameConfig::FLOOR:
+	case GameConfig::LIMIT:
 		return myEnemy.getBoard()->getChar(myEnemy.getX() + myEnemy.getDiffX(), myEnemy.getY());
 
-	case gameConfig::RFLOOR:
+	case GameConfig::RFLOOR:
 		return myEnemy.getBoard()->getChar(myEnemy.getX() + 1, myEnemy.getY());
 
-	case gameConfig::LFLOOR:
+	case GameConfig::LFLOOR:
 		return myEnemy.getBoard()->getChar(myEnemy.getX() - 1, myEnemy.getY());
 
-	case gameConfig::OPEN_SPACE:
+	case GameConfig::OPEN_SPACE:
 		return myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY() + 1);
 
-	case gameConfig::MARIO:
-		return gameConfig::MARIO;
+	case GameConfig::MARIO:
+		return GameConfig::MARIO;
 	default:
 		return charBelow;
 
@@ -27,9 +28,9 @@ char Barrel::findBarrelNextChar(char currChar, char charBelow)
 }
 
 // Determines the current state of the barrel (e.g., falling or walking)
-point::States Barrel::findBarrelState(char currChar)
+Point::States Barrel::findBarrelState(char currChar) const
 {
-	return myEnemy.isFalling(currChar) ? point::States::FALLING : point::States::WALKING_OR_STAYING;
+	return myEnemy.isFalling(currChar) ? Point::States::FALLING : Point::States::WALKING_OR_STAYING;
 }
 
 // Moves the barrel based on its state
@@ -38,15 +39,15 @@ void Barrel::moveBarrel()
 	char currChar = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY());
 	char charBelow = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY() + 1);
 	char nextChar = findBarrelNextChar(currChar, charBelow);
-	point::States state = findBarrelState(currChar);
+	Point::States state = findBarrelState(currChar);
 
 	switch (state)
 	{
-	case point::States::FALLING:
+	case Point::States::FALLING:
 		// Move the barrel downward if it is falling
 		myEnemy.move(0, 1);
 		break;
-	case point::States::WALKING_OR_STAYING:
+	case Point::States::WALKING_OR_STAYING:
 		if (isExploding())
 		{
 			// Handle explosion logic if the barrel is exploding
@@ -72,8 +73,8 @@ void Barrel::barrelWalking(char charBelow)
 	int diffX = getDiffX();
 	switch (charBelow)
 	{
-	case gameConfig::FLOOR:
-	case gameConfig::LIMIT:
+	case GameConfig::FLOOR:
+	case GameConfig::LIMIT:
 		// Move the barrel in its current horizontal direction
 		if (diffX == 0)
 		{
@@ -84,11 +85,11 @@ void Barrel::barrelWalking(char charBelow)
 			myEnemy.move(diffX, 0);
 		}
 		break;
-	case gameConfig::RFLOOR:
+	case GameConfig::RFLOOR:
 		// Move the barrel to the right
 		myEnemy.move(1, 0);
 		break;
-	case gameConfig::LFLOOR:
+	case GameConfig::LFLOOR:
 		// Move the barrel to the left
 		myEnemy.move(-1, 0);
 		break;

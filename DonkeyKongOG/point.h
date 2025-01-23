@@ -6,7 +6,7 @@
 #include <iostream>
 
 // The 'point' class represents a point on a game board, including its position, movement, and interactions.
-class point
+class Point
 {
     int x = 0;                       // Current x-coordinate of the point
     int y = 0;                       // Current y-coordinate of the point
@@ -23,7 +23,7 @@ public:
     enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING};
 
     // Constructor initializing the point's position and setting movement to zero
-    explicit point(const int xStart = 0, const int yStart = 0) : x(xStart), y(yStart) {}
+    explicit Point(const int xStart = 0, const int yStart = 0) : x(xStart), y(yStart) {}
    
     // Moves the point by updating its velocity in x and y directions
     void move(int newDiff_X, int newDiff_Y);
@@ -32,7 +32,7 @@ public:
     inline void draw(char ch) const
     {
         gotoxy(x, y); // Moves the cursor to the specified position
-        cout << ch;
+        std::cout << ch;
     }
 
     // Erases the point from the board by restoring the original character
@@ -42,7 +42,7 @@ public:
     }
     inline void eraseCompletely () const
     {
-        draw(gameConfig::OPEN_SPACE); 
+        draw(GameConfig::OPEN_SPACE); 
     }
 
     // Sets the associated game board
@@ -69,14 +69,6 @@ public:
 
     // Returns a pointer to the associated game board
     inline Board* getBoard() const { return pBoard; }
-
-    // Checks if the given character represents a floor
-    inline bool isFloor(char nextChar) const {
-        return nextChar == gameConfig::FLOOR ||
-            nextChar == gameConfig::LFLOOR ||
-            nextChar == gameConfig::RFLOOR ||
-            nextChar == gameConfig::LIMIT;
-    }
 
     // Accessor methods for heightFalling
     inline int getHeightFalling() const { return heightFalling; }

@@ -1,14 +1,17 @@
-#pragma once
+#ifndef ENEMY_H
+#define ENEMY_H
+
 #include "Point.h"
-class enemy
+
+class Enemy
 {
 protected:
-	point myEnemy;
+	Point myEnemy;
 
 	// Helper function to check if coordinates are within bounds
 	bool isWithinBounds(int x, int y) const;
 public:
-	enemy(Board& board, int enemyStartingX, int enemyStartingY)
+	Enemy(Board& board, int enemyStartingX, int enemyStartingY) 
 		: myEnemy(enemyStartingX, enemyStartingY)
 	{
 		this->setBoard(board);
@@ -45,3 +48,4 @@ public:
 	}
 };
 
+#endif

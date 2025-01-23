@@ -1,54 +1,37 @@
-#pragma once
+#ifndef GHOST_H
+#define GHOST_H
+
 #include "point.h"
-#include "gameConfig.h"
-#include "Board.h"
+#include "GameConfig.h"
+#include "board.h"
 #include <cstdlib> // For rand()
 #include "enemy.h"
-using namespace std;
 
-class ghost : public enemy
+
+class Ghost : public Enemy
 {
-	enum class directions {
-		LEFT = -1,   // Move left
-		RIGHT = 1,  // Move right
-	};
-	//point myGhost;
-
-	directions direction = directions::RIGHT;
+	GameConfig::directions direction = GameConfig::directions::RIGHT;
 	
-
 	// Function to change the direction of the ghost
 	void changeDirection()
 	{
-		direction == directions::RIGHT ? direction = directions::LEFT : direction = directions::RIGHT;
+		direction == GameConfig::directions::RIGHT ? direction = GameConfig::directions::LEFT : direction = GameConfig::directions::RIGHT;
 	}
 
-	// Function to check if a tile is movable
-	bool isMovableTile(char tile) const;
-
 	// Function to prevent collisions between ghosts
-	void preventCollision(vector<ghost>& ghosts);
+	void preventCollision(std::vector<Ghost>& ghosts);
 
 public:
 	
-	ghost( Board &board,int ghostStartingX, int ghostStartingY)
-		: enemy(board, ghostStartingX, ghostStartingY ){}
+	Ghost( Board &board,int ghostStartingX, int ghostStartingY)
+		: Enemy(board, ghostStartingX, ghostStartingY ){}
 
-	void moveGhost (vector<ghost>& ghosts);
+	void moveGhost (std::vector<Ghost>& ghosts);
 	
-	void draw() const override
-	{
-		myEnemy.draw(gameConfig::GHOST);
-	}
+	void draw() const override { myEnemy.draw(GameConfig::GHOST); }
 	
-
-	int getDirectionX()
-	{
-		return static_cast<int>(direction);
-	}
-	int getDirectionY()
-	{
-		return 0;
-	}
+	int getDirectionX() const { return static_cast<int>(direction);}
+	int getDirectionY() const { return 0; }
 };
 
+#endif

@@ -1,5 +1,7 @@
 #include "utils.h"
-#include "gameConfig.h"
+#include "GameConfig.h"
+
+using namespace std;
 
 // Moves the cursor to the specified x, y position
 void gotoxy(int x, int y)
@@ -30,5 +32,5 @@ void clear_screen()
 
 int bendingDir(const int posX)
 {
-    return  posX < gameConfig::GAME_WIDTH / 2 ? 1 : -1;
+    return  posX < GameConfig::GAME_WIDTH / 2 ? 1 : -1;
 }

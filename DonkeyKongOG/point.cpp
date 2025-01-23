@@ -1,18 +1,18 @@
 #include "point.h"
 
 // Checks if the new position is outside the boundaries of the game board
-bool point::isOutOfLimit(int newPos_x, int newPos_y) const
+bool Point::isOutOfLimit(int newPos_x, int newPos_y) const
 {
-	const bool outRight = (newPos_x >= gameConfig::GAME_WIDTH - 1);
-	const bool outBottom = (newPos_y >= gameConfig::GAME_HEIGHT);
-	const bool outLeft = (newPos_x <= 0);
+	const bool outRight = (newPos_x >= GameConfig::GAME_WIDTH);
+	const bool outBottom = (newPos_y >= GameConfig::GAME_HEIGHT);
+	const bool outLeft = (newPos_x < 0);
 	const bool outTop = (newPos_y <= 0);
 
 	return outRight || outBottom || outLeft || outTop;
 }
 
 // Moves the point by updating its position and checking for limits or collisions
-void point::move(int newDiff_X, int newDiff_Y)
+void Point::move(int newDiff_X, int newDiff_Y)
 {
 	// Calculate the new potential position
 	int newPos_x = x + newDiff_X;
@@ -20,7 +20,7 @@ void point::move(int newDiff_X, int newDiff_Y)
 	char nextChar = pBoard->getChar(newPos_x, newPos_y);
 
 	// Check if the new position is out of limits or hits a floor
-	if (isOutOfLimit(newPos_x, newPos_y) || isFloor(nextChar))
+	if (isOutOfLimit(newPos_x, newPos_y) || GameConfig::isFloor(nextChar))
 	{
 		newDiff_X = 0; // Stop horizontal movement
 		newDiff_Y = 0; // Stop vertical movement
@@ -39,12 +39,12 @@ void point::move(int newDiff_X, int newDiff_Y)
 }
 
 // Checks if the point is currently falling based on the character below it
-bool point::isFalling(char currChar) const
+bool Point::isFalling(char currChar) const
 {
 	if (isOutOfLimit(x, y + 1))
 		return false; // Out of bounds
 
-	if (currChar == gameConfig::LADDER)
+	if (currChar == GameConfig::LADDER)
 		return false; // Hammer is not falling
 
 	if (isOnFloor())
@@ -54,8 +54,8 @@ bool point::isFalling(char currChar) const
 }
 
 // Determines if the point is standing on a floor
-bool point::isOnFloor() const
+bool Point::isOnFloor() const
 {
 	char charBelow = pBoard->getChar(x, y + 1);
-	return isFloor(charBelow);
+	return GameConfig::isFloor(charBelow) || y == GameConfig::GAME_HEIGHT - 1;
 }

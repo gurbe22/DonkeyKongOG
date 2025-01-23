@@ -1,6 +1,7 @@
 #include "mario.h"
+using namespace std;
 
-char mario::findNextChar(char currChar, gameConfig::eKeys key)
+char Mario::findNextChar(char currChar, GameConfig::eKeys key)
 {
 	// Get Mario's current position
 	int x = myMario.getX();
@@ -8,27 +9,27 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 
 	switch (key)
 	{
-	case gameConfig::eKeys::UP:
-		if (currChar == gameConfig::LADDER)
+	case GameConfig::eKeys::UP:
+		if (currChar == GameConfig::LADDER)
 		{
 			// Reset horizontal movement when climbing a ladder
 			myMario.setDiffX(0);
 		}
 		return myMario.getBoard()->getChar(x + myMario.getDiffX(), y - 1);
-	case gameConfig::eKeys::DOWN:
-		if (currChar == gameConfig::LADDER)
+	case GameConfig::eKeys::DOWN:
+		if (currChar == GameConfig::LADDER)
 		{
 			// Reset horizontal movement when climbing a ladder
 			myMario.setDiffX(0);
 		}
 		return myMario.getBoard()->getChar(x + myMario.getDiffX(), y + 1);
-	case gameConfig::eKeys::LEFT:
+	case GameConfig::eKeys::LEFT:
 		// Get the character to the left of Mario
 		return myMario.getBoard()->getChar(x - 1, y);
-	case gameConfig::eKeys::RIGHT:
+	case GameConfig::eKeys::RIGHT:
 		// Get the character to the right of Mario
 		return myMario.getBoard()->getChar(x + 1, y);
-	case gameConfig::eKeys::STAY:
+	case GameConfig::eKeys::STAY:
 		// Get the character at Mario's current position
 		return myMario.getBoard()->getChar(x, y);
 	default:
@@ -39,55 +40,55 @@ char mario::findNextChar(char currChar, gameConfig::eKeys key)
 	}
 }
 
-void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <ghost>& ghosts)
+void Mario::moveMario(GameConfig::eKeys& key, vector <Barrel> &barrels, vector <Ghost>& ghosts)
 {
 	// Variables for Mario's state and position
-	point::States state;
+	Point::States state;
 	char currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY());
 	char nextChar = findNextChar(currChar, key);
 
-	if (currChar == gameConfig::HAMMER)
+	if (currChar == GameConfig::HAMMER)
 	{
 		isHammer = true;
-		myMario.getBoard()->setChar(myMario.getBoard()->getHammerPositionX(), myMario.getBoard()->getHammerPositionY(), gameConfig::WITH_HAMMER);
+		myMario.getBoard()->setChar(myMario.getBoard()->getHammerPositionX(), myMario.getBoard()->getHammerPositionY(), GameConfig::WITH_HAMMER);
 		gotoxy(myMario.getBoard()->getHammerPositionX(), myMario.getBoard()->getHammerPositionY());
-		cout << gameConfig::WITH_HAMMER;
+		cout << GameConfig::WITH_HAMMER;
 		gotoxy(myMario.getX(), myMario.getY());
 	}
 
 	// Determine Mario's state based on current and next characters
 	state = findMarioState(currChar, nextChar, key);
 
-	if (key == gameConfig::eKeys::RIGHT)
-		setHammerDirection(RIGHT);
-	else if (key == gameConfig::eKeys::LEFT)
-		setHammerDirection(LEFT);
-
-	if (key == gameConfig::eKeys::HAMMER && isHammer)
+	if (key == GameConfig::eKeys::RIGHT)
+		setHammerDirection((int)GameConfig::directions::RIGHT);
+	else if (key == GameConfig::eKeys::LEFT)
+		setHammerDirection((int) GameConfig::directions::LEFT);
+		 
+	if (key == GameConfig::eKeys::HAMMER && isHammer)
 	{
 		hammering(barrels, ghosts);
 	}
 
 	switch (state)
 	{
-	case point::States::FALLING:
+	case Point::States::FALLING:
 		// Move Mario downward when falling
 		myMario.move(0, 1);
 		break;
-	case point::States::JUMPING:
+	case Point::States::JUMPING:
 		// Handle Mario's jumping mechanics
 		jump(key, nextChar);
 		break;
-	case point::States::CLIMBING:
+	case Point::States::CLIMBING:
 		// Handle Mario's climbing mechanics
-		climbing(nextChar, key);
+		climb(nextChar, key);
 		myMario.setHeightFalling(0);
 		break;
-	case point::States::WALKING_OR_STAYING:
+	case Point::States::WALKING_OR_STAYING:
 		if (isAlive())
 		{
 			// Handle Mario's walking or staying behavior
-			WalkingOrStaying(key);
+			walkingOrStaying(key);
 		}
 		else
 		{
@@ -100,7 +101,7 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 	}
 
 	// Check if Mario is disqualified by barrels or other conditions
-	if (MarioIsDisqualified(barrels, ghosts, nextChar))
+	if (isMarioDisqualified(barrels, ghosts, nextChar))
 	{
 		setLives();
 	}
@@ -109,14 +110,14 @@ void mario::moveMario(gameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 
 }
 
-bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
+bool Mario::isClimbing(char currChar, char nextChar, GameConfig::eKeys key) const
 {
-	if (currChar == gameConfig::LADDER)
+	if (currChar == GameConfig::LADDER)
 	{
 		// Check if Mario can continue climbing
-		if (nextChar == gameConfig::LADDER || ((nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR || nextChar == gameConfig::FLOOR)
-			&& key == gameConfig::eKeys::UP || key == gameConfig::eKeys::STAY ||
-			(key == gameConfig::eKeys::HAMMER && (prevKey == gameConfig::eKeys::STAY || prevKey == gameConfig::eKeys::UP))))
+		if (nextChar == GameConfig::LADDER || ((nextChar == GameConfig::LFLOOR || nextChar == GameConfig::RFLOOR || nextChar == GameConfig::FLOOR)
+			&& key == GameConfig::eKeys::UP || key == GameConfig::eKeys::STAY ||
+			(key == GameConfig::eKeys::HAMMER && (prevKey == GameConfig::eKeys::STAY || prevKey == GameConfig::eKeys::UP))))
 		{
 			return true;
 		}
@@ -125,8 +126,8 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	{
 		// Check if Mario can start climbing downward from the floor
 		char ch2Above = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2);
-		if (myMario.isOnFloor() && ch2Above == gameConfig::LADDER  && (key == gameConfig::eKeys::DOWN ||
-		key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::DOWN))
+		if (myMario.isOnFloor() && ch2Above == GameConfig::LADDER  && (key == GameConfig::eKeys::DOWN ||
+		key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::DOWN))
 		{
 			return true;
 		}
@@ -134,13 +135,13 @@ bool mario::isClimbing(char currChar, char nextChar, gameConfig::eKeys key)
 	return false;
 }
 
-bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
+bool Mario::isJumping(char currChar, char nextChar, GameConfig::eKeys key)
 {
 	// Determine if Mario is jumping based on the environment and state
-	if ((((currChar == gameConfig::OPEN_SPACE || 
-		   currChar == gameConfig::HAMMER) &&
+	if ((((currChar == GameConfig::OPEN_SPACE || 
+		   currChar == GameConfig::HAMMER) &&
 		   myMario.isOnFloor() && 
-	       key == gameConfig::eKeys::UP) || 
+	       key == GameConfig::eKeys::UP) || 
 		   jumping == true) && isAlive())
 	{
 		jumping = true;
@@ -152,32 +153,32 @@ bool mario::isJumping(char currChar, char nextChar, gameConfig::eKeys key)
 	}
 }
 
-point::States mario::findMarioState(char currChar, char nextChar, gameConfig::eKeys key)
+Point::States Mario::findMarioState(char currChar, char nextChar, GameConfig::eKeys key)
 {
 	// Determine Mario's state based on climbing, jumping, or falling conditions
 	if (isClimbing(currChar, nextChar, key))
-		return point::States::CLIMBING;
+		return Point::States::CLIMBING;
 	else if (isJumping(currChar, nextChar, key))
-		return point::States::JUMPING;
+		return Point::States::JUMPING;
 	else if (myMario.isFalling(currChar))
-		return point::States::FALLING;
+		return Point::States::FALLING;
 	else
-		return point::States::WALKING_OR_STAYING;
+		return Point::States::WALKING_OR_STAYING;
 }
 
-void mario::jump(gameConfig::eKeys& key, char nextChar)
+void Mario::jump(GameConfig::eKeys& key, char nextChar)
 {
 	// Handle upward jump mechanics
-	if (heightJumping >= 2 || myMario.isFloor(nextChar))
+	if (heightJumping >= 2 || GameConfig::isFloor(nextChar))
 	{
 		isUp = false;
 		// Adjust key for the next movement based on Mario's direction
 		if (myMario.getDiffX() == 0)
-			key = gameConfig::eKeys::STAY;
+			key = GameConfig::eKeys::STAY;
 		else if (myMario.getDiffX() == 1)
-			key = gameConfig::eKeys::RIGHT;
+			key = GameConfig::eKeys::RIGHT;
 		else
-			key = gameConfig::eKeys::LEFT;
+			key = GameConfig::eKeys::LEFT;
 	}
 
 	if (isUp)
@@ -206,29 +207,29 @@ void mario::jump(gameConfig::eKeys& key, char nextChar)
 	}
 }
 
-void mario::climbing(char nextChar, gameConfig::eKeys& key)
+void Mario::climb(char nextChar, GameConfig::eKeys& key)
 {
 	// Reset jumping state when climbing
 	heightJumping = 0;
 	jumping = false;
 
-	if (key == gameConfig::eKeys::UP || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::UP))
+	if (key == GameConfig::eKeys::UP || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::UP))
 	{
 		// Move Mario upward when climbing
-		if (nextChar == gameConfig::FLOOR || nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR)
+		if (nextChar == GameConfig::FLOOR || nextChar == GameConfig::LFLOOR || nextChar == GameConfig::RFLOOR)
 		{
 			myMario.move(0, -2);
-			key = gameConfig::eKeys::STAY;
+			key = GameConfig::eKeys::STAY;
 		}
 		else
 		{
 			myMario.move(0, -1);
 		}
 	}
-	else if (key == gameConfig::eKeys::DOWN || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::DOWN))
+	else if (key == GameConfig::eKeys::DOWN || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::DOWN))
 	{
 		// Move Mario downward when climbing
-		if (nextChar == gameConfig::FLOOR || nextChar == gameConfig::LFLOOR || nextChar == gameConfig::RFLOOR)
+		if (nextChar == GameConfig::FLOOR || nextChar == GameConfig::LFLOOR || nextChar == GameConfig::RFLOOR)
 		{
 			myMario.move(0, 2);
 		}
@@ -237,20 +238,20 @@ void mario::climbing(char nextChar, gameConfig::eKeys& key)
 			myMario.move(0, 1);
 		}
 	}
-	else if (key == gameConfig::eKeys::STAY || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::STAY))
+	else if (key == GameConfig::eKeys::STAY || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::STAY))
 	{
 		// Keep Mario in place
 		myMario.move(0, 0);
 	}
 }
 
-bool mario::isAlive()
+bool Mario::isAlive() const
 {
 	// Check if Mario is alive based on falling height
 	return (myMario.getHeightFalling() < CHARS_TO_DEATH);
 }
 
-void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
+void Mario::hammering(vector<Barrel>& barrels, vector<Ghost>& ghosts)
 {
 	for (auto it = barrels.begin(); it != barrels.end(); )
 	{
@@ -282,7 +283,7 @@ void mario::hammering(vector<Barrel>& barrels, vector<ghost>& ghosts)
 }
 
 
-bool mario::MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost> &ghosts, int nextChar)
+bool Mario::isMarioDisqualified(vector <Barrel>& barrels, vector <Ghost> &ghosts, int nextChar) const
 {
 	int marioX = myMario.getX();
 	int marioY = myMario.getY();
@@ -340,31 +341,31 @@ bool mario::MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost> &ghosts
 	}
 
 	// Check if Mario interacts with Donkey Kong
-	if (nextChar == gameConfig::DONKEYKONG)
+	if (nextChar == GameConfig::DONKEYKONG)
 	{
 		return true;
 	}
 	return false;
 }
 
-bool mario::isWon()
+bool Mario::isWon() const
 {
 	// Check if Mario reached Pauline
-	if (myMario.getBoard()->getChar(myMario.getX(), myMario.getY()) == gameConfig::PAULINE)
+	if (myMario.getBoard()->getChar(myMario.getX(), myMario.getY()) == GameConfig::PAULINE)
 	{
 		return true;
 	}
 	return false;
 }
 
-void mario::WalkingOrStaying(gameConfig::eKeys key)
+void Mario::walkingOrStaying(GameConfig::eKeys key)
 {
 	// Handle Mario's walking or staying behavior based on the input key
-	if (key == gameConfig::eKeys::LEFT || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::LEFT))
+	if (key == GameConfig::eKeys::LEFT || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::LEFT))
 		myMario.move(-1, 0);
-	else if (key == gameConfig::eKeys::RIGHT || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::RIGHT))
+	else if (key == GameConfig::eKeys::RIGHT || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::RIGHT))
 		myMario.move(1, 0);
-	else if (key == gameConfig::eKeys::STAY || (key == gameConfig::eKeys::HAMMER && prevKey == gameConfig::eKeys::STAY))
+	else if (key == GameConfig::eKeys::STAY || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::STAY) )
 		myMario.move(0, 0);
 	else
 	{
@@ -376,20 +377,20 @@ void mario::WalkingOrStaying(gameConfig::eKeys key)
 }
 
 
-void mario::setHammerDirection() {
+void Mario::setHammerDirection() {
 	hammerDirection = bendingDir(myMario.getX());
 }
 
-void mario::setHammerDirection(int dir) {
+void Mario::setHammerDirection(int dir) {
 	hammerDirection = dir;
 }
 
-void mario::addScore(int newPoints){
+void Mario::addScore(int newPoints){
 
 	score = score + newPoints;
-	if (score > gameConfig::MAX_SCORE)
+	if (score > GameConfig::MAX_SCORE)
 	{
-		score = gameConfig::MAX_SCORE;
+		score = GameConfig::MAX_SCORE;
 	}
 	myMario.getBoard()->addScore(score, myMario.getX(), myMario.getY());
 }

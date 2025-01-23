@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
  
-#include "gameConfig.h"
+#include "GameConfig.h"
 #include "utils.h"
 #include <vector>
 #include <fstream>
@@ -31,8 +31,8 @@ class Board
     
 
     // Board representation
-    char originalBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
-    char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1];
+    char originalBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
+    char currentBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
 
     //// Positions
     int marioStartingX;
@@ -59,7 +59,6 @@ public:
     void reset();
     void print() const;
     bool load(const std::string& filename);
-
 
     // Board character manipulation
     char getChar(int x, int y) const { return currentBoard[y][x]; }
@@ -103,20 +102,7 @@ public:
         return infoPosY + SCORE_INDENTATION_Y;
     }
 
-    // Error displays
-    void displayErrorNoFiles();
-    void displayErrorUnacceptableCharacter();
-    void displaySignificantCharacterMissing();
-    void displayLoadingFileFailed();
-    void displayDonkeyKongInIllegalPlace();
-    void displayErrorNotExistFile();
-
-    // Game state displays
-    void displayPauseScreen();
-    void displayVictory();
-    void displayDisqualified();
-    void displayLoss();
-
+    
     //Key positions getters
     int getDonkeyPosX() const
     {
@@ -148,9 +134,23 @@ public:
     // Score handling
     void addScore(int score, int returningX, int returningY);
     void printScore(int score, int returningX, int returningY, int indentation) const;
-
-
     int getNewScoreIndetation(int score) const;
+
+// Error displays
+    void displayErrorNoFiles();
+    void displayErrorUnacceptableCharacter();
+    void displaySignificantCharacterMissing();
+    void displayLoadingFileFailed();
+    void displayDonkeyKongInIllegalPlace();
+    void displayErrorNotExistFile();
+
+    // Game state displays
+    void displayPauseScreen();
+    void displayVictory();
+    void displayDisqualified();
+    void displayLoss();
+    void displayWonLevel();
+
 };
 
 #endif

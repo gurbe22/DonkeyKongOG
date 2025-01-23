@@ -5,83 +5,58 @@
 #include "gameConfig.h"
 #include "barrel.h"
 #include "ghost.h"
-using namespace std;
 
 // The 'mario' class manages the behavior and state of Mario in the game.
-class mario
+class Mario
 {
 	// Constants for Mario's starting position, lives, and death criteria
 
-	static constexpr int LIVES = 3;
+	static constexpr int INITIAL_LIVES = 3;
 	static constexpr int CHARS_TO_DEATH = 5;
-	static constexpr int RIGHT = 1;
-	static constexpr int LEFT = -1;
 	static constexpr int BARREL_SCORE = 50;
 	static constexpr int GHOST_SCORE = 100;
 
-	point myMario; // Represents Mario as a point on the board 
-	int marioStartingX = 0;
-	int marioStartingY = 0;
+	// Member variables
+	Point myMario; // Represents Mario as a point on the board 
+	int marioStartingX = 0; // Starting X position
+	int marioStartingY = 0; // Starting Y position
 	int heightJumping = 0; // Tracks how high Mario is jumping
 	bool jumping = false; // Indicates if Mario is currently jumping
 	bool isUp = true; // Tracks the direction of Mario's jump
-	int lives = LIVES; // Current number of lives Mario has
+	int lives = INITIAL_LIVES; // Current number of lives Mario has
 	bool isHammer = false; // Indicates if Mario has a hammer
-	int hammerDirection = 0;
-	gameConfig::eKeys prevKey = gameConfig::eKeys::STAY;
-	int score = 0;
+	int score = 0; // Current score
+	int hammerDirection = 0; // Hammer direction
+	GameConfig::eKeys prevKey = GameConfig::eKeys::STAY; // Previous key
 
-	// Function to make Mario jump
-	void jump(gameConfig::eKeys& key, char nextChar);
+	// Helper methods
+	void jump(GameConfig::eKeys& key, char nextChar);
+	void climb(char nextChar, GameConfig::eKeys& key);
+	void walkingOrStaying(GameConfig::eKeys key);
+	void hammering(std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts);
 
-	// Function to make Mario climb
-	void climbing(char nextChar, gameConfig::eKeys& key);
+	bool isClimbing(char currChar, char nextChar, GameConfig::eKeys key) const;
+	bool isJumping(char currChar, char nextChar, GameConfig::eKeys key);
+	bool isAlive() const;
+	bool isMarioDisqualified(std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts, int nextChar) const;
 
-	// Determines the next character based on Mario's position and input
-	char findNextChar(char currChar, gameConfig::eKeys key);
-
-	// Checks if Mario is in a climbing state
-	bool isClimbing(char currChar, char nextChar, gameConfig::eKeys key);
-
-	// Checks if Mario is in a jumping state
-	bool isJumping(char currChar, char nextChar, gameConfig::eKeys key);
-
-	// Handles Mario's walking or stationary behavior
-	void WalkingOrStaying(gameConfig::eKeys key);
-
-	// Determines Mario's current state based on the environment and input
-	point::States findMarioState(char currChar, char nextChar, gameConfig::eKeys key);
-
-	// Checks if Mario is alive
-	bool isAlive();
-
-	// Decrements Mario's life count
-	void setLives()
-	{
-		lives--;
-	}
-
-	// Checks if Mario is disqualified due to interaction with barrels
-	bool MarioIsDisqualified(vector <Barrel>& barrels, vector <ghost>& ghosts, int nextChar);
-
-	void hammering(vector <Barrel>& barrels, vector <ghost>& ghosts);
+	char findNextChar(char currChar, GameConfig::eKeys key);
+	Point::States findMarioState(char currChar, char nextChar, GameConfig::eKeys key);
 
 
 public:
-	// Constructor to initialize Mario's starting position
-	mario() : myMario() { };
 
-	// Draws Mario on the board
-	void drawMario() const
-	{
-		myMario.draw(gameConfig::MARIO);
+	// Constructors
+	Mario() = default;
+
+	// Gameplay-related methods
+	void drawMario() const {
+		myMario.draw(GameConfig::MARIO);
 	}
-
-	// Erases Mario from the board
 	void eraseMario() const
 	{
 		char currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); // Retrieves the character at the point's position on the board
-		if (currChar == gameConfig::HAMMER)
+		if (currChar == GameConfig::HAMMER)
 		{
 			myMario.eraseCompletely();
 		}
@@ -90,46 +65,36 @@ public:
 			myMario.erase();
 		}
 	}
+	void moveMario(GameConfig::eKeys& key, std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts);
+	void makeDeath() { lives = 0; }
 
-	// Moves Mario based on the player's input and barrel interactions
-	void moveMario(gameConfig::eKeys& key, vector <Barrel>& barrels, vector <ghost>& ghosts);
-
-	// Sets the game board for Mario's reference
-	void setBoard(Board& board)
-	{
-		myMario.setBoard(board);
-	}
-
-	// Returns the number of lives Mario has left
+	// State-related methods
 	int getLives() const { return lives; }
 	int getScore() const { return score; }
+	void addScore(int newPoints);
+	bool isWon() const;
 
-	// Resets Mario to the starting position
+	// Board interaction
+	void setBoard(Board& board) { myMario.setBoard(board); }
 	void setMarioToStart()
 	{
 		isHammer = false;
+		jumping = false;
+
+		myMario.setDiffX(0);
+		myMario.setDiffY(0);
 		myMario.setX(marioStartingX);
 		myMario.setY(marioStartingY);
 	}
 
-	// Sets Mario's lives to zero (indicates death)
-	void makeDeath()
-	{
-		lives = 0;
-	}
-
-	// Checks if Mario has won the game
-	bool isWon();
-
 	void setStartingX(int startingX) { marioStartingX = startingX; }
-
 	void setStartingY(int startingY) { marioStartingY = startingY; }
 
 	void setHammerDirection();
-
 	void setHammerDirection(int dir);
 
-	void addScore(int newPoints);
+	// Decrements Mario's life count
+	void setLives() { lives--; }
 };
 
 #endif

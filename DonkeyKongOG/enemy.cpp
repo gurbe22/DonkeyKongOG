@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-bool enemy::isWithinBounds(int x, int y) const
+bool Enemy::isWithinBounds(int x, int y) const
 {
-	return x >= 0 && x < gameConfig::GAME_WIDTH && y >= 0 && y < gameConfig::GAME_HEIGHT;
+	return x >= 0 && x < GameConfig::GAME_WIDTH && y >= 0 && y < GameConfig::GAME_HEIGHT;
 }

@@ -1,7 +1,7 @@
-#ifndef GAMECONFIG_H
-#define GAMECONFIG_H
+#ifndef GameConfig_H
+#define GameConfig_H
 
-class gameConfig
+class GameConfig
 {
 public:
     // Enumeration for key inputs used in the game
@@ -11,9 +11,15 @@ public:
         UP = 'w',     // Move up
         DOWN = 'x',   // Move down
         STAY = 's',   // Stay in the current position
-		HAMMER = 'p', // Use the hammer
+        HAMMER = 'p', // Use the hammer
+        SUICIDE = 'k',// Reset the level with one life less
         ESC = 27,     // Escape key for pause menu
         EXIT = '\r',  // Enter key for exiting
+    };
+
+    enum class directions {
+        LEFT = -1,   // Move left
+        RIGHT = 1,  // Move right
     };
 
     // Dimensions of the game board
@@ -41,9 +47,8 @@ public:
 
     static constexpr int MAX_SCORE = 9999;  // Maximum score
 
-    // Utility function to check if a character is part of the floor
-    static bool isFloor(char ch)
-    {
+    // Checks if the given character represents a floor
+    static bool isFloor(char ch){
         return ch == FLOOR ||
             ch == LFLOOR ||
             ch == RFLOOR ||
