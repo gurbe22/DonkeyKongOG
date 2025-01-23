@@ -20,7 +20,7 @@ class Barrel : public Enemy
     Point::States findBarrelState(char currChar) const;
 
     // Checks if the barrel is exploding
-    bool isExploding() { 
+    bool isExploding() const { 
         return (myEnemy.getHeightFalling() >= HEIGHT_TO_EXPLODE);
     }
 
@@ -34,6 +34,8 @@ public:
     // Constructor to initialize the barrel with an optional delay
     Barrel(Board& board, int ghostStartingX, int ghostStartingY)
         : Enemy(board, ghostStartingX, ghostStartingY) {}
+
+    ~Barrel() override = default;
 
     // Moves the barrel based on its state
     void moveBarrel();

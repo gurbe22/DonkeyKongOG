@@ -26,6 +26,8 @@ public:
 	Ghost( Board &board,int ghostStartingX, int ghostStartingY)
 		: Enemy(board, ghostStartingX, ghostStartingY ){}
 
+	~Ghost() override = default;
+
 	void moveGhost (std::vector<Ghost>& ghosts);
 	
 	void draw() const override { myEnemy.draw(GameConfig::GHOST); }
