@@ -15,9 +15,6 @@ class Point
     int heightFalling = 0;           // Tracks the height the point has fallen
     Board* pBoard = nullptr;         // Pointer to the associated game board
 
-    // Checks if a position is outside the board limits
-    bool isOutOfLimit(int newPos_x, int newPos_y) const;
-
 public:
     // Enumeration representing the different states of the point's movement or action
     enum class States { FALLING, JUMPING, CLIMBING, WALKING_OR_STAYING, EXPLODING};
@@ -79,6 +76,9 @@ public:
 
     // Checks if the point is currently on a floor
     bool isOnFloor() const;
+
+    // Checks if a position is outside the board limits
+    bool isOutOfLimit(int newPos_x, int newPos_y) const;
 };
 
 #endif

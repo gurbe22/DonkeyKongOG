@@ -78,6 +78,7 @@ void Barrel::barrelWalking(char charBelow)
 		// Move the barrel in its current horizontal direction
 		if (diffX == 0)
 		{
+			myEnemy.erase();
 			setExplode(true);
 		}
 		else
@@ -96,5 +97,10 @@ void Barrel::barrelWalking(char charBelow)
 	default:
 		// Do nothing if the floor type is not recognized
 		break;
+	}
+	if (myEnemy.isOutOfLimit(getX(), getY() + 1))
+	{
+		myEnemy.erase();
+		setExplode(true); // Out of bounds
 	}
 }

@@ -32,7 +32,6 @@ bool Board::load(const std::string& filename) {
 	int curr_row = 0;
 	int curr_col = 0;
 	char currentChar;
-	bool isGameWithLimit = false;
 	bool isPaulineFound = false;
 	bool isDonkeyKongFound = false;
 	bool isHammerFound = false;
@@ -46,7 +45,7 @@ bool Board::load(const std::string& filename) {
 			if (curr_col < GameConfig::GAME_WIDTH) {
 				// add spaces for missing cols
 #pragma warning(suppress : 4996) // to allow strcpy
-				strcpy(originalBoard[curr_row] + curr_col, std::string(GameConfig::GAME_WIDTH - curr_col - 1, GameConfig::OPEN_SPACE).c_str());
+				strcpy(originalBoard[curr_row] + curr_col, std::string(GameConfig::GAME_WIDTH - curr_col, GameConfig::OPEN_SPACE).c_str());
 
 
 			}
@@ -56,9 +55,6 @@ bool Board::load(const std::string& filename) {
 		}
 		if (curr_col < GameConfig::GAME_WIDTH)
 		{
-			if (currentChar == GameConfig::LIMIT) {
-				isGameWithLimit = true;
-			}
 			// handle special chars
 			if (!handleSpecialChar(currentChar, curr_row, curr_col, isPaulineFound, isDonkeyKongFound, isHammerFound, isMarioFound, isInfoFound))
 			{
@@ -66,11 +62,19 @@ bool Board::load(const std::string& filename) {
 			}
 		}
 	}
-	++curr_row;
+	
+	//++curr_row;
 	for (; curr_row < GameConfig::GAME_HEIGHT; curr_row++)
 	{
+		if (curr_col != 0)
+		{
+#pragma warning(suppress : 4996) // to allow strcpy
+			strcpy(originalBoard[curr_row] + curr_col, std::string(GameConfig::GAME_WIDTH - curr_col, GameConfig::OPEN_SPACE).c_str());
+		}
+		else{
 #pragma warning(suppress : 4996) // to allow strcpy
 		strcpy(originalBoard[curr_row] , string(GameConfig::GAME_WIDTH - 1 , GameConfig::OPEN_SPACE).c_str());
+		}
 	}
 
 	if (!(isPaulineFound && isDonkeyKongFound && isHammerFound && isMarioFound && isInfoFound))

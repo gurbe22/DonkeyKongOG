@@ -302,6 +302,8 @@ void Game::moveEnemies(vector<Enemy*>& enemies)
 		}
 		else if (typeid(*enemy) == typeid(Barrel))
 		{
+			enemy->move();
+
 			if (enemy->getIsExplode())
 			{
 				delete enemy; // מחיקת החבית מהזיכרון
@@ -309,7 +311,6 @@ void Game::moveEnemies(vector<Enemy*>& enemies)
 			}
 			else
 			{
-				enemy->move();
 				enemy->draw();
 				++it; // עוברים לאובייקט הבא
 			}
@@ -429,8 +430,7 @@ void Game::displayTitleWithAnimation() const {
 		" D    D O     O  NN  N  K  K    E        YYY     K  K    O     O NN  N  G     ",
 		" D    D O     O  N N N  KKK     EEEE      Y      KKK    O       ON N N  G  GG ",
 		" D    D O     O  N  NN  K  K    E         Y      K  K    O     O N  NN  G   G ",
-		" DDDDD   OOOOO   N   N  K   K   EEEEE     Y      K   K    OOOOO  N   N  GGGG  ",
-		""
+		" DDDDD   OOOOO   N   N  K   K   EEEEE     Y      K   K    OOOOO  N   N  GGGG  "
 	};
 	printWithAnimation(gameTitle, ANIMATION_SPEED);
 }
@@ -465,7 +465,6 @@ void Game::displayDonkyKongArtWithAnimation() const
 void Game::displayOptionsWithAnimation() const
 {
 	std::vector<std::string> options = {
-		"---------------------------------------",
 		"               MAIN MENU               ",
 		"---------------------------------------",
 		"1. Start a new game",
