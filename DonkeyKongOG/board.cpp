@@ -70,6 +70,7 @@ bool Board::load(const std::string& filename) {
 		{
 #pragma warning(suppress : 4996) // to allow strcpy
 			strcpy(originalBoard[curr_row] + curr_col, std::string(GameConfig::GAME_WIDTH - curr_col, GameConfig::OPEN_SPACE).c_str());
+			curr_col = 0;
 		}
 		else{
 #pragma warning(suppress : 4996) // to allow strcpy
