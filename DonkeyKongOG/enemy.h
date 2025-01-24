@@ -2,7 +2,6 @@
 #define ENEMY_H
 
 #include "Point.h"
-
 class Enemy
 {
 protected:
@@ -47,6 +46,14 @@ public:
 		myEnemy.erase();
 	}
 
+	virtual void move(std::vector<Enemy*>& enemies) = 0;
+
+	virtual void move() = 0;
+
+	virtual bool getIsExplode() const = 0;
+
+	virtual void changeDirection() = 0;
+
 	int getDiffX() const
 	{
 		return myEnemy.getDiffX();
@@ -56,6 +63,7 @@ public:
 	{
 		return myEnemy.getDiffY();
 	}
+
 };
 
 #endif

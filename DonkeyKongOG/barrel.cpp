@@ -34,7 +34,7 @@ Point::States Barrel::findBarrelState(char currChar) const
 }
 
 // Moves the barrel based on its state
-void Barrel::moveBarrel()
+void Barrel::move()
 {
 	char currChar = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY());
 	char charBelow = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY() + 1);

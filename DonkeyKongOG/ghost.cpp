@@ -1,8 +1,7 @@
 #include "ghost.h"
-
 using namespace std;
 
-void Ghost::moveGhost(vector<Ghost>& ghosts) {
+void Ghost::move(vector<Enemy*>& enemies) {
 	// Check if the ghost is in the air
 	int currentX = myEnemy.getX();
 	int currentY = myEnemy.getY();
@@ -24,7 +23,7 @@ void Ghost::moveGhost(vector<Ghost>& ghosts) {
 	int maxAttempts = 2; // Maximum attempts to move in a direction
 	while (maxAttempts > 0) {
 		// Check for collisions with other ghosts
-		preventCollision(ghosts);
+		preventCollision(enemies);
 		int nextX = myEnemy.getX() + static_cast<int>(direction);
 		int nextY = myEnemy.getY();
 		int belowNextX = nextX;
@@ -52,20 +51,21 @@ void Ghost::moveGhost(vector<Ghost>& ghosts) {
 }
 
 
-void Ghost::preventCollision(vector<Ghost>& ghosts) {
-	for (auto& otherGhost : ghosts) {
-		if (&otherGhost == this) continue; // Skip self-comparison
+void Ghost::preventCollision(vector<Enemy*>& enemies) {
+	for (auto& otherGhost : enemies) {
+		Ghost* pb = dynamic_cast<Ghost*>(otherGhost);
+		if (otherGhost == this || !pb) continue; // Skip self-comparison
 
 		int nextX = myEnemy.getX() + static_cast<int>(direction);
 		int nextY = myEnemy.getY();
-		int otherX = otherGhost.myEnemy.getX();
-		int otherY = otherGhost.myEnemy.getY();
+		int otherX = otherGhost->getX();
+		int otherY = otherGhost->getY();
 
 		// Check if ghosts would collide
 		if (nextX == otherX && nextY == otherY) {
 			// Ghosts are moving towards each other, change direction
 			changeDirection();
-			otherGhost.changeDirection();
+			otherGhost->changeDirection();
 			return; // Exit after handling the collision prevention
 		}
 	}

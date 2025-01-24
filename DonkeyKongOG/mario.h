@@ -5,7 +5,7 @@
 #include "gameConfig.h"
 #include "barrel.h"
 #include "ghost.h"
-
+#include "enemy.h"
 // The 'mario' class manages the behavior and state of Mario in the game.
 class Mario
 {
@@ -33,12 +33,14 @@ class Mario
 	void jump(GameConfig::eKeys& key, char nextChar);
 	void climb(char nextChar, GameConfig::eKeys& key);
 	void walkingOrStaying(GameConfig::eKeys key);
-	void hammering(std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts);
+	void hammering(std::vector<Enemy*>& enemies);
 
 	bool isClimbing(char currChar, char nextChar, GameConfig::eKeys key) const;
 	bool isJumping(char currChar, char nextChar, GameConfig::eKeys key);
 	bool isAlive() const;
-	bool isMarioDisqualified(std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts, int nextChar) const;
+	bool isMarioDisqualified(std::vector<Enemy*>& enemies, int nextChar) const;
+	bool isCollision(int marioX, int marioY, int marioNextX, int marioNextY, int enemyX, int enemyY, int enemyNextX, int enemyNextY) const;
+	bool isInExplosionRadius(int marioX, int marioY, int barrelX, int barrelY) const;
 
 	char findNextChar(char currChar, GameConfig::eKeys key);
 	Point::States findMarioState(char currChar, char nextChar, GameConfig::eKeys key);
@@ -65,7 +67,7 @@ public:
 			myMario.erase();
 		}
 	}
-	void moveMario(GameConfig::eKeys& key, std::vector <Barrel>& barrels, std::vector <Ghost>& ghosts);
+	void moveMario(GameConfig::eKeys& key, std::vector<Enemy*>& enemies);
 	void makeDeath() { lives = 0; }
 
 	// State-related methods

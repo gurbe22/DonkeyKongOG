@@ -40,7 +40,7 @@ char Mario::findNextChar(char currChar, GameConfig::eKeys key)
 	}
 }
 
-void Mario::moveMario(GameConfig::eKeys& key, vector <Barrel> &barrels, vector <Ghost>& ghosts)
+void Mario::moveMario(GameConfig::eKeys& key, vector <Enemy*>& enemies)
 {
 	// Variables for Mario's state and position
 	Point::States state;
@@ -62,11 +62,11 @@ void Mario::moveMario(GameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 	if (key == GameConfig::eKeys::RIGHT)
 		setHammerDirection((int)GameConfig::directions::RIGHT);
 	else if (key == GameConfig::eKeys::LEFT)
-		setHammerDirection((int) GameConfig::directions::LEFT);
-		 
+		setHammerDirection((int)GameConfig::directions::LEFT);
+
 	if (key == GameConfig::eKeys::HAMMER && isHammer)
 	{
-		hammering(barrels, ghosts);
+		hammering(enemies);
 	}
 
 	switch (state)
@@ -101,12 +101,12 @@ void Mario::moveMario(GameConfig::eKeys& key, vector <Barrel> &barrels, vector <
 	}
 
 	// Check if Mario is disqualified by barrels or other conditions
-	if (isMarioDisqualified(barrels, ghosts, nextChar))
+	if (isMarioDisqualified(enemies, nextChar))
 	{
 		setLives();
 	}
 
-	prevKey = key;    
+	prevKey = key;
 
 }
 
@@ -126,8 +126,8 @@ bool Mario::isClimbing(char currChar, char nextChar, GameConfig::eKeys key) cons
 	{
 		// Check if Mario can start climbing downward from the floor
 		char ch2Above = myMario.getBoard()->getChar(myMario.getX(), myMario.getY() + 2);
-		if (myMario.isOnFloor() && ch2Above == GameConfig::LADDER  && (key == GameConfig::eKeys::DOWN ||
-		key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::DOWN))
+		if (myMario.isOnFloor() && ch2Above == GameConfig::LADDER && (key == GameConfig::eKeys::DOWN ||
+			key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::DOWN))
 		{
 			return true;
 		}
@@ -138,11 +138,11 @@ bool Mario::isClimbing(char currChar, char nextChar, GameConfig::eKeys key) cons
 bool Mario::isJumping(char currChar, char nextChar, GameConfig::eKeys key)
 {
 	// Determine if Mario is jumping based on the environment and state
-	if ((((currChar == GameConfig::OPEN_SPACE || 
-		   currChar == GameConfig::HAMMER) &&
-		   myMario.isOnFloor() && 
-	       key == GameConfig::eKeys::UP) || 
-		   jumping == true) && isAlive())
+	if ((((currChar == GameConfig::OPEN_SPACE ||
+		currChar == GameConfig::HAMMER) &&
+		myMario.isOnFloor() &&
+		key == GameConfig::eKeys::UP) ||
+		jumping == true) && isAlive())
 	{
 		jumping = true;
 		return true;
@@ -251,99 +251,84 @@ bool Mario::isAlive() const
 	return (myMario.getHeightFalling() < CHARS_TO_DEATH);
 }
 
-void Mario::hammering(vector<Barrel>& barrels, vector<Ghost>& ghosts)
+void Mario::hammering(vector<Enemy*>& enemies)
 {
-	for (auto it = barrels.begin(); it != barrels.end(); )
+	for (auto it = enemies.begin(); it != enemies.end();)
 	{
-		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) 
+		Enemy* enemy = *it;
+		if (abs(myMario.getX() + hammerDirection - enemy->getX()) <= 2 && abs(myMario.getY() - enemy->getY()) < 1)
 		{
-			addScore(BARREL_SCORE);	
-			it->erase();       
-			it = barrels.erase(it);  
-		}
-		else
-		{
-			++it;  
-		}
-	}
+			if (dynamic_cast<Ghost*>(enemy)) {
+				addScore(GHOST_SCORE);
+			}
+			else if (dynamic_cast<Barrel*>(enemy)) {
+				addScore(BARREL_SCORE);
+			}
 
-	
-	for (auto it = ghosts.begin(); it != ghosts.end(); )
-	{
-		if (abs(myMario.getX() + hammerDirection - it->getX()) <= 2 && abs(myMario.getY() - it->getY()) < 1) 
-		{
-			addScore(GHOST_SCORE);
-			it = ghosts.erase(it);  
+			delete enemy;        // מחיקת האובייקט מהזיכרון
+			it = enemies.erase(it); // מחיקת המצביע מהווקטור
 		}
 		else
 		{
-			++it;  
+			++it; // מעבר לאובייקט הבא אם אין מחיקה
 		}
 	}
 }
 
-
-bool Mario::isMarioDisqualified(vector <Barrel>& barrels, vector <Ghost> &ghosts, int nextChar) const
+bool Mario::isMarioDisqualified(vector<Enemy*>& enemies, int nextChar) const
 {
 	int marioX = myMario.getX();
 	int marioY = myMario.getY();
 	int marioNextX = marioX + myMario.getDiffX();
 	int marioNextY = marioY + myMario.getDiffY();
 
-	// Check for collision or proximity with barrels
-	for (int i = 0; i < barrels.size(); i++)
-	{
-		int barrelX = barrels[i].getX();
-		int barrelY = barrels[i].getY();
-		int barrelNextX = barrelX + barrels[i].getDiffX();
-		int barrelNextY = barrelY + barrels[i].getDiffY();
+	for (auto& enemy : enemies) {
+		int enemyX = enemy->getX();
+		int enemyY = enemy->getY();
+		int enemyNextX = enemyX + enemy->getDiffX();
+		int enemyNextY = enemyY + enemy->getDiffY();
 
-		// Check for current or next-step collision
-		if ((abs(marioX - barrelX) < 1 && abs(marioY - barrelY) < 1) ||
-			(marioNextX == barrelNextX && marioNextY == barrelNextY) ||
-			(marioNextX == barrelX && marioNextY == barrelY))
-		{
+		// בדיקת התנגשות בהווה או בצעד הבא
+		if (isCollision(marioX, marioY, marioNextX, marioNextY, enemyX, enemyY, enemyNextX, enemyNextY)) {
 			return true;
 		}
-		if (barrels[i].getIsExplode())
-		{
-			// Check for explosion radius affecting Mario
-			for (int dx = -2; dx <= 2; dx++)
-			{
-				for (int dy = -2; dy <= 2; dy++)
-				{
-					if (abs(dx) + abs(dy) <= 2)
-					{
-						if (marioX == barrelX + dx && marioY == barrelY + dy)
-						{
-							return true;
-						}
-					}
-				}
+
+		// בדיקה אם מדובר בחבית והאם התפוצצה
+		if (typeid(*enemy) == typeid(Barrel)) {
+			if (enemy->getIsExplode() && isInExplosionRadius(marioX, marioY, enemyX, enemyY)) {
+				return true;
 			}
 		}
 	}
 
-	for (int i = 0; i < ghosts.size(); i++)
-	{
-		int ghostX = ghosts[i].getX();
-		int ghostY = ghosts[i].getY();
-		int ghostNextX = ghostX + ghosts[i].getDirectionX();
-		int ghostNextY = ghostY + ghosts[i].getDirectionY();
-
-		// Check for current or next-step collision
-		if ((abs(marioX - ghostX) < 1 && abs(marioY - ghostY) < 1) ||
-			(marioNextX == ghostNextX && marioNextY == ghostNextY) ||
-			(marioNextX == ghostX && marioNextY == ghostY))
-		{
-			return true;
-		}
+	// בדיקת אינטראקציה עם דונקי קונג
+	if (nextChar == GameConfig::DONKEYKONG) {
+		return true;
 	}
 
-	// Check if Mario interacts with Donkey Kong
-	if (nextChar == GameConfig::DONKEYKONG)
-	{
-		return true;
+	return false;
+}
+
+// פונקציה לבדוק אם יש התנגשות בין מרים לאויב
+bool Mario::isCollision(int marioX, int marioY, int marioNextX, int marioNextY,
+	int enemyX, int enemyY, int enemyNextX, int enemyNextY) const
+{
+	return (abs(marioX - enemyX) < 1 && abs(marioY - enemyY) < 1) ||
+		(marioNextX == enemyNextX && marioNextY == enemyNextY) ||
+		(marioNextX == enemyX && marioNextY == enemyY);
+}
+
+// פונקציה לבדוק אם המיקום של מרים נמצא בטווח הפיצוץ של החבית
+bool Mario::isInExplosionRadius(int marioX, int marioY, int barrelX, int barrelY) const
+{
+	for (int dx = -2; dx <= 2; dx++) {
+		for (int dy = -2; dy <= 2; dy++) {
+			if (abs(dx) + abs(dy) <= 2) {
+				if (marioX == barrelX + dx && marioY == barrelY + dy) {
+					return true;
+				}
+			}
+		}
 	}
 	return false;
 }
@@ -365,7 +350,7 @@ void Mario::walkingOrStaying(GameConfig::eKeys key)
 		myMario.move(-1, 0);
 	else if (key == GameConfig::eKeys::RIGHT || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::RIGHT))
 		myMario.move(1, 0);
-	else if (key == GameConfig::eKeys::STAY || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::STAY) )
+	else if (key == GameConfig::eKeys::STAY || (key == GameConfig::eKeys::HAMMER && prevKey == GameConfig::eKeys::STAY))
 		myMario.move(0, 0);
 	else
 	{
@@ -376,7 +361,6 @@ void Mario::walkingOrStaying(GameConfig::eKeys key)
 	}
 }
 
-
 void Mario::setHammerDirection() {
 	hammerDirection = bendingDir(myMario.getX());
 }
@@ -385,7 +369,7 @@ void Mario::setHammerDirection(int dir) {
 	hammerDirection = dir;
 }
 
-void Mario::addScore(int newPoints){
+void Mario::addScore(int newPoints) {
 
 	score = score + newPoints;
 	if (score > GameConfig::MAX_SCORE)
@@ -394,4 +378,3 @@ void Mario::addScore(int newPoints){
 	}
 	myMario.getBoard()->addScore(score, myMario.getX(), myMario.getY());
 }
-

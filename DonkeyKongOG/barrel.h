@@ -38,7 +38,9 @@ public:
     ~Barrel() override = default;
 
     // Moves the barrel based on its state
-    void moveBarrel();
+    void move() override;
+
+    void move(std::vector<Enemy*>& enemies) override {};
 
     // Draws the barrel on the board
     void draw() const override
@@ -47,7 +49,10 @@ public:
     }
 
     // Gets whether the barrel is in an exploded state
-    bool getIsExplode() const { return explode; }
+    bool getIsExplode() const override { return explode; }
+
+    void changeDirection() override {};
+
 };
 
 #endif

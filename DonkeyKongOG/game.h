@@ -9,6 +9,7 @@
 #include "mario.h"
 #include "barrel.h" 
 #include "ghost.h"
+#include "enemy.h"
 #include <vector>
 
 // The 'Game' class orchestrates the gameplay, including player interactions,
@@ -31,11 +32,11 @@ class Game
 
     // Internal helper methods
     void moveBarrels(std::vector<Barrel>& barrels);
-    void eraseBarrels(std::vector <Barrel>& barrels);
-    void createAllGhosts(std::vector<Ghost>& ghosts, Board board);
+    void createAllGhosts(std::vector<Enemy*>& enemies, Board board);
     void moveGhosts(std::vector<Ghost>& ghosts);
-    void eraseGhosts(std::vector<Ghost>& ghosts);
-
+    void eraseEnemies(std::vector<Enemy*>& enemies);
+    void eraseAllCharacters(std::vector<Enemy*>& enemies, Mario& mario);
+    void moveEnemies(std::vector<Enemy*>& enemies);
 
     // Display-related methods
     void displayInstructions() const;
@@ -59,8 +60,7 @@ class Game
     void runGame(std::vector<std::string> fileNames, int levelChoice = 0);
     void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
 
-    void eraseAllCharacters(std::vector<Barrel>& barrels, std::vector<Ghost>& ghosts, Mario& mario);
-    void moveEnemies(std::vector<Barrel>& barrels, std::vector<Ghost>& ghosts);
+    
 public:
     // Displays the main menu and manages user input
     void mainMenu();
