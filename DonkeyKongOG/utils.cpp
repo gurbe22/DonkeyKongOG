@@ -30,7 +30,13 @@ void clear_screen()
     system("cls");
 }
 
-int bendingDir(const int posX)
+int bendingDirX(const int posX)
 {
     return  posX < GameConfig::GAME_WIDTH / 2 ? 1 : -1;
 }
+
+int bendingDirY(const int posY)
+{
+    return  posY < GameConfig::GAME_HEIGHT / 2 ? 1 : -1;
+}
+

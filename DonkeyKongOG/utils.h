@@ -8,5 +8,6 @@
 void ShowConsoleCursor(bool showFlag);
 void gotoxy(int, int);
 void clear_screen();
-int bendingDir(const int posX);
+int bendingDirX(const int posX);
+int bendingDirY(const int posY);
 #endif

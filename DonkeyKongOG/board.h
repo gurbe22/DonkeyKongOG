@@ -28,8 +28,6 @@ class Board
     static constexpr int INFO_WIDTH = 20;
     static constexpr int INFO_HEIGHT = 3;
 
-    
-
     // Board representation
     char originalBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
     char currentBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
@@ -42,9 +40,13 @@ class Board
     int donkeyPosY;
 
 	std::vector<std::pair<int, int>> ghostPos;
+	std::vector<std::pair<int, int>> specialGhostPos;
 
     int infoPosX;
     int infoPosY;
+
+    int hammerPosX;
+    int hammerPosY;
 
     // Helper methods
     void addInfo(int infoPosX, int infoPosY);
@@ -75,11 +77,11 @@ public:
         return infoPosY + LIVES_INDENTATION_Y;
 	}
 
-	int getHammerPositionX() const
+	int getHammerStatusPositionX() const
 	{
 		return infoPosX + HAMMER_INDENTATION_X;
 	}
-	int getHammerPositionY() const
+	int getHammerStatusPositionY() const
 	{
 		return infoPosY + HAMMER_INDENTATION_Y;
 	}
@@ -120,15 +122,29 @@ public:
     {
 		return marioStartingY;
     }
+    int getHammerPositionX() const
+    {
+        return hammerPosX;
+    }
+	int getHammerPositionY() const
+	{
+		return hammerPosY;
+	}
 
     // Ghost management
 	std::vector<std::pair<int, int>>& getGhostPos()
     {
         return ghostPos;
     }
+
+    std::vector<std::pair<int, int>>& getSpecialGhostPos()
+    {
+        return specialGhostPos;
+    }
 	void resetGhostPos()
 	{
 		ghostPos.clear();
+		specialGhostPos.clear();
 	}
 
     // Score handling
@@ -150,7 +166,6 @@ public:
     void displayDisqualified();
     void displayLoss();
     void displayWonLevel();
-
 };
 
 #endif

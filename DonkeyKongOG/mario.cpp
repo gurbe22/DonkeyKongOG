@@ -50,8 +50,8 @@ void Mario::moveMario(GameConfig::eKeys& key, vector <Enemy*>& enemies)
 	if (currChar == GameConfig::HAMMER)
 	{
 		isHammer = true;
-		myMario.getBoard()->setChar(myMario.getBoard()->getHammerPositionX(), myMario.getBoard()->getHammerPositionY(), GameConfig::WITH_HAMMER);
-		gotoxy(myMario.getBoard()->getHammerPositionX(), myMario.getBoard()->getHammerPositionY());
+		myMario.getBoard()->setChar(myMario.getBoard()->getHammerStatusPositionX(), myMario.getBoard()->getHammerStatusPositionY(), GameConfig::WITH_HAMMER);
+		gotoxy(myMario.getBoard()->getHammerStatusPositionX(), myMario.getBoard()->getHammerStatusPositionY());
 		cout << GameConfig::WITH_HAMMER;
 		gotoxy(myMario.getX(), myMario.getY());
 	}
@@ -90,6 +90,7 @@ void Mario::moveMario(GameConfig::eKeys& key, vector <Enemy*>& enemies)
 			// Handle Mario's walking or staying behavior
 			walkingOrStaying(key);
 		}
+
 		else
 		{
 			// Update falling state and decrement lives if Mario is not alive
@@ -258,11 +259,15 @@ void Mario::hammering(vector<Enemy*>& enemies)
 		Enemy* enemy = *it;
 		if (abs(myMario.getX() + hammerDirection - enemy->getX()) <= 2 && abs(myMario.getY() - enemy->getY()) < 1)
 		{
-			if (dynamic_cast<Ghost*>(enemy)) {
-				addScore(GHOST_SCORE);
+			if (dynamic_cast<SpecialGhost*>(enemy)) {
+				addScore(SPECIAL_GHOST_SCORE);
 			}
 			else if (dynamic_cast<Barrel*>(enemy)) {
 				addScore(BARREL_SCORE);
+			}
+			else if (dynamic_cast<Ghost*>(enemy))
+			{
+				addScore(GHOST_SCORE);
 			}
 
 			delete enemy;        // מחיקת האובייקט מהזיכרון
@@ -362,7 +367,7 @@ void Mario::walkingOrStaying(GameConfig::eKeys key)
 }
 
 void Mario::setHammerDirection() {
-	hammerDirection = bendingDir(myMario.getX());
+	hammerDirection = bendingDirX(myMario.getX());
 }
 
 void Mario::setHammerDirection(int dir) {

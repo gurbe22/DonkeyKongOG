@@ -52,8 +52,6 @@ public:
 
 	virtual bool getIsExplode() const = 0;
 
-	virtual void changeDirection() = 0;
-
 	int getDiffX() const
 	{
 		return myEnemy.getDiffX();
@@ -64,6 +62,9 @@ public:
 		return myEnemy.getDiffY();
 	}
 
+	virtual void changeDirectionX() = 0;
+
+	virtual void changeDirectionY() = 0;
 };
 
 #endif

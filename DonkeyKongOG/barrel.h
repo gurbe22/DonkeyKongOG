@@ -51,8 +51,9 @@ public:
     // Gets whether the barrel is in an exploded state
     bool getIsExplode() const override { return explode; }
 
-    void changeDirection() override {};
+    void changeDirectionX() {}
 
+    void changeDirectionY() {}
 };
 
 #endif

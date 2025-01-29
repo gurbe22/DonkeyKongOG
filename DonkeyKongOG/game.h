@@ -8,7 +8,8 @@
 #include "board.h"
 #include "mario.h"
 #include "barrel.h" 
-#include "ghost.h"
+#include "ghost.h" 
+#include "specialGhost.h"
 #include "enemy.h"
 #include <vector>
 
@@ -25,15 +26,14 @@ class Game
     static constexpr bool STOP_RUNNING = false;   // Game is stopped
 	static constexpr int DELAY = 30;	  // Delay for the barrels
 	static constexpr int LEVELS_PER_PAGE = 2;	  // 
-	static constexpr int ANIMATION_SPEED = 30;	  // 
+	static constexpr int ANIMATION_SPEED = 30;	  //
+	static constexpr int GAME_SPEED = 100;	  //
 
 	int level = 0; // The current level of the game
 
 
     // Internal helper methods
-    void moveBarrels(std::vector<Barrel>& barrels);
     void createAllGhosts(std::vector<Enemy*>& enemies, Board board);
-    void moveGhosts(std::vector<Ghost>& ghosts);
     void eraseEnemies(std::vector<Enemy*>& enemies);
     void eraseAllCharacters(std::vector<Enemy*>& enemies, Mario& mario);
     void moveEnemies(std::vector<Enemy*>& enemies);
@@ -55,6 +55,7 @@ class Game
     void setScoreLine(Board& board, Mario& mario);
     void setLevelLine(Board& board, Mario& mario);
     void setLivesChar(Board& board, Mario& mario);
+    void setHammer(Board& board, Mario& mario);
 
  
     void runGame(std::vector<std::string> fileNames, int levelChoice = 0);

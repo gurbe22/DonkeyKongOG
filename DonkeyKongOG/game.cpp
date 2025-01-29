@@ -101,8 +101,6 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 
 			setMarioPos(board, mario);
 
-			//vector<Ghost> ghosts;
-			//vector<Barrel> barrels;
 			vector<Enemy*> enemies;
 
 			enemies.reserve(10);
@@ -111,7 +109,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 			int barrelsX;
 			int barrelsY = board.getDonkeyPosY();
 
-			barrelsX = bendingDir(board.getDonkeyPosX()) + board.getDonkeyPosX();
+			barrelsX = bendingDirX(board.getDonkeyPosX()) + board.getDonkeyPosX();
 
 			while (mario.getLives() > 0 && victory == false)
 			{
@@ -200,7 +198,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 
 					moveEnemies(enemies);
 					// Add a delay for smooth gameplay
-					Sleep(100);
+					Sleep(GAME_SPEED);
 
 					eraseAllCharacters(enemies, mario);
 
@@ -262,16 +260,39 @@ void Game::setMarioPos(Board& board, Mario& mario)
 	mario.setStartingY(board.getMarioStartingY());
 }
 
+void Game::setHammer(Board& board, Mario& mario)
+{
+	if (mario.getIsHammer())
+	{
+		board.setChar(board.getHammerStatusPositionX(), board.getHammerStatusPositionY(), GameConfig::WITH_HAMMER); // Set the hammer status on the board
+		board.setChar(board.getHammerPositionX(), board.getHammerPositionY(), GameConfig::OPEN_SPACE); // Set the hammer on the board
+
+	}
+	else
+	{
+		board.setChar(board.getHammerStatusPositionX() ,board.getHammerStatusPositionY(), GameConfig::WITHOUT_HAMMER); // Set the hammer status on the boardB
+		
+	}
+}
+
 // Function to create all ghosts
 void Game::createAllGhosts(vector<Enemy*>& enemies, Board board)
 {
 	std::vector<std::pair<int, int>> ghostPos = board.getGhostPos();
+	std::vector<std::pair<int, int>> specialGhostPos = board.getSpecialGhostPos();
 
 	// עוברים על כל המיקומים ומוסיפים רוחות למערך
 	for (const auto& pos : ghostPos)
 	{
 		// הקצאת אובייקט Ghost דינמית והוספה לווקטור כמצביע
 		enemies.push_back(new Ghost(board, pos.first, pos.second));
+	}
+
+	// עוברים על כל המיקומים ומוסיפים רוחות למערך
+	for (const auto& pos : specialGhostPos)
+	{
+		// הקצאת אובייקט Ghost דינמית והוספה לווקטור כמצביע
+		enemies.push_back(new SpecialGhost(board, pos.first, pos.second));
 	}
 }
 
@@ -294,7 +315,7 @@ void Game::moveEnemies(vector<Enemy*>& enemies)
 	{
 		Enemy* enemy = *it;
 
-		if (typeid(*enemy) == typeid(Ghost))
+		if (typeid(*enemy) == typeid(Ghost) || typeid(*enemy) == typeid(SpecialGhost))
 		{
 			enemy->move(enemies); // רוחות זזות (אם צריך שולחים רשימת רוחות)
 			enemy->draw();
@@ -513,6 +534,8 @@ void Game::displayBoard(Board& board, Mario& mario)
 	setLivesChar(board, mario);
 	setScoreLine(board, mario);
 	setLevelLine(board, mario);
+	setHammer(board, mario);
 
 	board.print(); // Print the board
 }
+

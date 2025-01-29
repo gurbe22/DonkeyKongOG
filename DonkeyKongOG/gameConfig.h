@@ -1,9 +1,11 @@
-#ifndef GameConfig_H
-#define GameConfig_H
+#ifndef GAME_CONFIG_H
+#define GAME_CONFIG_H
 
-class GameConfig
+#include <unordered_map>
+#include <utility> // std::pair
+
+struct GameConfig
 {
-public:
     // Enumeration for key inputs used in the game
     enum class eKeys {
         LEFT = 'a',   // Move left
@@ -17,42 +19,49 @@ public:
         EXIT = '\r',  // Enter key for exiting
     };
 
+    // Enum for movement directions
     enum class directions {
-        LEFT = -1,   // Move left
-        RIGHT = 1,  // Move right
+        UP,
+
+        DOWN,
+        LEFT,
+        RIGHT
     };
 
-    // Dimensions of the game board
-    static constexpr int GAME_WIDTH = 80;    // Board width
-    static constexpr int GAME_HEIGHT = 25;   // Board height
+    // Mapping directions to (x, y) coordinates
+    static const std::unordered_map<directions, std::pair<int, int>> directionPairs;
 
-    // Characters representing different entities in the game
-    static constexpr char PAULINE = '$';    // Pauline character
-    static constexpr char DONKEYKONG = '&'; // Donkey Kong character
-    static constexpr char BARREL = 'O';     // Barrel character
-    static constexpr char MARIO = '@';      // Mario character
-    static constexpr char GHOST = 'x';      // Ghost character
-    static constexpr char HAMMER = 'p';     // Hammer item
+    // Dimensions of the game board
+    static constexpr int GAME_WIDTH = 80;
+    static constexpr int GAME_HEIGHT = 25;
+
+    // Characters representing game entities
+    static constexpr char PAULINE = '$';
+    static constexpr char DONKEYKONG = '&';
+    static constexpr char BARREL = 'O';
+    static constexpr char MARIO = '@';
+    static constexpr char GHOST = 'x';
+    static constexpr char SPECIAL_GHOST = 'X';
+    static constexpr char HAMMER = 'p';
 
     // Characters representing terrain and obstacles
-    static constexpr char LIMIT = 'Q';      // Limit
-    static constexpr char FLOOR = '=';      // Flat floor
-    static constexpr char LFLOOR = '<';     // Left-slanted floor
-    static constexpr char RFLOOR = '>';     // Right-slanted floor
-    static constexpr char LADDER = 'H';     // Ladder for climbing
-    static constexpr char OPEN_SPACE = ' '; // Empty space
-    static constexpr char INFO_POS = 'L';   // Legend top-left
+    static constexpr char LIMIT = 'Q';
+    static constexpr char FLOOR = '=';
+    static constexpr char LFLOOR = '<';
+    static constexpr char RFLOOR = '>';
+    static constexpr char LADDER = 'H';
+    static constexpr char OPEN_SPACE = ' ';
+    static constexpr char INFO_POS = 'L';
 
-    static constexpr char WITH_HAMMER = 'V'; // Legend: Mario holding a hammer
+    static constexpr char WITH_HAMMER = 'V';
+    static constexpr char WITHOUT_HAMMER = 'X';
 
-    static constexpr int MAX_SCORE = 9999;  // Maximum score
+    static constexpr int MAX_SCORE = 9999;
 
     // Checks if the given character represents a floor
-    static bool isFloor(char ch){
-        return ch == FLOOR ||
-            ch == LFLOOR ||
-            ch == RFLOOR ||
-            ch == LIMIT;
+    static bool isFloor(char ch) {
+        return ch == FLOOR || ch == LFLOOR || ch == RFLOOR || ch == LIMIT;
     }
 };
-#endif
+
+#endif // GAME_CONFIG_H

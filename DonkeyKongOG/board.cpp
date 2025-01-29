@@ -139,9 +139,15 @@ bool Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaul
 		ghostPos.push_back({ curr_col, curr_row });
 		originalBoard[curr_row][curr_col++] = GameConfig::OPEN_SPACE;
 		break;
+    case GameConfig::SPECIAL_GHOST:
+        specialGhostPos.push_back({ curr_col, curr_row });
+        originalBoard[curr_row][curr_col++] = GameConfig::OPEN_SPACE;
+        break;
 	case GameConfig::HAMMER:
 		if (!isHammerFound)
 		{
+			hammerPosX = curr_col;
+			hammerPosY = curr_row;
 			originalBoard[curr_row][curr_col++] = c;
 			isHammerFound = true;
 		}
@@ -303,7 +309,7 @@ void Board::displayPauseScreen()
 		 "Q                    Press:                                                    Q", // 13
 		 "Q                    ESC to continue                                           Q", // 14
 		 "Q                    ENTER to exit and lose the game :(                        Q", // 15
-		 "Q                    K to reset the level with one less live :\                Q", // 16
+		 "Q                    K to reset the level with one less live :\\                Q", // 16
 		 "Q                                                                              Q", // 17
 		 "Q                                                                              Q", // 18
 		 "Q                                                                              Q", // 19

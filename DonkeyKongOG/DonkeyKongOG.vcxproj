@@ -132,11 +132,13 @@
     <ClCompile Include="barrel.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="point.cpp" />
+    <ClCompile Include="specialGhost.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +151,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="specialGhost.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

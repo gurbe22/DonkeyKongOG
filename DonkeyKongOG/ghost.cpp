@@ -17,32 +17,32 @@ void Ghost::move(vector<Enemy*>& enemies) {
 	// If the ghost is on the ground, proceed with normal movement
 	// 5% chance to randomly change direction
 	if (rand() % 100 < 5) {
-		changeDirection();
+		changeDirectionX();
 	}
 
 	int maxAttempts = 2; // Maximum attempts to move in a direction
 	while (maxAttempts > 0) {
 		// Check for collisions with other ghosts
 		preventCollision(enemies);
-		int nextX = myEnemy.getX() + static_cast<int>(direction);
-		int nextY = myEnemy.getY();
+
+		auto pos = GameConfig::directionPairs.at(direction);
+		int nextX = myEnemy.getX() + pos.first;
+		int nextY = myEnemy.getY() + pos.second;
 		int belowNextX = nextX;
 		int belowNextY = nextY + 1;
-
-
 
 		// If movement is not valid, change direction and retry
 		if (!isWithinBounds(nextX, nextY) ||
 			!GameConfig::isFloor(myEnemy.getBoard()->getChar(belowNextX, belowNextY))||
 			GameConfig::isFloor(myEnemy.getBoard()->getChar(nextX, nextY)))
 		{
-			changeDirection();
+			changeDirectionX();
 			maxAttempts--;
 			continue;
 		}
 
 		// If movement is valid, perform the move and exit the function
-		myEnemy.move(static_cast<int>(direction), 0);
+		myEnemy.move(pos.first, pos.second);
 		return;
 	}
 
@@ -56,16 +56,17 @@ void Ghost::preventCollision(vector<Enemy*>& enemies) {
 		Ghost* pb = dynamic_cast<Ghost*>(otherGhost);
 		if (otherGhost == this || !pb) continue; // Skip self-comparison
 
-		int nextX = myEnemy.getX() + static_cast<int>(direction);
-		int nextY = myEnemy.getY();
+		const auto pos = GameConfig::directionPairs.at(direction);
+		int nextX = myEnemy.getX() + pos.first;
+		int nextY = myEnemy.getY() + pos.second;
 		int otherX = otherGhost->getX();
 		int otherY = otherGhost->getY();
 
 		// Check if ghosts would collide
 		if (nextX == otherX && nextY == otherY) {
 			// Ghosts are moving towards each other, change direction
-			changeDirection();
-			otherGhost->changeDirection();
+			changeDirectionX();
+			otherGhost->changeDirectionX();
 			return; // Exit after handling the collision prevention
 		}
 	}

@@ -1,3 +1,4 @@
+
 #ifndef MARIO_H
 #define MARIO_H
 
@@ -5,6 +6,7 @@
 #include "gameConfig.h"
 #include "barrel.h"
 #include "ghost.h"
+#include "specialGhost.h"
 #include "enemy.h"
 // The 'mario' class manages the behavior and state of Mario in the game.
 class Mario
@@ -15,6 +17,7 @@ class Mario
 	static constexpr int CHARS_TO_DEATH = 5;
 	static constexpr int BARREL_SCORE = 50;
 	static constexpr int GHOST_SCORE = 100;
+	static constexpr int SPECIAL_GHOST_SCORE = 200;
 
 	// Member variables
 	Point myMario; // Represents Mario as a point on the board 
@@ -57,10 +60,12 @@ public:
 	}
 	void eraseMario() const
 	{
-		char currChar = myMario.getBoard()->getChar(myMario.getX(), myMario.getY()); // Retrieves the character at the point's position on the board
+		int x = myMario.getX();
+		int y = myMario.getY();
+		char currChar = myMario.getBoard()->getChar(x, y); // Retrieves the character at the point's position on the board
 		if (currChar == GameConfig::HAMMER)
 		{
-			myMario.eraseCompletely();
+			myMario.eraseCompletely();   
 		}
 		else
 		{
@@ -73,6 +78,7 @@ public:
 	// State-related methods
 	int getLives() const { return lives; }
 	int getScore() const { return score; }
+	int getIsHammer() const { return isHammer; }
 	void addScore(int newPoints);
 	bool isWon() const;
 

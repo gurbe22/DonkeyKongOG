@@ -7,36 +7,40 @@
 #include <cstdlib> // For rand()
 #include "enemy.h"
 
+class SpecialGhost;
 class Ghost : public Enemy
 {
-	GameConfig::directions direction = GameConfig::directions::RIGHT;
-	
-	// Function to change the direction of the ghost
-	void changeDirection() override
-	{
-		direction == GameConfig::directions::RIGHT ? direction = GameConfig::directions::LEFT : direction = GameConfig::directions::RIGHT;
-	}
+protected:
+    GameConfig::directions direction = GameConfig::directions::RIGHT;
 
-	// Function to prevent collisions between ghosts
-	void preventCollision(std::vector<Enemy*>& enemies);
+    // Function to change direction (only LEFT or RIGHT)
+    virtual void changeDirectionX() override
+    {
+        direction = (direction == GameConfig::directions::RIGHT)
+            ? GameConfig::directions::LEFT
+            : GameConfig::directions::RIGHT;
+    }
+
+	virtual void changeDirectionY() override {}
+
+
+    // Prevent collisions between ghosts (to be implemented)
+    virtual void preventCollision(std::vector<Enemy*>& enemies);
 
 public:
-	
-	Ghost( Board &board,int ghostStartingX, int ghostStartingY)
-		: Enemy(board, ghostStartingX, ghostStartingY ){}
+    Ghost(Board& board, int ghostStartingX, int ghostStartingY)
+        : Enemy(board, ghostStartingX, ghostStartingY) {}
 
-	~Ghost() override = default;
+    ~Ghost() override = default;
 
-	void move(std::vector<Enemy*>& enemies) override;
-	void move() override {};
+    void move(std::vector<Enemy*>& enemies) override;
+    void move() override {};
 
-	void draw() const override { myEnemy.draw(GameConfig::GHOST); }
-	
-	int getDirectionX() const { return static_cast<int>(direction);}
-	int getDirectionY() const { return 0; }
+    void draw() const override { myEnemy.draw(GameConfig::GHOST); }
 
-	bool getIsExplode() const override { return false; };
+    bool getIsExplode() const override { return false; };
 
+	GameConfig::directions getDirection() const { return direction; }
 };
 
 #endif
