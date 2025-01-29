@@ -1,9 +1,11 @@
-#ifndef GAMECONFIG_H
-#define GAMECONFIG_H
+#ifndef GAME_CONFIG_H
+#define GAME_CONFIG_H
 
-class gameConfig
+#include <unordered_map>
+#include <utility> // std::pair
+
+struct GameConfig
 {
-public:
     // Enumeration for key inputs used in the game
     enum class eKeys {
         LEFT = 'a',   // Move left
@@ -11,22 +13,55 @@ public:
         UP = 'w',     // Move up
         DOWN = 'x',   // Move down
         STAY = 's',   // Stay in the current position
+        HAMMER = 'p', // Use the hammer
+        SUICIDE = 'k',// Reset the level with one life less
         ESC = 27,     // Escape key for pause menu
         EXIT = '\r',  // Enter key for exiting
-        NONE = '0'    // No key pressed
     };
 
-    // Game board dimensions
-    static constexpr int GAME_WIDTH = 80;   // Width of the game board
-    static constexpr int GAME_HEIGHT = 25; // Height of the game board
+    // Enum for movement directions
+    enum class directions {
+        UP,
 
-    // Characters representing different entities in the game
-    static constexpr char PAULINE = '$';    // Pauline character
-    static constexpr char DONKEYKONG = '&'; // Donkey Kong character
-    static constexpr char BARREL = 'O';     // Barrel character
-    static constexpr char MARIO = '@';      // Mario character
+        DOWN,
+        LEFT,
+        RIGHT
+    };
 
-    // Number of barrels in the game
-    static constexpr int NUM_OF_BARRELS = 12; // Total barrels
+    // Mapping directions to (x, y) coordinates
+    static const std::unordered_map<directions, std::pair<int, int>> directionPairs;
+
+    // Dimensions of the game board
+    static constexpr int GAME_WIDTH = 80;
+    static constexpr int GAME_HEIGHT = 25;
+
+    // Characters representing game entities
+    static constexpr char PAULINE = '$';
+    static constexpr char DONKEYKONG = '&';
+    static constexpr char BARREL = 'O';
+    static constexpr char MARIO = '@';
+    static constexpr char GHOST = 'x';
+    static constexpr char SPECIAL_GHOST = 'X';
+    static constexpr char HAMMER = 'p';
+
+    // Characters representing terrain and obstacles
+    static constexpr char LIMIT = 'Q';
+    static constexpr char FLOOR = '=';
+    static constexpr char LFLOOR = '<';
+    static constexpr char RFLOOR = '>';
+    static constexpr char LADDER = 'H';
+    static constexpr char OPEN_SPACE = ' ';
+    static constexpr char INFO_POS = 'L';
+
+    static constexpr char WITH_HAMMER = 'V';
+    static constexpr char WITHOUT_HAMMER = 'X';
+
+    static constexpr int MAX_SCORE = 9999;
+
+    // Checks if the given character represents a floor
+    static bool isFloor(char ch) {
+        return ch == FLOOR || ch == LFLOOR || ch == RFLOOR || ch == LIMIT;
+    }
 };
-#endif
+
+#endif // GAME_CONFIG_H

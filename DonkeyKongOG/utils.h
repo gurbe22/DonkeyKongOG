@@ -5,10 +5,9 @@
 #include <process.h> // for system
 #include <iostream> // for cout
 
-using namespace std;
-
 void ShowConsoleCursor(bool showFlag);
 void gotoxy(int, int);
 void clear_screen();
-
+int bendingDirX(const int posX);
+int bendingDirY(const int posY);
 #endif

@@ -1,74 +1,171 @@
 #ifndef BOARD_H
 #define BOARD_H
-
-#include "gameConfig.h"
-//#include <cstring>
+ 
+#include "GameConfig.h"
 #include "utils.h"
+#include <vector>
+#include <fstream>
+#include <filesystem>
+#include <string>
+#include <utility> // For std::pair
+#include <algorithm>
 
 // The 'Board' class manages the game board, including its initial state and updates during gameplay.
 class Board
 {
-    // The initial state of the board (original layout)
-    const char* originalBoard[gameConfig::GAME_HEIGHT] = {
-        //!123456789!123456789!123456789!123456789!123456789!123456789!123456789!123456789
-         "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ", // 0
-         "Q                $                                                  |LIVES:3|  Q", // 1
-         "Q              ======                                                          Q", // 2
-         "Q              H                                                               Q", // 3
-         "Q        &     H                                                               Q", // 4
-         "Q       ==>>==================================                                 Q", // 5
-         "Q                                 H                                            Q", // 6
-         "Q                                 H                                            Q", // 7
-         "Q                           ==================<<<<<                            Q", // 8
-         "Q                              H                                               Q", // 9
-         "Q                              H                                               Q", // 10
-         "Q                              H                                               Q", // 11
-         "Q                      >>>>>=====================  ====                        Q", // 12
-         "Q                                                   H                          Q", // 13
-         "Q                                                   H                          Q", // 14
-         "Q                                                   H                          Q", // 15
-         "Q               =================================  ==========                  Q", // 16
-         "Q                 H                                                            Q", // 17
-         "Q                 H                                                            Q", // 18
-         "Q                 H                                                            Q", // 19
-         "Q            ============================================================      Q", // 20
-         "Q                                                                       H      Q", // 21
-         "Q                                                                       H      Q", // 22
-         "Q==============================================================================Q", // 23
-         "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"  // 24
-    };
+    static constexpr int LIVES_INDENTATION_X = 9;
+    static constexpr int LIVES_INDENTATION_Y = 2;
 
-    // Current state of the board (modifiable during gameplay)
-    char currentBoard[gameConfig::GAME_HEIGHT][gameConfig::GAME_WIDTH + 1]; // +1 for null terminator
+    static constexpr int LEVEL_INDENTATION_X = 12;
+    static constexpr int LEVEL_INDENTATION_Y = 0;
+    
+	static constexpr int HAMMER_INDENTATION_X = 19;
+	static constexpr int HAMMER_INDENTATION_Y = 2;
 
+	static constexpr int SCORE_INDENTATION_X = 12;
+	static constexpr int SCORE_INDENTATION_Y = 1;
+
+    static constexpr int INFO_WIDTH = 20;
+    static constexpr int INFO_HEIGHT = 3;
+
+    // Board representation
+    char originalBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
+    char currentBoard[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH + 1]{};
+
+    //// Positions
+    int marioStartingX;
+    int marioStartingY;
+
+    int donkeyPosX;
+    int donkeyPosY;
+
+	std::vector<std::pair<int, int>> ghostPos;
+	std::vector<std::pair<int, int>> specialGhostPos;
+
+    int infoPosX;
+    int infoPosY;
+
+    int hammerPosX;
+    int hammerPosY;
+
+    // Helper methods
+    void addInfo(int infoPosX, int infoPosY);
+    bool handleSpecialChar(char c, int& curr_row, int &curr_col, bool& isPaulineFound, bool& isDonkeyKongFound, bool& isHammerFound, bool& isMarioFound, bool& isInfoFound);
+    void addFloor(char* row, int width);
+    bool isDonkeyKongInLegalPlace() const;
+    
+    int getMaxNewPointIndentation() const;
 public:
-    // Resets the board to its original state
+    
+    // Board management
     void reset();
-
-    // Prints the current state of the board to the console
     void print() const;
+    bool load(const std::string& filename);
 
-    // Retrieves the character at a specific position on the board
-    char getChar(int x, int y) const {
-        return currentBoard[y][x];
+    // Board character manipulation
+    char getChar(int x, int y) const { return currentBoard[y][x]; }
+    void setChar(int x, int y, char c) { currentBoard[y][x] = c; }
+    void setLine(std::string line, int posX, int posY);
+
+    // Info section getters
+    int getLivesPositionX() const
+    {
+        return infoPosX + LIVES_INDENTATION_X;
+    }
+	int getLivesPositionY() const
+	{
+        return infoPosY + LIVES_INDENTATION_Y;
+	}
+
+	int getHammerStatusPositionX() const
+	{
+		return infoPosX + HAMMER_INDENTATION_X;
+	}
+	int getHammerStatusPositionY() const
+	{
+		return infoPosY + HAMMER_INDENTATION_Y;
+	}
+
+	int getLevelPositionX() const
+	{
+		return infoPosX + LEVEL_INDENTATION_X;
+	}
+	int getLevelPositionY() const
+	{
+		return infoPosY + LEVEL_INDENTATION_Y;
+	}
+
+    int getScorePositionX() const
+    {
+        return infoPosX + SCORE_INDENTATION_X;
+    }
+    int getScorePositionY() const
+    {
+        return infoPosY + SCORE_INDENTATION_Y;
     }
 
-    // Sets a character at a specific position on the board
-    void setChar(int x, int y, char c) {
-        currentBoard[y][x] = c;
+    
+    //Key positions getters
+    int getDonkeyPosX() const
+    {
+        return donkeyPosX;
+    }
+    int getDonkeyPosY() const
+    {
+		return donkeyPosY;
+    }
+	int getMarioStartingX() const
+	{
+		return marioStartingX;
+	}
+    int getMarioStartingY() const
+    {
+		return marioStartingY;
+    }
+    int getHammerPositionX() const
+    {
+        return hammerPosX;
+    }
+	int getHammerPositionY() const
+	{
+		return hammerPosY;
+	}
+
+    // Ghost management
+	std::vector<std::pair<int, int>>& getGhostPos()
+    {
+        return ghostPos;
     }
 
-    // Displays a pause screen to the player
+    std::vector<std::pair<int, int>>& getSpecialGhostPos()
+    {
+        return specialGhostPos;
+    }
+	void resetGhostPos()
+	{
+		ghostPos.clear();
+		specialGhostPos.clear();
+	}
+
+    // Score handling
+    void addScore(int score, int returningX, int returningY);
+    void printScore(int score, int returningX, int returningY, int indentation) const;
+    int getNewScoreIndetation(int score) const;
+
+// Error displays
+    void displayErrorNoFiles();
+    void displayErrorUnacceptableCharacter();
+    void displaySignificantCharacterMissing();
+    void displayLoadingFileFailed();
+    void displayDonkeyKongInIllegalPlace();
+    void displayErrorNotExistFile();
+
+    // Game state displays
     void displayPauseScreen();
-
-    // Displays a victory screen to the player
     void displayVictory();
-
-    // Displays a disqualified screen to the player
     void displayDisqualified();
-
-    // Displays a loss screen to the player
     void displayLoss();
+    void displayWonLevel();
 };
 
 #endif

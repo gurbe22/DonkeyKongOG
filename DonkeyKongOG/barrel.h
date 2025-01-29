@@ -2,82 +2,58 @@
 #define BARREL_H
 
 #include "point.h"
-#include "gameConfig.h"
+#include "GameConfig.h"
+#include "board.h"
+#include "enemy.h"
 
-using namespace std;
 
 // The Barrel class represents barrels in the game, which move and interact with the game world.
-class Barrel
+class Barrel : public Enemy
 {
-    point barrel; // Represents the barrel's position and state
     static constexpr int HEIGHT_TO_EXPLODE = 8; // Height after which the barrel explodes
-    static constexpr int BARREL_STARTING_X = 10; // Starting X-coordinate for barrels
-    static constexpr int BARREL_STARTING_Y = 4; // Starting Y-coordinate for barrels
-    int startDelay; // Delay before the barrel starts moving
-    int currentFrame; // Tracks the current frame of the barrel's movement
     bool explode = false; // Indicates whether the barrel has exploded
 
     // Determines the next character the barrel interacts with
-    char findBarrelNextChar(char currChar, char charBelow);
+    char findBarrelNextChar(char currChar, char charBelow) const;
 
     // Determines the current state of the barrel (e.g., falling or walking)
-    point::States findBarrelState(char currChar, char nextChar, char charBelow);
+    Point::States findBarrelState(char currChar) const;
 
     // Checks if the barrel is exploding
-    bool isExploding() { return (barrel.getHeightFalling() >= HEIGHT_TO_EXPLODE); }
+    bool isExploding() const { 
+        return (myEnemy.getHeightFalling() >= HEIGHT_TO_EXPLODE);
+    }
 
     // Handles the barrel's walking logic based on the floor type
     void barrelWalking(char charBelow);
 
+	// Sets whether the barrel is in an exploded state
+	void setExplode(bool newExplode) { explode = newExplode; }
+
 public:
     // Constructor to initialize the barrel with an optional delay
-    Barrel(int delay = 0)
-        : barrel(BARREL_STARTING_X, BARREL_STARTING_Y), startDelay(delay), currentFrame(0) {}
+    Barrel(Board& board, int ghostStartingX, int ghostStartingY)
+        : Enemy(board, ghostStartingX, ghostStartingY) {}
+
+    ~Barrel() override = default;
 
     // Moves the barrel based on its state
-    void moveBarrel();
+    void move() override;
 
-    // Sets the board the barrel interacts with
-    void setBoard(Board& board)
-    {
-        barrel.setBoard(board);
-    }
-
-    // Gets the board the barrel interacts with
-    Board* getBoard() const
-    {
-        return barrel.getBoard();
-    }
-
-    // Gets the X-coordinate of the barrel
-    int getX() const
-    {
-        return barrel.getX();
-    }
-
-    // Gets the Y-coordinate of the barrel
-    int getY() const
-    {
-        return barrel.getY();
-    }
+    void move(std::vector<Enemy*>& enemies) override {};
 
     // Draws the barrel on the board
-    void drawBarrel() const
+    void draw() const override
     {
-        barrel.draw(gameConfig::BARREL);
+        myEnemy.draw(GameConfig::BARREL);
     }
-
-    // Erases the barrel from the board
-    void eraseBarrel() const
-    {
-        barrel.erase();
-    }
-
-    // Sets whether the barrel is in an exploded state
-    void setExplode(bool newExplode) { explode = newExplode; }
 
     // Gets whether the barrel is in an exploded state
-    bool getIsExplode() const { return explode; }
+    bool getIsExplode() const override { return explode; }
+
+    void changeDirectionX() {}
+
+    void changeDirectionY() {}
 };
 
 #endif
