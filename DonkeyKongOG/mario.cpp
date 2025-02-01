@@ -60,9 +60,9 @@ void Mario::moveMario(GameConfig::eKeys& key, vector <Enemy*>& enemies)
 	state = findMarioState(currChar, nextChar, key);
 
 	if (key == GameConfig::eKeys::RIGHT)
-		setHammerDirection((int)GameConfig::directions::RIGHT);
+		setHammerDirection(GameConfig::directionPairs.at(GameConfig::directions::RIGHT).first);
 	else if (key == GameConfig::eKeys::LEFT)
-		setHammerDirection((int)GameConfig::directions::LEFT);
+		setHammerDirection(GameConfig::directionPairs.at(GameConfig::directions::LEFT).first);
 
 	if (key == GameConfig::eKeys::HAMMER && isHammer)
 	{

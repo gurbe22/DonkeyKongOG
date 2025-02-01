@@ -22,7 +22,6 @@ struct GameConfig
     // Enum for movement directions
     enum class directions {
         UP,
-
         DOWN,
         LEFT,
         RIGHT

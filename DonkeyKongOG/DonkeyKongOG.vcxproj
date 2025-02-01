@@ -134,11 +134,17 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="gameConfig.cpp" />
     <ClCompile Include="ghost.cpp" />
+    <ClCompile Include="loadGame.cpp" />
+    <ClCompile Include="loadSilentGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mario.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="point.cpp" />
+    <ClCompile Include="regularGame.cpp" />
+    <ClCompile Include="results.cpp" />
+    <ClCompile Include="saveGame.cpp" />
     <ClCompile Include="specialGhost.cpp" />
+    <ClCompile Include="steps.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,11 +153,17 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="gameConfig.h" />
     <ClInclude Include="ghost.h" />
+    <ClInclude Include="loadGame.h" />
+    <ClInclude Include="loadSilentGame.h" />
     <ClInclude Include="mario.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="regularGame.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="results.h" />
+    <ClInclude Include="saveGame.h" />
     <ClInclude Include="specialGhost.h" />
+    <ClInclude Include="steps.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

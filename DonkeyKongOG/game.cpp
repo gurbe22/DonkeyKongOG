@@ -47,30 +47,15 @@ void Game::mainMenu()
 	cout << "Exiting the game. Goodbye!\n";
 }
 
-void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
-	namespace fs = std::filesystem;
-	for (const auto& entry : fs::directory_iterator(fs::current_path())) {
-		auto filename = entry.path().filename();
-		auto filenameStr = filename.string();
-		if (filenameStr.substr(0, 6) == "dkong_" && filename.extension() == ".screen") {
-			std::cout << " ^ added!!\n";
-			vec_to_fill.push_back(filenameStr);
-		}
-	}
-	if (vec_to_fill.size() == 0)
-	{
-		cout << " ";
-	}
-}
-
-// Function to run the game
-void Game::runGame(vector<std::string> fileNames, int levelChoice)
+void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent)
 {
 	system("cls"); // Clear the screen
 	Board board;
 	Mario mario;
 	bool victory = false;
+	bool winLevel = false;
 	level = 0;
+	bool unmatching_result_found = false;
 
 	if (levelChoice > fileNames.size())
 	{
@@ -87,11 +72,24 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 
 	for (const auto& filename : fileNames)
 	{
+		size_t iteration = 0;
+		Results results;
+		Steps steps;
+		long random_seed;
+
+		std::string filename_prefix = filename.substr(0, filename.find_last_of('.'));
+		std::string stepsFilename = filename_prefix + ".steps";
+		std::string resultsFilename = filename_prefix + ".result";
+
+		initializeGameData(stepsFilename, resultsFilename, random_seed, steps, results);
+
+		srand(random_seed);
 		level++;
+
 		if (levelChoice == 0 || levelChoice == level)
 		{
 			victory = false;
-
+			winLevel = false;
 			board.resetGhostPos();
 
 			if (!board.load(filename))
@@ -110,8 +108,9 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 			int barrelsY = board.getDonkeyPosY();
 
 			barrelsX = bendingDirX(board.getDonkeyPosX()) + board.getDonkeyPosX();
+			size_t nextDisqualificationIteration = 0;
 
-			while (mario.getLives() > 0 && victory == false)
+			while (mario.getLives() > 0 && winLevel == false)
 			{
 				currentFrame = DELAY;
 				// Set Mario to his starting position at the beginning of each game
@@ -121,8 +120,9 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 					delete enemy;
 				}
 				enemies.clear();
+
 				// Display the game board with Mario at the starting position
-				displayBoard(board, mario);
+				displayBoard(board, mario, isSilent); 
 
 				// Create all ghosts
 				createAllGhosts(enemies, board);
@@ -138,83 +138,92 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 
 				while (RUNNING)
 				{
+					++iteration;
+					size_t  nextDisqualificationIteration = 0;
+					validateResultsAndUpdateDisqualificationIteration(results, iteration, nextDisqualificationIteration, unmatching_result_found, filename);
+
+					if (unmatching_result_found)
+					{
+						break;
+					}
+
 					// Initialize barrels with staggered delay
 					if (currentFrame % DELAY == 0) {
 						enemies.push_back(new Barrel(board, barrelsX, barrelsY));
 					}
 					currentFrame++;
-
+					bool flag = false;
 					// Check for user input
-					if (_kbhit())
+
+					flag = processGameInput(steps, results, iteration, board, mario, keyPressed);
+
+					if (flag)
 					{
-						int key = _getch();
-
-						key = std::tolower(key);
-
-						// Handle pause functionality
-						if (isPause(board, key))
-						{
-							if (key == (int)GameConfig::eKeys::EXIT)
-							{
-								// End game if exit is chosen
-								mario.makeDeath();
-								break;
-							}
-							else if (key == (int)GameConfig::eKeys::ESC)
-							{
-								// Reset and redisplay the board on resume
-								board.reset();
-								displayBoard(board, mario);
-							}
-							else if (key == (int)GameConfig::eKeys::SUICIDE)
-							{
-								mario.setLives();
-								board.displayDisqualified();
-								Sleep(2000);
-								break;
-							}
-						}
-
-						// Update the key pressed
-						keyPressed = (GameConfig::eKeys)key;
+						if (mario.getLives() > 0)
+							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
+						break;
 					}
-
 					// Move Mario based on the key pressed
 					mario.moveMario(keyPressed, enemies);
 					// Check if Mario has won the game
 					if (mario.isWon())
 					{
-						if (levelChoice == 0)
+						if (levelChoice == 0 && level < fileNames.capacity())
 						{
 							board.displayWonLevel();
 							Sleep(5000);
+							winLevel = true;
 						}
-						victory = true;
+						else
+						{
+							winLevel = true;
+							victory = true;
+						}
+
 						break;
 					}
 
 					// Draw Mario in his updated position
-					mario.drawMario();
+					if (!isSilent)
+					{
+						mario.drawMario();
+					}
 
-					moveEnemies(enemies);
+					moveEnemies(enemies, isSilent);
 					// Add a delay for smooth gameplay
-					Sleep(GAME_SPEED);
+					goToSleep();
 
-					eraseAllCharacters(enemies, mario);
+					if (!isSilent)
+					{
+						eraseAllCharacters(enemies, mario);
+					}
 
 					// Check if Mario lost a life
 					if (lives != mario.getLives())
 					{
 						if (mario.getLives() != 0)
 						{
+							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
 							// Display disqualification screen if a life is lost
 							board.displayDisqualified();
 							Sleep(2000);
 						}
+
 						break;
 					}
+
+					checkIfDisqualificationMatch(iteration, nextDisqualificationIteration, unmatching_result_found, filename);
+				}
+
+				if (unmatching_result_found)
+				{
+					break;
 				}
 			}
+
+			handleGameResult(victory, winLevel, iteration, steps, results, stepsFilename, resultsFilename, unmatching_result_found, filename);
+			if (mario.getLives() == 0)
+				break;
 		}
 	}
 	if (victory)
@@ -231,6 +240,26 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice)
 	}
 
 }
+
+
+void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
+	namespace fs = std::filesystem;
+	for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+		auto filename = entry.path().filename();
+		auto filenameStr = filename.string();
+		if (filenameStr.substr(0, 6) == "dkong_" && filename.extension() == ".screen") {
+			std::cout << " ^ added!!\n";
+			vec_to_fill.push_back(filenameStr);
+		}
+	}
+	if (vec_to_fill.size() == 0)
+	{
+		std::cout << " ";
+	}
+}
+
+// Function to run the game
+
 
 void Game::setScoreLine(Board& board, Mario& mario)
 {
@@ -270,8 +299,8 @@ void Game::setHammer(Board& board, Mario& mario)
 	}
 	else
 	{
-		board.setChar(board.getHammerStatusPositionX() ,board.getHammerStatusPositionY(), GameConfig::WITHOUT_HAMMER); // Set the hammer status on the boardB
-		
+		board.setChar(board.getHammerStatusPositionX(), board.getHammerStatusPositionY(), GameConfig::WITHOUT_HAMMER); // Set the hammer status on the boardB
+
 	}
 }
 
@@ -309,7 +338,7 @@ void Game::eraseEnemies(vector<Enemy*>& enemies)
 	}
 }
 
-void Game::moveEnemies(vector<Enemy*>& enemies)
+void Game::moveEnemies(vector<Enemy*>& enemies, bool isSilent)
 {
 	for (auto it = enemies.begin(); it != enemies.end();)
 	{
@@ -318,7 +347,10 @@ void Game::moveEnemies(vector<Enemy*>& enemies)
 		if (typeid(*enemy) == typeid(Ghost) || typeid(*enemy) == typeid(SpecialGhost))
 		{
 			enemy->move(enemies); // רוחות זזות (אם צריך שולחים רשימת רוחות)
-			enemy->draw();
+			if (!isSilent)
+			{
+				enemy->draw();
+			}
 			++it; // עוברים לאובייקט הבא
 		}
 		else if (typeid(*enemy) == typeid(Barrel))
@@ -332,7 +364,10 @@ void Game::moveEnemies(vector<Enemy*>& enemies)
 			}
 			else
 			{
-				enemy->draw();
+				if (!isSilent)
+				{
+					enemy->draw();
+				}
 				++it; // עוברים לאובייקט הבא
 			}
 		}
@@ -526,7 +561,7 @@ void Game::displayInstructions() const
 }
 
 // Function to display the board
-void Game::displayBoard(Board& board, Mario& mario)
+void Game::displayBoard(Board& board, Mario& mario, bool isSilent)
 {
 	system("cls"); // Clear the screen
 	board.reset(); // Reset the board
@@ -535,7 +570,16 @@ void Game::displayBoard(Board& board, Mario& mario)
 	setScoreLine(board, mario);
 	setLevelLine(board, mario);
 	setHammer(board, mario);
-
-	board.print(); // Print the board
+	if (!isSilent)
+	{
+		board.print(); // Print the board
+	}
 }
 
+void Game::reportResultError(const std::string& message, const std::string& filename, size_t iteration) {
+	system("cls");
+	std::cout << "Screen " << filename << " - " << message << '\n';
+	std::cout << "Iteration: " << iteration << '\n';
+	std::cout << "Press any key to continue to next screens (if any)" << std::endl;
+	_getch();
+}
