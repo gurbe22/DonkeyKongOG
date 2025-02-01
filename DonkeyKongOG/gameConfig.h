@@ -57,6 +57,8 @@ struct GameConfig
 
     static constexpr int MAX_SCORE = 9999;
 
+    static constexpr int DISPLAY_SPEED = 3000;
+
     // Checks if the given character represents a floor
     static bool isFloor(char ch) {
         return ch == FLOOR || ch == LFLOOR || ch == RFLOOR || ch == LIMIT;

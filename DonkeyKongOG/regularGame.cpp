@@ -34,7 +34,7 @@ bool RegularGame::processGameInput(Steps& steps, Results& results, int iteration
 				if (mario.getLives() > 0)
 				{
 					board.displayDisqualified();
-					Sleep(2000);
+					Sleep(GameConfig::DISPLAY_SPEED);
 				}
 				return true;;
 			}

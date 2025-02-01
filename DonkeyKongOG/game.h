@@ -63,7 +63,6 @@ protected:
     virtual void validateResultsAndUpdateDisqualificationIteration(Results& results, size_t& iteration, size_t& nextDisqualificationIteration, bool& unmatching_result_found, std::string filename) {}
     virtual bool processGameInput(Steps& steps,Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed) = 0;
     virtual void goToSleep() const = 0;
-    //virtual void goToSleepDisplaying();
     virtual void handleDisqualification(size_t& nextDisqualificationIteration,bool unmatching_result_found , int iteration, Results& results, std::string filename) {}
     virtual bool checkIfDisqualificationMatch(size_t iteration, size_t nextDisqualificationIteration, bool& unmatching_result_found, std::string filename) { return false; }
     virtual void handleGameResult(bool victory,bool winLevel, int iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename) {};

@@ -60,13 +60,13 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 	if (levelChoice > fileNames.size())
 	{
 		board.displayErrorNotExistFile();
-		Sleep(5000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 		return;
 	}
 	if (fileNames.size() == 0)
 	{
 		board.displayErrorNoFiles();
-		Sleep(5000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 		return;
 	}
 
@@ -139,7 +139,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 				while (RUNNING)
 				{
 					++iteration;
-					size_t  nextDisqualificationIteration = 0;
+					nextDisqualificationIteration = 0;
 					validateResultsAndUpdateDisqualificationIteration(results, iteration, nextDisqualificationIteration, unmatching_result_found, filename);
 
 					if (unmatching_result_found)
@@ -171,7 +171,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 						if (levelChoice == 0 && level < fileNames.capacity())
 						{
 							board.displayWonLevel();
-							Sleep(5000);
+							Sleep(GameConfig::DISPLAY_SPEED);
 							winLevel = true;
 						}
 						else
@@ -206,7 +206,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
 							// Display disqualification screen if a life is lost
 							board.displayDisqualified();
-							Sleep(2000);
+							Sleep(GameConfig::DISPLAY_SPEED);
 						}
 
 						break;
@@ -230,17 +230,16 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 	{
 		// Display the Victory screen
 		board.displayVictory();
-		Sleep(4000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 	}
 	else
 	{
 		// Display the loss screen if Mario has no more lives
 		board.displayLoss();
-		Sleep(4000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 	}
 
 }
-
 
 void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
 	namespace fs = std::filesystem;
@@ -257,9 +256,6 @@ void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
 		std::cout << " ";
 	}
 }
-
-// Function to run the game
-
 
 void Game::setScoreLine(Board& board, Mario& mario)
 {
@@ -557,7 +553,7 @@ void Game::displayInstructions() const
 	cout << "  P/p - Destroy a barrel or kill a ghost\n";
 	cout << "---------------------------------------\n";
 	cout << "Press any key to return to the menu...\n";
-	_getch(); // Wait for user key press to return
+	(void)_getch(); // Wait for user key press to return
 }
 
 // Function to display the board
@@ -581,5 +577,5 @@ void Game::reportResultError(const std::string& message, const std::string& file
 	std::cout << "Screen " << filename << " - " << message << '\n';
 	std::cout << "Iteration: " << iteration << '\n';
 	std::cout << "Press any key to continue to next screens (if any)" << std::endl;
-	_getch();
+	(void)_getch();
 }

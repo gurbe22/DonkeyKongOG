@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Game* newGame;
+	Game* newGame = nullptr;
 	if (argc == 1)
 	{
 		newGame = new RegularGame();

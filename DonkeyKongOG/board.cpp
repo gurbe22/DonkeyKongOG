@@ -81,14 +81,14 @@ bool Board::load(const std::string& filename) {
 	if (!(isPaulineFound && isDonkeyKongFound && isHammerFound && isMarioFound && isInfoFound))
 	{
 		displaySignificantCharacterMissing();
-		Sleep(2000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 		return false;
 	}
 
 	if(!isDonkeyKongInLegalPlace())
 	{
 		displayDonkeyKongInIllegalPlace();
-		Sleep(2000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool Board::load(const std::string& filename) {
 			originalBoard[row][GameConfig::GAME_WIDTH] = '\0';
 		}
 
-	addInfo(infoPosX, infoPosY);
+	addInfo();
 	return true;
 }
 
@@ -177,7 +177,7 @@ bool Board::handleSpecialChar(char c, int& curr_row, int& curr_col, bool& isPaul
 		break;
 	default:
 		displayErrorUnacceptableCharacter();
-		Sleep(2000);
+		Sleep(GameConfig::DISPLAY_SPEED);
 		return false;
 		break;
 	}
@@ -194,7 +194,7 @@ void Board::addFloor(char* row, int width) {
 }
 
 // Add the information to the board
-void Board::addInfo(int infoPosX, int infoPosY)
+void Board::addInfo()
 {
 	if (infoPosY + INFO_HEIGHT > GameConfig::GAME_HEIGHT || infoPosX + INFO_WIDTH > GameConfig::GAME_WIDTH) {
 		std::cerr << "Error: Info position is out of bounds." << std::endl;

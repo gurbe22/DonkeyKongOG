@@ -39,7 +39,7 @@ bool SaveGame::processGameInput(Steps& steps, Results& results, int iteration, B
 				if (mario.getLives() > 0)
 				{
 					board.displayDisqualified();
-					Sleep(2000);
+					Sleep(GameConfig::DISPLAY_SPEED);
 					results.addResult(iteration, Results::disqualified);
 				}
 				return true;

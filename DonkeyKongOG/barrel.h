@@ -13,9 +13,6 @@ class Barrel : public Enemy
     static constexpr int HEIGHT_TO_EXPLODE = 8; // Height after which the barrel explodes
     bool explode = false; // Indicates whether the barrel has exploded
 
-    // Determines the next character the barrel interacts with
-    char findBarrelNextChar(char currChar, char charBelow) const;
-
     // Determines the current state of the barrel (e.g., falling or walking)
     Point::States findBarrelState(char currChar) const;
 

@@ -1,32 +1,6 @@
 #include "barrel.h"
 using namespace std;
 
-// Determines the next character the barrel interacts with
-char Barrel::findBarrelNextChar(char currChar, char charBelow) const
-{
-	switch (charBelow)
-	{
-	case GameConfig::FLOOR:
-	case GameConfig::LIMIT:
-		return myEnemy.getBoard()->getChar(myEnemy.getX() + myEnemy.getDiffX(), myEnemy.getY());
-
-	case GameConfig::RFLOOR:
-		return myEnemy.getBoard()->getChar(myEnemy.getX() + 1, myEnemy.getY());
-
-	case GameConfig::LFLOOR:
-		return myEnemy.getBoard()->getChar(myEnemy.getX() - 1, myEnemy.getY());
-
-	case GameConfig::OPEN_SPACE:
-		return myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY() + 1);
-
-	case GameConfig::MARIO:
-		return GameConfig::MARIO;
-	default:
-		return charBelow;
-
-	}
-}
-
 // Determines the current state of the barrel (e.g., falling or walking)
 Point::States Barrel::findBarrelState(char currChar) const
 {
@@ -38,7 +12,6 @@ void Barrel::move()
 {
 	char currChar = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY());
 	char charBelow = myEnemy.getBoard()->getChar(myEnemy.getX(), myEnemy.getY() + 1);
-	char nextChar = findBarrelNextChar(currChar, charBelow);
 	Point::States state = findBarrelState(currChar);
 
 	switch (state)
