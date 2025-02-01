@@ -74,6 +74,8 @@ protected:
     void reportResultError(const std::string& message, const std::string& filename, size_t iteration);
 
 	void runGame(std::vector<std::string> fileNames, int levelChoice = 0, bool isSilent = false);
+
+    void deleteDynamicEnemies(std::vector<Enemy*>& enemies);
 public:
     Game() {}
 	virtual ~Game() {}

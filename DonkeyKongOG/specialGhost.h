@@ -11,19 +11,19 @@
 class SpecialGhost : public Ghost
 {
 
-	  void changeDirectionX() override
-    {
-        direction = (direction == GameConfig::directions::RIGHT)
-            ? GameConfig::directions::LEFT
-            : GameConfig::directions::RIGHT;
-    }
-
-	  void changeDirectionY() override
-	  {
-		  direction = (direction == GameConfig::directions::DOWN)
-			  ? GameConfig::directions::UP
-			  : GameConfig::directions::DOWN;
-	  }
+     void changeDirectionX() override
+     {
+      direction = (direction == GameConfig::directions::RIGHT)
+              ? GameConfig::directions::LEFT
+              : GameConfig::directions::RIGHT;
+     }
+    
+     void changeDirectionY() override
+     {
+      direction = (direction == GameConfig::directions::DOWN)
+    	  ? GameConfig::directions::UP
+    	  : GameConfig::directions::DOWN;
+     }
 
     void preventCollision(std::vector<Enemy*>& enemies) override;
     

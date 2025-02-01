@@ -35,9 +35,9 @@ public:
     ~Barrel() override = default;
 
     // Moves the barrel based on its state
-    void move() override;
+   /* void move() override;*/
 
-    void move(std::vector<Enemy*>& enemies) override {};
+    void move(std::vector<Enemy*>& enemies) override; 
 
     // Draws the barrel on the board
     void draw() const override

@@ -117,10 +117,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 				// Set Mario to his starting position at the beginning of each game
 				mario.setMarioToStart();
 
-				for (auto enemy : enemies) {
-					delete enemy;
-				}
-				enemies.clear();
+				deleteDynamicEnemies(enemies);
 
 				// Display the game board with Mario at the starting position
 				displayBoard(board, mario, isSilent); 
@@ -222,6 +219,7 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 				}
 			}
 
+			deleteDynamicEnemies(enemies);
 			handleGameResult(victory, winLevel, iteration, steps, results, stepsFilename, resultsFilename, unmatching_result_found, filename);
 			if (mario.getLives() == 0)
 				break;
@@ -240,6 +238,14 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 		Sleep(GameConfig::DISPLAY_SPEED);
 	}
 
+}
+
+void Game::deleteDynamicEnemies(std::vector<Enemy*>& enemies) 
+{
+	for (auto enemy : enemies) {
+		delete enemy;
+	}
+	enemies.clear();
 }
 
 void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
@@ -340,38 +346,22 @@ void Game::moveEnemies(vector<Enemy*>& enemies, bool isSilent)
 	for (auto it = enemies.begin(); it != enemies.end();)
 	{
 		Enemy* enemy = *it;
+		enemy->move(enemies); // רוחות זזות (אם צריך שולחים רשימת רוחות)
 
-		if (typeid(*enemy) == typeid(Ghost) || typeid(*enemy) == typeid(SpecialGhost))
+		if (typeid(*enemy) == typeid(Barrel) && enemy->getIsExplode())
 		{
-			enemy->move(enemies); // רוחות זזות (אם צריך שולחים רשימת רוחות)
+			delete enemy; // מחיקת החבית מהזיכרון
+			it = enemies.erase(it); // הסרת המצביע מהווקטור ועדכון האיטרטור
+		}
+		else
+		{
 			if (!isSilent)
 			{
 				enemy->draw();
 			}
-			++it; // עוברים לאובייקט הבא
 		}
-		else if (typeid(*enemy) == typeid(Barrel))
-		{
-			enemy->move();
 
-			if (enemy->getIsExplode())
-			{
-				delete enemy; // מחיקת החבית מהזיכרון
-				it = enemies.erase(it); // הסרת המצביע מהווקטור ועדכון האיטרטור
-			}
-			else
-			{
-				if (!isSilent)
-				{
-					enemy->draw();
-				}
-				++it; // עוברים לאובייקט הבא
-			}
-		}
-		else
-		{
-			++it; // אם לא Ghost ולא Barrel, פשוט ממשיכים לאובייקט הבא
-		}
+		it++;
 	}
 }
 

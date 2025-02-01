@@ -48,7 +48,7 @@ public:
 
 	virtual void move(std::vector<Enemy*>& enemies) = 0;
 
-	virtual void move() = 0;
+	/*virtual void move() = 0;*/
 
 	virtual bool getIsExplode() const = 0;
 

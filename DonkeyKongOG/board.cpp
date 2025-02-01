@@ -308,7 +308,7 @@ void Board::displayPauseScreen()
 		 "Q                                                                              Q", // 12
 		 "Q                    Press:                                                    Q", // 13
 		 "Q                    ESC to continue                                           Q", // 14
-		 "Q                    ENTER to exit and lose the game :(                        Q", // 15
+		 "Q                    M to exit and lose the game :(                            Q", // 15
 		 "Q                    K to reset the level with one less live :\\                Q", // 16
 		 "Q                                                                              Q", // 17
 		 "Q                                                                              Q", // 18
