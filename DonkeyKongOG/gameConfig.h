@@ -16,7 +16,7 @@ struct GameConfig
         HAMMER = 'p', // Use the hammer
         SUICIDE = 'k',// Reset the level with one life less
         ESC = 27,     // Escape key for pause menu
-        EXIT = '\r',  // Enter key for exiting
+        EXIT = 'm',  // Enter key for exiting
     };
 
     // Enum for movement directions
