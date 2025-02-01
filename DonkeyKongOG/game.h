@@ -45,12 +45,12 @@ class Game
     void displayTitleWithAnimation() const;
     void displayDonkyKongArtWithAnimation() const;
 	void displayOptionsWithAnimation() const;
-    void printWithAnimation(const std::vector<std::string>& lines, int delayMs = 100) const;
+    void printWithAnimation(const std::vector<std::string>& lines, unsigned int delayMs = 100) const;
 
     // Game state management
     void setMarioPos(Board& board, Mario& mario);
     void setScoreLine(Board& board, Mario& mario);
-    void setLevelLine(Board& board, Mario& mario);
+    void setLevelLine(Board& board);
     void setLivesChar(Board& board, Mario& mario);
     void setHammer(Board& board, Mario& mario);
 
@@ -61,11 +61,11 @@ protected:
 
     virtual void initializeGameData(std::string stepsFilename, std::string resultsFilename, long& randomSeed, Steps& steps, Results& results) = 0; 
     virtual void validateResultsAndUpdateDisqualificationIteration(Results& results, size_t& iteration, size_t& nextDisqualificationIteration, bool& unmatching_result_found, std::string filename) {}
-    virtual bool processGameInput(Steps& steps,Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed) = 0;
+    virtual bool processGameInput(Steps& steps,Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed) = 0;
     virtual void goToSleep() const = 0;
-    virtual void handleDisqualification(size_t& nextDisqualificationIteration,bool unmatching_result_found , int iteration, Results& results, std::string filename) {}
+    virtual void handleDisqualification(size_t& nextDisqualificationIteration,bool unmatching_result_found , size_t iteration, Results& results, std::string filename) {}
     virtual bool checkIfDisqualificationMatch(size_t iteration, size_t nextDisqualificationIteration, bool& unmatching_result_found, std::string filename) { return false; }
-    virtual void handleGameResult(bool victory,bool winLevel, int iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename) {};
+    virtual void handleGameResult(bool victory,bool winLevel, size_t iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename) {};
     
 	void getAllBoardFileNames(std::vector<std::string>& vec_to_fill);
 	bool isPause(Board& board, int& key) const;

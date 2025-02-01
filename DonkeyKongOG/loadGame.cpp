@@ -18,7 +18,7 @@ void LoadGame::validateResultsAndUpdateDisqualificationIteration(Results& result
 	}
 }
 
-bool LoadGame::processGameInput(Steps& steps, Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
+bool LoadGame::processGameInput(Steps& steps, Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
 {
 	if (steps.isNextStepOnIteration(iteration)) {
 		int key = steps.popStep();
@@ -59,7 +59,7 @@ void LoadGame::goToSleep() const
 	Sleep(LOAD_GAME_SPEED);
 }
 
-void LoadGame::handleDisqualification(size_t& nextDisqualificationIteration, bool unmatching_result_found, int iteration, Results& results, std::string filename)  
+void LoadGame::handleDisqualification(size_t& nextDisqualificationIteration, bool unmatching_result_found, size_t iteration, Results& results, std::string filename)
 {
 	// check if the result is correct
 	if (results.popResult() != std::pair { iteration, Results::ResultValue::disqualified }) {
@@ -80,7 +80,7 @@ bool LoadGame::checkIfDisqualificationMatch(size_t iteration, size_t nextDisqual
 	return false;
 }
 
-void LoadGame::handleGameResult(bool victory, bool winLevel, int iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename)
+void LoadGame::handleGameResult(bool victory, bool winLevel, size_t iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename)
 {
 	if (!unmatching_result_found) 
 	{

@@ -7,7 +7,7 @@ void SaveGame::initializeGameData(std::string stepsFilename, std::string results
 	steps.setRandomSeed(randomSeed);
 }
 
-bool SaveGame::processGameInput(Steps& steps, Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
+bool SaveGame::processGameInput(Steps& steps, Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
 {
 	if (_kbhit())
 	{
@@ -54,12 +54,12 @@ bool SaveGame::processGameInput(Steps& steps, Results& results, int iteration, B
 	return false;
 }
 
-void SaveGame::handleDisqualification(size_t& nextDisqualificationIteration, bool unmatching_result_found, int iteration, Results& results, string filename)
+void SaveGame::handleDisqualification(size_t& nextDisqualificationIteration, bool unmatching_result_found, size_t iteration, Results& results, string filename)
 {
 	results.addResult(iteration, Results::disqualified);
 }
 
-void SaveGame::handleGameResult(bool victory,bool winLevel, int iteration, Steps& steps, Results& results, string stepsFileName, string resultsFileName, bool& unmatching_result_found, std::string filename)
+void SaveGame::handleGameResult(bool victory,bool winLevel, size_t iteration, Steps& steps, Results& results, string stepsFileName, string resultsFileName, bool& unmatching_result_found, std::string filename)
 {
 	if(victory)
 		results.addResult(iteration, Results::victory);

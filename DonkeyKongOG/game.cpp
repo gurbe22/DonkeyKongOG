@@ -17,7 +17,8 @@ void Game::mainMenu()
 		displayMenuWithAnimation(); // הצגת תפריט המשחק עם אנימציה
 
 		// Get user input
-		char choice = _getch();
+		int choiceInt = _getch(); // קלט כ-int
+		char choice = static_cast<char>(choiceInt); 
 		int levelChoice;
 
 		switch (choice) {
@@ -266,7 +267,7 @@ void Game::setScoreLine(Board& board, Mario& mario)
 	board.setLine(strScore, board.getScorePositionX() + scoreIdentation, board.getScorePositionY());
 }
 
-void Game::setLevelLine(Board& board, Mario& mario)
+void Game::setLevelLine(Board& board)
 {
 	std::string strLevel = std::to_string(level);
 	board.setLine(strLevel, board.getLevelPositionX(), board.getLevelPositionY()); // Set number of lives on the board
@@ -529,7 +530,7 @@ void Game::displayOptionsWithAnimation() const
 	printWithAnimation(options, ANIMATION_SPEED);
 }
 
-void Game::printWithAnimation(const std::vector<std::string>& lines, int delayMs) const
+void Game::printWithAnimation(const std::vector<std::string>& lines, unsigned int delayMs) const
 {
 	for (const auto& line : lines) {
 		std::cout << line << std::endl;
@@ -564,7 +565,7 @@ void Game::displayBoard(Board& board, Mario& mario, bool isSilent)
 
 	setLivesChar(board, mario);
 	setScoreLine(board, mario);
-	setLevelLine(board, mario);
+	setLevelLine(board);
 	setHammer(board, mario);
 	if (!isSilent)
 	{

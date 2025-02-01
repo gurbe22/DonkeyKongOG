@@ -5,7 +5,7 @@ void RegularGame::initializeGameData(std::string stepsFilename, std::string resu
 	randomSeed = static_cast<long>(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
-bool RegularGame::processGameInput(Steps& steps, Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
+bool RegularGame::processGameInput(Steps& steps, Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
 {
 	if (_kbhit())
 	{

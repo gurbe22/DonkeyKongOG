@@ -5,7 +5,7 @@
 class RegularGame: public Game
 {
 	void initializeGameData(std::string stepsFilename, std::string resultsFilename, long& randomSeed, Steps& steps, Results& results);
-	bool processGameInput(Steps& steps, Results& results, int iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed);
+	bool processGameInput(Steps& steps, Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed);
 	void goToSleep() const override { Sleep(GAME_SPEED); }
 public:
 	RegularGame() : Game() {}   
