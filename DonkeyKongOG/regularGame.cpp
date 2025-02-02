@@ -2,6 +2,7 @@
 
 void RegularGame::initializeGameData(std::string stepsFilename, std::string resultsFilename, long& randomSeed, Steps& steps, Results& results)
 {
+	// Set the random seed based on the current system time
 	randomSeed = static_cast<long>(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
@@ -13,7 +14,7 @@ bool RegularGame::processGameInput(Steps& steps, Results& results, size_t iterat
 
 		key = std::tolower(key);
 
-		// Handle pause functionality
+		// Handle pause functionality based on the key pressed
 		if (isPause(board, key))
 		{
 			if (key == (int)GameConfig::eKeys::EXIT)

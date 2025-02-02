@@ -18,7 +18,7 @@ void Game::mainMenu()
 
 		// Get user input
 		int choiceInt = _getch(); // קלט כ-int
-		char choice = static_cast<char>(choiceInt); 
+		char choice = static_cast<char>(choiceInt);
 		int levelChoice;
 
 		switch (choice) {
@@ -47,6 +47,23 @@ void Game::mainMenu()
 	system("cls"); // Clear the screen after exiting
 	cout << "Exiting the game. Goodbye!\n";
 }
+bool Game::filesValidation(int levelChoice, int amountOfFiles, Board board) const
+{
+	if (levelChoice > amountOfFiles)
+	{
+		board.displayErrorNotExistFile();
+		Sleep(GameConfig::DISPLAY_SPEED);
+		return true;
+	}
+	if (amountOfFiles == 0)
+	{
+		board.displayErrorNoFiles();
+		Sleep(GameConfig::DISPLAY_SPEED);
+		return true;
+	}
+
+	return false;
+}
 
 void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent)
 {
@@ -55,21 +72,11 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 	Mario mario;
 	bool victory = false;
 	bool winLevel = false;
-	level = 0;
 	bool unmatching_result_found = false;
+	level = 0;
 
-	if (levelChoice > fileNames.size())
-	{
-		board.displayErrorNotExistFile();
-		Sleep(GameConfig::DISPLAY_SPEED);
+	if (filesValidation(levelChoice, fileNames.size(), board))
 		return;
-	}
-	if (fileNames.size() == 0)
-	{
-		board.displayErrorNoFiles();
-		Sleep(GameConfig::DISPLAY_SPEED);
-		return;
-	}
 
 	for (const auto& filename : fileNames)
 	{
@@ -77,10 +84,9 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 		Results results;
 		Steps steps;
 		long random_seed;
-
-		std::string filename_prefix = filename.substr(0, filename.find_last_of('.'));
-		std::string stepsFilename = filename_prefix + ".steps";
-		std::string resultsFilename = filename_prefix + ".result";
+		string filename_prefix = filename.substr(0, filename.find_last_of('.'));
+		string stepsFilename = filename_prefix + ".steps";
+		string resultsFilename = filename_prefix + ".result";
 
 		initializeGameData(stepsFilename, resultsFilename, random_seed, steps, results);
 
@@ -101,112 +107,71 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 			setMarioPos(board, mario);
 
 			vector<Enemy*> enemies;
-
 			enemies.reserve(10);
 
 			int currentFrame;
-			int barrelsX;
+			int barrelsX = bendingDirX(board.getDonkeyPosX()) + board.getDonkeyPosX();
 			int barrelsY = board.getDonkeyPosY();
-
-			barrelsX = bendingDirX(board.getDonkeyPosX()) + board.getDonkeyPosX();
 			size_t nextDisqualificationIteration = 0;
 
-			while (mario.getLives() > 0 && winLevel == false)
+			while (mario.getLives() > 0 && winLevel == false) // Main game loop
 			{
 				currentFrame = DELAY;
-				// Set Mario to his starting position at the beginning of each game
-				mario.setMarioToStart();
-
+				mario.setMarioToStart(); // Reset Mario to starting position
 				deleteDynamicEnemies(enemies);
+				displayBoard(board, mario, isSilent); // Display board
+				createAllGhosts(enemies, board); // Create all ghosts
+				mario.setBoard(board);// Link Mario to the game board
 
-				// Display the game board with Mario at the starting position
-				displayBoard(board, mario, isSilent); 
+				int lives = mario.getLives();// Store the current number of lives for comparison
+				GameConfig::eKeys keyPressed = GameConfig::eKeys::STAY;// Initialize key press state to STAY
 
-				// Create all ghosts
-				createAllGhosts(enemies, board);
-
-				// Link Mario to the game board
-				mario.setBoard(board);
-
-				// Store the current number of lives for comparison
-				int lives = mario.getLives();
-
-				// Initialize key press state to STAY
-				GameConfig::eKeys keyPressed = GameConfig::eKeys::STAY;
-
-				while (RUNNING)
-				{
+				while (RUNNING) { // Input and gameplay loop
 					++iteration;
 					nextDisqualificationIteration = 0;
 					validateResultsAndUpdateDisqualificationIteration(results, iteration, nextDisqualificationIteration, unmatching_result_found, filename);
 
 					if (unmatching_result_found)
-					{
 						break;
-					}
 
 					// Initialize barrels with staggered delay
-					if (currentFrame % DELAY == 0) {
-						enemies.push_back(new Barrel(board, barrelsX, barrelsY));
-					}
+					if (currentFrame % DELAY == 0) { enemies.push_back(new Barrel(board, barrelsX, barrelsY)); }
 					currentFrame++;
-					bool flag = false;
-					// Check for user input
 
-					flag = processGameInput(steps, results, iteration, board, mario, keyPressed);
+					 bool flag = processGameInput(steps, results, iteration, board, mario, keyPressed);// Check for user input
 
-					if (flag)
-					{
+					if (flag) {
 						if (mario.getLives() > 0)
 							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
 						break;
 					}
-					// Move Mario based on the key pressed
-					mario.moveMario(keyPressed, enemies);
-					// Check if Mario has won the game
-					if (mario.isWon())
-					{
-						if (levelChoice == 0 && level < fileNames.capacity())
-						{
-							board.displayWonLevel();
-							Sleep(GameConfig::DISPLAY_SPEED);
-							winLevel = true;
-						}
-						else
-						{
-							winLevel = true;
-							victory = true;
-						}
 
+					mario.moveMario(keyPressed, enemies);// Move Mario based on the key pressed
+				
+					if (mario.isWon())	// Check if Mario has won the game
+					{
+						validateWin(levelChoice, fileNames.capacity(), board, winLevel, victory, level);
 						break;
 					}
 
-					// Draw Mario in his updated position
-					if (!isSilent)
-					{
+					if (!isSilent)// Draw Mario in his updated position
 						mario.drawMario();
-					}
 
 					moveEnemies(enemies, isSilent);
-					// Add a delay for smooth gameplay
-					goToSleep();
+					
+					goToSleep();// Add a delay for smooth gameplay
 
 					if (!isSilent)
-					{
 						eraseAllCharacters(enemies, mario);
-					}
 
-					// Check if Mario lost a life
-					if (lives != mario.getLives())
+				
+					if (lives != mario.getLives())// Check if Mario lost a life
 					{
-						if (mario.getLives() != 0)
-						{
+						if (mario.getLives() != 0){
 							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
-							// Display disqualification screen if a life is lost
-							board.displayDisqualified();
+							board.displayDisqualified();// Display disqualification screen if a life is lost
 							Sleep(GameConfig::DISPLAY_SPEED);
 						}
-
 						break;
 					}
 
@@ -214,33 +179,44 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 				}
 
 				if (unmatching_result_found)
-				{
 					break;
-				}
 			}
 
 			deleteDynamicEnemies(enemies);
 			handleGameResult(victory, winLevel, iteration, steps, results, stepsFilename, resultsFilename, unmatching_result_found, filename);
+
 			if (mario.getLives() == 0)
 				break;
 		}
 	}
-	if (victory)
-	{
-		// Display the Victory screen
+
+	// Final victory/loss display
+	if (victory){ 
 		board.displayVictory();
 		Sleep(GameConfig::DISPLAY_SPEED);
 	}
-	else
-	{
-		// Display the loss screen if Mario has no more lives
+	
+	else{ 
 		board.displayLoss();
 		Sleep(GameConfig::DISPLAY_SPEED);
 	}
-
 }
 
-void Game::deleteDynamicEnemies(std::vector<Enemy*>& enemies) 
+void Game::validateWin(int levelChoice, int amountOfLevels, Board& board, bool& winLevel, bool& victory, int level)
+{
+	if (levelChoice == 0 && level < amountOfLevels)
+	{
+		board.displayWonLevel();
+		Sleep(GameConfig::DISPLAY_SPEED);
+		winLevel = true;
+	}
+	else
+	{
+		winLevel = true;
+		victory = true;
+	}
+}
+void Game::deleteDynamicEnemies(std::vector<Enemy*>& enemies)
 {
 	for (auto enemy : enemies) {
 		delete enemy;
@@ -386,7 +362,7 @@ bool Game::isPause(Board& board, int& key) const
 }
 
 int Game::displayLevelsChoices(vector<string>& fileNames) const {
-	int size = fileNames.size();
+	size_t size = fileNames.size();
 	int currentPage = 0;
 	string levelChoice;
 
@@ -395,9 +371,9 @@ int Game::displayLevelsChoices(vector<string>& fileNames) const {
 		cout << "Choose a level to play:" << endl;
 
 		// הדפסת השלבים בעמוד הנוכחי
-		int start = currentPage * LEVELS_PER_PAGE;
-		int end = min(start + LEVELS_PER_PAGE, size); // עד העמוד האחרון או סוף הרשימה
-		for (int i = start; i < end; i++) {
+		size_t start = currentPage * LEVELS_PER_PAGE;
+		size_t end = min(start + LEVELS_PER_PAGE, size); // עד העמוד האחרון או סוף הרשימה
+		for (size_t i = start; i < end; i++) {
 			cout << i + 1 << ". " << fileNames[i] << endl;
 		}
 

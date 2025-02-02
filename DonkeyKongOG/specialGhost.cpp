@@ -3,25 +3,26 @@
 using namespace std;
 
 void SpecialGhost::move(vector<Enemy*>& enemies) {
-	// Check if the ghost is in the air
+	// Get current position and board reference
 	int currentX = myEnemy.getX();
 	int currentY = myEnemy.getY();
 	Board* board = myEnemy.getBoard();
 
+	// Get current and neighboring tile characters
 	char currentChar = board->getChar(currentX, currentY);
 	char belowChar = board->getChar(currentX, currentY + 1);
 	char aboveChar = board->getChar(currentX, currentY - 1);
 	char below2Char = board->getChar(currentX, currentY + 2);
 
 
-	// Keep moving the ghost down while there is no floor beneath it and it's within bounds
+	// If there's no floor beneath the ghost, keep moving it down
 	if (isWithinBounds(currentX, currentY + 1) &&
 		!GameConfig::isFloor(board->getChar(currentX, currentY + 1))
 		&& currentChar != GameConfig::LADDER) {
 		myEnemy.move(0, 1); // Move the ghost one step down
 		return;
 	}
-	//
+
 	// If the ghost is on the ground, proceed with normal movement
 	// 5% chance to randomly change direction
 	if (direction != GameConfig::directions::DOWN && direction != GameConfig::directions::UP) 
@@ -105,12 +106,8 @@ void SpecialGhost::preventCollision(vector<Enemy*>& enemies) {
 		int otherX = otherGhost->getX();
 		int otherY = otherGhost->getY();
 
-		//GameConfig::directions otherDirection = pb ? pb->getDirection() : pbS->getDirection();
 		GameConfig::directions otherDirection = pb->getDirection();
 		const auto otherPos = GameConfig::directionPairs.at(otherDirection);
-		int otherNextX = otherX + otherPos.first;
-		int otherNextY = otherY + otherPos.second;
-
 
 		// Check if ghosts would collide
 		if (nextX == otherX && nextY == otherY) {

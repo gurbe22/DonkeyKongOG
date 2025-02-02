@@ -54,8 +54,10 @@ class Game
     void setLivesChar(Board& board, Mario& mario);
     void setHammer(Board& board, Mario& mario);
 
+    bool filesValidation(int levelChoice, int amountOfFiles, Board board) const; 
+    void validateWin(int levelChoice, int amountOfLevels, Board& board, bool& winLevel, bool& victory, int level);
 protected:
-	static constexpr int GAME_SPEED = 100;
+	static constexpr int GAME_SPEED = 100; 
     static constexpr int LOAD_GAME_SPEED = 50;
     static constexpr int LOAD_SILENT_GAME_SPEED = 0;
 

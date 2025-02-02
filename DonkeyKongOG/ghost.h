@@ -34,7 +34,6 @@ public:
     ~Ghost() override = default;
 
     void move(std::vector<Enemy*>& enemies) override;
-   /* void move() override {};*/
 
     void draw() const override { myEnemy.draw(GameConfig::GHOST); }
 

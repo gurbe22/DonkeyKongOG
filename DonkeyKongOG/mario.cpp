@@ -270,12 +270,12 @@ void Mario::hammering(vector<Enemy*>& enemies)
 				addScore(GHOST_SCORE);
 			}
 
-			delete enemy;        // מחיקת האובייקט מהזיכרון
-			it = enemies.erase(it); // מחיקת המצביע מהווקטור
+			delete enemy;        // free memory
+			it = enemies.erase(it); // erase returns the next iterator
 		}
 		else
 		{
-			++it; // מעבר לאובייקט הבא אם אין מחיקה
+			++it; // only increment if we didn't erase
 		}
 	}
 }
@@ -293,12 +293,12 @@ bool Mario::isMarioDisqualified(vector<Enemy*>& enemies, int nextChar) const
 		int enemyNextX = enemyX + enemy->getDiffX();
 		int enemyNextY = enemyY + enemy->getDiffY();
 
-		// בדיקת התנגשות בהווה או בצעד הבא
+		// Checking for collision with an enemy
 		if (isCollision(marioX, marioY, marioNextX, marioNextY, enemyX, enemyY, enemyNextX, enemyNextY)) {
 			return true;
 		}
 
-		// בדיקה אם מדובר בחבית והאם התפוצצה
+		// Checking whether it is a barrel and whether it exploded
 		if (typeid(*enemy) == typeid(Barrel)) {
 			if (enemy->getIsExplode() && isInExplosionRadius(marioX, marioY, enemyX, enemyY)) {
 				return true;
@@ -306,7 +306,7 @@ bool Mario::isMarioDisqualified(vector<Enemy*>& enemies, int nextChar) const
 		}
 	}
 
-	// בדיקת אינטראקציה עם דונקי קונג
+	// Donkey Kong interaction test
 	if (nextChar == GameConfig::DONKEYKONG) {
 		return true;
 	}
@@ -314,7 +314,7 @@ bool Mario::isMarioDisqualified(vector<Enemy*>& enemies, int nextChar) const
 	return false;
 }
 
-// פונקציה לבדוק אם יש התנגשות בין מרים לאויב
+// Function to check if there is a collision between Mario and an enemy
 bool Mario::isCollision(int marioX, int marioY, int marioNextX, int marioNextY,
 	int enemyX, int enemyY, int enemyNextX, int enemyNextY) const
 {
@@ -323,7 +323,7 @@ bool Mario::isCollision(int marioX, int marioY, int marioNextX, int marioNextY,
 		(marioNextX == enemyX && marioNextY == enemyY);
 }
 
-// פונקציה לבדוק אם המיקום של מרים נמצא בטווח הפיצוץ של החבית
+// Check if Mario's position is within the explosion range of the barrel
 bool Mario::isInExplosionRadius(int marioX, int marioY, int barrelX, int barrelY) const
 {
 	for (int dx = -2; dx <= 2; dx++) {
