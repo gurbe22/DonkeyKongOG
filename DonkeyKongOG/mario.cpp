@@ -366,20 +366,16 @@ void Mario::walkingOrStaying(GameConfig::eKeys key)
 	}
 }
 
-void Mario::setHammerDirection() {
-	hammerDirection = bendingDirX(myMario.getX());
-}
+// Setting hammer direction
+void Mario::setHammerDirection() { hammerDirection = bendingDirX(myMario.getX());}
+void Mario::setHammerDirection(int dir) { hammerDirection = dir; }
 
-void Mario::setHammerDirection(int dir) {
-	hammerDirection = dir;
-}
-
+// Updating the score
 void Mario::addScore(int newPoints) {
 
 	score = score + newPoints;
-	if (score > GameConfig::MAX_SCORE)
-	{
-		score = GameConfig::MAX_SCORE;
-	}
+
+	if (score > GameConfig::MAX_SCORE) score = GameConfig::MAX_SCORE;
+
 	myMario.getBoard()->addScore(score, myMario.getX(), myMario.getY());
 }

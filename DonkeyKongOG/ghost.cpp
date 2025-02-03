@@ -1,6 +1,7 @@
 #include "ghost.h"
 using namespace std;
 
+// Ghost moving function
 void Ghost::move(vector<Enemy*>& enemies) {
 	// Check if the ghost is in the air
 	int currentX = myEnemy.getX();
@@ -50,7 +51,7 @@ void Ghost::move(vector<Enemy*>& enemies) {
 	return;
 }
 
-
+// Validate and preventing all ghost collision
 void Ghost::preventCollision(vector<Enemy*>& enemies) {
 	for (auto& otherGhost : enemies) {
 		Ghost* pb = dynamic_cast<Ghost*>(otherGhost);

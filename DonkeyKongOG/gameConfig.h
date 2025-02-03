@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <utility> // std::pair
 
+// GameConfig holds constants and configurations used throughout the game.
 struct GameConfig
 {
     // Enumeration for key inputs used in the game
@@ -16,7 +17,7 @@ struct GameConfig
         HAMMER = 'p', // Use the hammer
         SUICIDE = 'k',// Reset the level with one life less
         ESC = 27,     // Escape key for pause menu
-        EXIT = 'm',  // Enter key for exiting
+        EXIT = 'm',   // Exit game
     };
 
     // Enum for movement directions
@@ -27,36 +28,39 @@ struct GameConfig
         RIGHT
     };
 
-    // Mapping directions to (x, y) coordinates
+    // Mapping directions to (x, y) coordinate changes
     static const std::unordered_map<directions, std::pair<int, int>> directionPairs;
 
-    // Dimensions of the game board
+    // Game board dimensions
     static constexpr int GAME_WIDTH = 80;
     static constexpr int GAME_HEIGHT = 25;
 
     // Characters representing game entities
-    static constexpr char PAULINE = '$';
-    static constexpr char DONKEYKONG = '&';
-    static constexpr char BARREL = 'O';
-    static constexpr char MARIO = '@';
-    static constexpr char GHOST = 'x';
-    static constexpr char SPECIAL_GHOST = 'X';
-    static constexpr char HAMMER = 'p';
+    static constexpr char PAULINE = '$';         // Goal character
+    static constexpr char DONKEYKONG = '&';      // Enemy character
+    static constexpr char BARREL = 'O';          // Rolling barrels
+    static constexpr char MARIO = '@';           // Player character
+    static constexpr char GHOST = 'x';           // Normal enemy
+    static constexpr char SPECIAL_GHOST = 'X';   // Stronger ghost
+    static constexpr char HAMMER = 'p';          // Hammer pickup
 
     // Characters representing terrain and obstacles
-    static constexpr char LIMIT = 'Q';
-    static constexpr char FLOOR = '=';
-    static constexpr char LFLOOR = '<';
-    static constexpr char RFLOOR = '>';
-    static constexpr char LADDER = 'H';
-    static constexpr char OPEN_SPACE = ' ';
-    static constexpr char INFO_POS = 'L';
+    static constexpr char LIMIT = 'Q';           // Game boundary
+    static constexpr char FLOOR = '=';           // Walkable floor
+    static constexpr char LFLOOR = '<';          // Left-slanted floor
+    static constexpr char RFLOOR = '>';          // Right-slanted floor
+    static constexpr char LADDER = 'H';          // Ladder for climbing
+    static constexpr char OPEN_SPACE = ' ';      // Empty space
+    static constexpr char INFO_POS = 'L';        // UI info position
 
+    // Player hammer states
     static constexpr char WITH_HAMMER = 'V';
     static constexpr char WITHOUT_HAMMER = 'X';
 
+    // Maximum score allowed in the game
     static constexpr int MAX_SCORE = 9999;
 
+    // Display speed for animations (milliseconds)
     static constexpr int DISPLAY_SPEED = 3000;
 
     // Checks if the given character represents a floor

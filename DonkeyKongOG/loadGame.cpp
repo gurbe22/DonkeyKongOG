@@ -1,12 +1,13 @@
 #include "loadGame.h"
 
+// Loads game data, including steps and results, and extracts the random seed
 void LoadGame::initializeGameData(std::string stepsFilename, std::string resultsFilename, long& randomSeed, Steps& steps, Results& results)
 {
 	steps = Steps::loadSteps(stepsFilename);
 	randomSeed = steps.getRandomSeed();
 	results = Results::loadResults(resultsFilename);
 }
-
+// Validates results file and updates the next disqualification iteration
 void LoadGame::validateResultsAndUpdateDisqualificationIteration(Results& results, size_t& iteration, size_t& nextDisqualificationIteration, bool& unmatching_result_found, std::string filename)
 {
 	if (results.isFinishedBy(iteration)) {
@@ -17,7 +18,7 @@ void LoadGame::validateResultsAndUpdateDisqualificationIteration(Results& result
 		nextDisqualificationIteration = results.getNextDisqualificationIteration();
 	}
 }
-
+// Processes game input from the recorded steps
 bool LoadGame::processGameInput(Steps& steps, Results& results, size_t iteration, Board& board, Mario& mario, GameConfig::eKeys& keyPressed)
 {
 	if (steps.isNextStepOnIteration(iteration)) {
@@ -54,11 +55,12 @@ bool LoadGame::processGameInput(Steps& steps, Results& results, size_t iteration
 	return false;
 }	
 
+// Adds a delay to control game speed
 void LoadGame::goToSleep() const
 {
 	Sleep(LOAD_GAME_SPEED);
 }
-
+//Handles disqualification events and verifies correctness in results file
 void LoadGame::handleDisqualification(size_t& nextDisqualificationIteration, bool unmatching_result_found, size_t iteration, Results& results, std::string filename)
 {
 	// check if the result is correct
@@ -69,6 +71,7 @@ void LoadGame::handleDisqualification(size_t& nextDisqualificationIteration, boo
 	nextDisqualificationIteration = results.getNextDisqualificationIteration();
 }
 
+// Checks if a disqualification event occurred as expected
 bool LoadGame::checkIfDisqualificationMatch(size_t iteration, size_t nextDisqualificationIteration,bool& unmatching_result_found, std::string filename)
 {
 	// we didn't disqualified, so we check if the result is correct
@@ -80,6 +83,7 @@ bool LoadGame::checkIfDisqualificationMatch(size_t iteration, size_t nextDisqual
 	return false;
 }
 
+// Verifies if the game result matches the expected outcome in the results file
 void LoadGame::handleGameResult(bool victory, bool winLevel, size_t iteration, Steps& steps, Results& results, std::string stepsFileName, std::string resultsFileName, bool& unmatching_result_found, std::string filename)
 {
 	if (!unmatching_result_found) 
@@ -116,7 +120,7 @@ void LoadGame::handleGameResult(bool victory, bool winLevel, size_t iteration, S
 		}
 	}
 }
-
+// Loads level files and starts the game 
 void LoadGame::mainMenu() 
 {
 	std::vector<std::string> fileNames;

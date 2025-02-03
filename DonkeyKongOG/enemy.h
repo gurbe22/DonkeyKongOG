@@ -2,67 +2,53 @@
 #define ENEMY_H
 
 #include "Point.h"
+
+// Base class representing an enemy in the game
 class Enemy
 {
 protected:
-	Point myEnemy;
+    Point myEnemy; // Position and movement logic for the enemy
 
-	// Helper function to check if coordinates are within bounds
-	bool isWithinBounds(int x, int y) const;
+    // Helper function to check if coordinates are within board boundaries
+    bool isWithinBounds(int x, int y) const;
+
 public:
+    // Constructor initializes the enemy's position and assigns a board
+    Enemy(Board& board, int enemyStartingX, int enemyStartingY)
+        : myEnemy(enemyStartingX, enemyStartingY)
+    {
+        this->setBoard(board);
+    }
 
-	Enemy(Board& board, int enemyStartingX, int enemyStartingY) 
-		: myEnemy(enemyStartingX, enemyStartingY)
-	{
-		this->setBoard(board);
-	}
+    virtual ~Enemy() = default; // Virtual destructor for polymorphism
 
-	virtual ~Enemy() = default;
+    // Set and retrieve the game board for the enemy
+    void setBoard(Board& board) { myEnemy.setBoard(board); }
+    Board* getBoard() const { return myEnemy.getBoard(); }
 
-	void setBoard(Board& board)
-	{
-		myEnemy.setBoard(board);
-	}
+    // Position getters
+    int getX() const { return myEnemy.getX(); }
+    int getY() const { return myEnemy.getY(); }
 
-	Board* getBoard() const
-	{
-		return myEnemy.getBoard();
-	}
+    // Pure virtual function for drawing the enemy (must be implemented by derived classes)
+    virtual void draw() const = 0;
 
-	int getX() const
-	{
-		return myEnemy.getX();
-	}
+    // Erases the enemy's current position from the board
+    void erase() const { myEnemy.erase(); }
 
-	int getY() const
-	{
-		return myEnemy.getY();
-	}
+    // Movement behavior to be implemented by subclasses
+    virtual void move(std::vector<Enemy*>& enemies) = 0;
 
-	virtual void draw() const = 0; // Pure virtual function for drawing the enemy
-	
-	void erase() const
-	{
-		myEnemy.erase();
-	}
+    // Checks if the enemy has exploded (relevant for certain enemy types like barrels)
+    virtual bool getIsExplode() const = 0;
 
-	virtual void move(std::vector<Enemy*>& enemies) = 0;
+    // Movement direction differences (for pathfinding or AI logic)
+    int getDiffX() const { return myEnemy.getDiffX(); }
+    int getDiffY() const { return myEnemy.getDiffY(); }
 
-	virtual bool getIsExplode() const = 0;
-
-	int getDiffX() const
-	{
-		return myEnemy.getDiffX();
-	}
-
-	int getDiffY() const
-	{
-		return myEnemy.getDiffY();
-	}
-
-	virtual void changeDirectionX() = 0;
-
-	virtual void changeDirectionY() = 0;
+    // Direction change behavior (subclasses must define)
+    virtual void changeDirectionX() = 0;
+    virtual void changeDirectionY() = 0;
 };
 
 #endif

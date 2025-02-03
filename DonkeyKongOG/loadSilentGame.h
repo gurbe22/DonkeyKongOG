@@ -3,13 +3,18 @@
 
 #include "loadGame.h"
 
+// 'LoadSilentGame' class extends 'LoadGame' to run the game in silent mode.
 class LoadSilentGame : public LoadGame
 {
-	void goToSleep() const override { Sleep(LOAD_SILENT_GAME_SPEED); }
+    // Overrides sleep behavior to run the game instantly (no delay).
+    void goToSleep() const override { Sleep(LOAD_SILENT_GAME_SPEED); }
+
 public:
-	LoadSilentGame() : LoadGame() {}
-	~LoadSilentGame() {}
-	void mainMenu() override;
+    LoadSilentGame() : LoadGame() {}  // Default constructor
+    ~LoadSilentGame() {}              // Destructor
+
+    // Runs the game in silent mode (overrides default menu behavior).
+    void mainMenu() override;
 };
 
 #endif

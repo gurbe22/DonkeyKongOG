@@ -1,5 +1,6 @@
 #include "loadSilentGame.h"
 
+// Main menu for silent load game
 void LoadSilentGame::mainMenu()
 {
 	std::vector<std::string> fileNames;

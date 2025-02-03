@@ -193,7 +193,7 @@ void Board::addFloor(char* row, int width) {
 	}
 }
 
-// Add the information to the board
+// Adds game information (lives, score, hammer status) to the board
 void Board::addInfo()
 {
 	if (infoPosY + INFO_HEIGHT > GameConfig::GAME_HEIGHT || infoPosX + INFO_WIDTH > GameConfig::GAME_WIDTH) {
@@ -214,6 +214,7 @@ void Board::addInfo()
 	}
 }
 
+// Checks if Donkey Kong is positioned correctly on a floor
 bool Board::isDonkeyKongInLegalPlace()const
 {
 	if (donkeyPosY < GameConfig::GAME_HEIGHT - 2)
@@ -228,6 +229,7 @@ bool Board::isDonkeyKongInLegalPlace()const
 
 }
 
+// Updates and displays the score
 void Board::addScore(int score, int returningX, int returningY) 
 {
 	string strScore;
@@ -281,12 +283,15 @@ int Board::getMaxNewPointIndentation() const
 	return maxIndentation;
 }
 
+// Writes a string to a specific position on the board
 void Board::setLine(std::string line, int posX, int posY)
 {
 	const char* newLine = line.c_str();
 	
 	memcpy(currentBoard[posY] + posX , newLine , line.length()); 
 }
+
+/* All diffrent boards for messging the current state of the game */
 
 void Board::displayPauseScreen()
 {

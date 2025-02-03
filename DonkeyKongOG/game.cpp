@@ -65,21 +65,18 @@ bool Game::filesValidation(int levelChoice, int amountOfFiles, Board board) cons
 	return false;
 }
 
+// Function to run the game
 void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent)
 {
 	system("cls"); // Clear the screen
 	Board board;
 	Mario mario;
-	bool victory = false;
-	bool winLevel = false;
-	bool unmatching_result_found = false;
+	bool victory = false, winLevel = false, unmatching_result_found = false;
 	level = 0;
 
-	if (filesValidation(levelChoice, fileNames.size(), board))
-		return;
+	if (filesValidation(levelChoice, fileNames.size(), board)) return; // Validate files
 
-	for (const auto& filename : fileNames)
-	{
+	for (const auto& filename : fileNames) { // Loop through all levels
 		size_t iteration = 0;
 		Results results;
 		Steps steps;
@@ -89,23 +86,17 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 		string resultsFilename = filename_prefix + ".result";
 
 		initializeGameData(stepsFilename, resultsFilename, random_seed, steps, results);
-
 		srand(random_seed);
 		level++;
 
-		if (levelChoice == 0 || levelChoice == level)
-		{
+		if (levelChoice == 0 || levelChoice == level) { // If playing all levels or selected one
 			victory = false;
 			winLevel = false;
 			board.resetGhostPos();
 
-			if (!board.load(filename))
-			{
-				continue;
-			}
+			if (!board.load(filename)) continue; // Skip level if loading fails
 
-			setMarioPos(board, mario);
-
+			setMarioPos(board, mario); // Set Mario's start position
 			vector<Enemy*> enemies;
 			enemies.reserve(10);
 
@@ -114,62 +105,52 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 			int barrelsY = board.getDonkeyPosY();
 			size_t nextDisqualificationIteration = 0;
 
-			while (mario.getLives() > 0 && winLevel == false) // Main game loop
-			{
+			while (mario.getLives() > 0 && !winLevel) { // Main game loop
 				currentFrame = DELAY;
-				mario.setMarioToStart(); // Reset Mario to starting position
+				mario.setMarioToStart();
 				deleteDynamicEnemies(enemies);
-				displayBoard(board, mario, isSilent); // Display board
-				createAllGhosts(enemies, board); // Create all ghosts
-				mario.setBoard(board);// Link Mario to the game board
+				displayBoard(board, mario, isSilent);
+				createAllGhosts(enemies, board);
+				mario.setBoard(board);
 
-				int lives = mario.getLives();// Store the current number of lives for comparison
-				GameConfig::eKeys keyPressed = GameConfig::eKeys::STAY;// Initialize key press state to STAY
+				int lives = mario.getLives();
+				GameConfig::eKeys keyPressed = GameConfig::eKeys::STAY;
 
 				while (RUNNING) { // Input and gameplay loop
 					++iteration;
-					nextDisqualificationIteration = 0;
 					validateResultsAndUpdateDisqualificationIteration(results, iteration, nextDisqualificationIteration, unmatching_result_found, filename);
+					if (unmatching_result_found) break;
 
-					if (unmatching_result_found)
-						break;
-
-					// Initialize barrels with staggered delay
-					if (currentFrame % DELAY == 0) { enemies.push_back(new Barrel(board, barrelsX, barrelsY)); }
+					if (currentFrame % DELAY == 0) {
+						enemies.push_back(new Barrel(board, barrelsX, barrelsY)); // Spawn barrels
+					}
 					currentFrame++;
 
-					 bool flag = processGameInput(steps, results, iteration, board, mario, keyPressed);// Check for user input
-
+					bool flag = processGameInput(steps, results, iteration, board, mario, keyPressed);
 					if (flag) {
 						if (mario.getLives() > 0)
 							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
 						break;
 					}
 
-					mario.moveMario(keyPressed, enemies);// Move Mario based on the key pressed
-				
-					if (mario.isWon())	// Check if Mario has won the game
-					{
+					mario.moveMario(keyPressed, enemies);
+
+					if (mario.isWon()) { // Check if Mario has won
 						validateWin(levelChoice, fileNames.capacity(), board, winLevel, victory, level);
 						break;
 					}
 
-					if (!isSilent)// Draw Mario in his updated position
-						mario.drawMario();
-
+					if (!isSilent) mario.drawMario();
 					moveEnemies(enemies, isSilent);
-					
-					goToSleep();// Add a delay for smooth gameplay
 
-					if (!isSilent)
-						eraseAllCharacters(enemies, mario);
+					goToSleep();
 
-				
-					if (lives != mario.getLives())// Check if Mario lost a life
-					{
-						if (mario.getLives() != 0){
+					if (!isSilent) eraseAllCharacters(enemies, mario);
+
+					if (lives != mario.getLives()) { // Check if Mario lost a life
+						if (mario.getLives() != 0) {
 							handleDisqualification(nextDisqualificationIteration, unmatching_result_found, iteration, results, filename);
-							board.displayDisqualified();// Display disqualification screen if a life is lost
+							board.displayDisqualified();
 							Sleep(GameConfig::DISPLAY_SPEED);
 						}
 						break;
@@ -177,31 +158,26 @@ void Game::runGame(vector<std::string> fileNames, int levelChoice, bool isSilent
 
 					checkIfDisqualificationMatch(iteration, nextDisqualificationIteration, unmatching_result_found, filename);
 				}
-
-				if (unmatching_result_found)
-					break;
+				if (unmatching_result_found) break;
 			}
 
 			deleteDynamicEnemies(enemies);
 			handleGameResult(victory, winLevel, iteration, steps, results, stepsFilename, resultsFilename, unmatching_result_found, filename);
 
-			if (mario.getLives() == 0)
-				break;
+			if (mario.getLives() == 0) break; // Exit if Mario is out of lives
 		}
 	}
-
-	// Final victory/loss display
-	if (victory){ 
+	// Display final game result
+	if (victory) {
 		board.displayVictory();
 		Sleep(GameConfig::DISPLAY_SPEED);
 	}
-	
-	else{ 
+	else {
 		board.displayLoss();
 		Sleep(GameConfig::DISPLAY_SPEED);
 	}
 }
-
+// Function to validate if the level is won
 void Game::validateWin(int levelChoice, int amountOfLevels, Board& board, bool& winLevel, bool& victory, int level)
 {
 	if (levelChoice == 0 && level < amountOfLevels)
@@ -216,6 +192,7 @@ void Game::validateWin(int levelChoice, int amountOfLevels, Board& board, bool& 
 		victory = true;
 	}
 }
+// Function to delete dynamically allocated enemies
 void Game::deleteDynamicEnemies(std::vector<Enemy*>& enemies)
 {
 	for (auto enemy : enemies) {
@@ -223,7 +200,7 @@ void Game::deleteDynamicEnemies(std::vector<Enemy*>& enemies)
 	}
 	enemies.clear();
 }
-
+// Function to get all board file names
 void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
 	namespace fs = std::filesystem;
 	for (const auto& entry : fs::directory_iterator(fs::current_path())) {
@@ -240,6 +217,7 @@ void Game::getAllBoardFileNames(std::vector<std::string>& vec_to_fill) {
 	}
 }
 
+/* Setting all game's data */
 void Game::setScoreLine(Board& board, Mario& mario)
 {
 	int score, scoreIdentation;
@@ -260,6 +238,7 @@ void Game::setLivesChar(Board& board, Mario& mario)
 	char livesChar = static_cast<char>('0' + mario.getLives()); // Convert integer to character representation
 	board.setChar(board.getLivesPositionX(), board.getLivesPositionY(), livesChar); // Update the board with lives
 }
+/**************************/
 
 // Function to set Mario's starting position
 void Game::setMarioPos(Board& board, Mario& mario)
@@ -267,7 +246,7 @@ void Game::setMarioPos(Board& board, Mario& mario)
 	mario.setStartingX(board.getMarioStartingX());
 	mario.setStartingY(board.getMarioStartingY());
 }
-
+// Function to set the hammer status on the board
 void Game::setHammer(Board& board, Mario& mario)
 {
 	if (mario.getIsHammer())
@@ -277,10 +256,7 @@ void Game::setHammer(Board& board, Mario& mario)
 
 	}
 	else
-	{
 		board.setChar(board.getHammerStatusPositionX(), board.getHammerStatusPositionY(), GameConfig::WITHOUT_HAMMER); // Set the hammer status on the boardB
-
-	}
 }
 
 // Function to create all ghosts
@@ -289,21 +265,11 @@ void Game::createAllGhosts(vector<Enemy*>& enemies, Board board)
 	std::vector<std::pair<int, int>> ghostPos = board.getGhostPos();
 	std::vector<std::pair<int, int>> specialGhostPos = board.getSpecialGhostPos();
 
-	// עוברים על כל המיקומים ומוסיפים רוחות למערך
-	for (const auto& pos : ghostPos)
-	{
-		// הקצאת אובייקט Ghost דינמית והוספה לווקטור כמצביע
-		enemies.push_back(new Ghost(board, pos.first, pos.second));
-	}
-
-	// עוברים על כל המיקומים ומוסיפים רוחות למערך
-	for (const auto& pos : specialGhostPos)
-	{
-		// הקצאת אובייקט Ghost דינמית והוספה לווקטור כמצביע
-		enemies.push_back(new SpecialGhost(board, pos.first, pos.second));
-	}
+	for (const auto& pos : ghostPos) enemies.push_back(new Ghost(board, pos.first, pos.second));
+	for (const auto& pos : specialGhostPos)	enemies.push_back(new SpecialGhost(board, pos.first, pos.second));
 }
 
+/* Erasing all game's characters */
 void Game::eraseAllCharacters(vector<Enemy*>& enemies, Mario& mario)
 {
 	mario.eraseMario();
@@ -316,31 +282,31 @@ void Game::eraseEnemies(vector<Enemy*>& enemies)
 		enemy->erase();
 	}
 }
+/***********************************/
 
-void Game::moveEnemies(vector<Enemy*>& enemies, bool isSilent)
+// Moves all enemies and removes exploded barrels
+void Game::moveEnemies(vector<Enemy*>& enemies, bool isSilent) 
 {
 	for (auto it = enemies.begin(); it != enemies.end();)
 	{
 		Enemy* enemy = *it;
-		enemy->move(enemies); // רוחות זזות (אם צריך שולחים רשימת רוחות)
+		enemy->move(enemies); 
 
+		// Remove exploded barrels
 		if (typeid(*enemy) == typeid(Barrel) && enemy->getIsExplode())
 		{
-			delete enemy; // מחיקת החבית מהזיכרון
-			it = enemies.erase(it); // הסרת המצביע מהווקטור ועדכון האיטרטור
+			delete enemy; 
+			it = enemies.erase(it); 
 		}
 		else
 		{
-			if (!isSilent)
-			{
-				enemy->draw();
-			}
+			if (!isSilent) enemy->draw();
+			it++;
 		}
-
-		it++;
+		
 	}
 }
-
+// Handling pause situation
 bool Game::isPause(Board& board, int& key) const
 {
 	if (key == (int)GameConfig::eKeys::ESC)
@@ -360,42 +326,38 @@ bool Game::isPause(Board& board, int& key) const
 	}
 	return false;
 }
-
+// Displays level selection menu and handles user input 
 int Game::displayLevelsChoices(vector<string>& fileNames) const {
 	size_t size = fileNames.size();
 	int currentPage = 0;
 	string levelChoice;
 
 	while (true) {
-		system("cls"); // מנקה את המסך
+		system("cls"); 
 		cout << "Choose a level to play:" << endl;
 
-		// הדפסת השלבים בעמוד הנוכחי
+		// Display levels for the current page
 		size_t start = currentPage * LEVELS_PER_PAGE;
-		size_t end = min(start + LEVELS_PER_PAGE, size); // עד העמוד האחרון או סוף הרשימה
+		size_t end = min(start + LEVELS_PER_PAGE, size);
 		for (size_t i = start; i < end; i++) {
 			cout << i + 1 << ". " << fileNames[i] << endl;
 		}
 
-		// הודעה אם יש עמודים נוספים
-		if (start + LEVELS_PER_PAGE < size) {
-			cout << "n. Next page\n";
-		}
-		if (currentPage > 0) {
-			cout << "p. Previous page\n";
-		}
+		// Navigation options
+		if (start + LEVELS_PER_PAGE < size) cout << "n. Next page\n";
+		if (currentPage > 0) cout << "p. Previous page\n";
 		cout << "m. Return to main menu\n";
 		cout << "Enter the level number and press Enter: ";
 
 		cin >> levelChoice;
 
-		// טיפול באפשרויות הקלט
-		if (levelChoice == "m" || levelChoice == "M") {
-			return -1; // חזרה לתפריט הראשי
-		}
+		// Return to main menu
+		if (levelChoice == "m" || levelChoice == "M") 	return -1; 
+
+		// Navigate pages
 		if (levelChoice == "n" || levelChoice == "N") {
 			if (start + LEVELS_PER_PAGE < size) {
-				currentPage++; // מעבר לעמוד הבא
+				currentPage++; 
 			}
 			else {
 				cout << "No more pages. Press any key to continue...\n";
@@ -406,7 +368,7 @@ int Game::displayLevelsChoices(vector<string>& fileNames) const {
 		}
 		if (levelChoice == "p" || levelChoice == "P") {
 			if (currentPage > 0) {
-				currentPage--; // חזרה לעמוד הקודם
+				currentPage--; 
 			}
 			else {
 				cout << "No previous page. Press any key to continue...\n";
@@ -415,12 +377,11 @@ int Game::displayLevelsChoices(vector<string>& fileNames) const {
 			}
 			continue;
 		}
-
-		// בדיקה אם הקלט הוא מספר
+		// Validate level selection
 		if (levelChoice[0] >= '1' && levelChoice[0] <= '9') {
 			int choice = stoi(levelChoice);
 			if (choice >= 1 && choice <= size) {
-				return choice; // מחזיר את המספר המתאים באינדקס
+				return choice; 
 			}
 			else {
 				cout << "Invalid choice. Please try again.\n";
@@ -435,14 +396,14 @@ int Game::displayLevelsChoices(vector<string>& fileNames) const {
 		}
 	}
 }
-
+// Displays the full menu with title, art, and options animation
 void Game::displayMenuWithAnimation() const
 {
-	displayTitleWithAnimation();    // כותרת
-	displayDonkyKongArtWithAnimation();      // אומנות ASCII
-	displayOptionsWithAnimation();  // אפשרויות תפריט
+	displayTitleWithAnimation();    
+	displayDonkyKongArtWithAnimation();      
+	displayOptionsWithAnimation();  
 }
-
+// Displays the game title with animation
 void Game::displayTitleWithAnimation() const {
 	std::vector<std::string> gameTitle = {
 		" DDDDD   OOOOO   N   N  K   K   EEEEE   Y   Y    K   K    OOOOO  N   N  GGGG  ",
@@ -453,7 +414,7 @@ void Game::displayTitleWithAnimation() const {
 	};
 	printWithAnimation(gameTitle, ANIMATION_SPEED);
 }
-
+// Displays the main menu options with animation 
 void Game::displayDonkyKongArtWithAnimation() const
 {
 	std::vector<std::string> donkyKongArt = {
@@ -470,15 +431,6 @@ void Game::displayDonkyKongArtWithAnimation() const
 		""
 	};
 	printWithAnimation(donkyKongArt, ANIMATION_SPEED);
-
-
-	/*for (const auto& line : art) {
-		int padding = (80 - line.length()) / 2;
-		for (int i = 0; i < padding; ++i)
-			std::cout << " ";
-		std::cout << line << std::endl;
-	}*/
-	/************************  ASCII art generated with the help of ChatGPT ****************************/
 }
 
 void Game::displayOptionsWithAnimation() const
@@ -495,12 +447,12 @@ void Game::displayOptionsWithAnimation() const
 	};
 	printWithAnimation(options, ANIMATION_SPEED);
 }
-
+// Prints lines with a delay for animation effect. 
 void Game::printWithAnimation(const std::vector<std::string>& lines, unsigned int delayMs) const
 {
 	for (const auto& line : lines) {
 		std::cout << line << std::endl;
-		Sleep(delayMs); // עיכוב בין שורה לשורה
+		Sleep(delayMs); 
 	}
 }
 
@@ -539,10 +491,11 @@ void Game::displayBoard(Board& board, Mario& mario, bool isSilent)
 	}
 }
 
+// Displays an error message related to game results
 void Game::reportResultError(const std::string& message, const std::string& filename, size_t iteration) {
 	system("cls");
 	std::cout << "Screen " << filename << " - " << message << '\n';
 	std::cout << "Iteration: " << iteration << '\n';
-	std::cout << "Press any key to continue to next screens (if any)" << std::endl;
+	std::cout << "Press any key to continue..." << std::endl;
 	(void)_getch();
 }

@@ -1,5 +1,6 @@
 #include "gameConfig.h"
 
+// Maps movement directions to coordinate changes (x, y)
 const std::unordered_map<GameConfig::directions, std::pair<int, int>> GameConfig::directionPairs = {
     {GameConfig::directions::UP,    {0, -1}},
     {GameConfig::directions::DOWN,  {0, 1}},
